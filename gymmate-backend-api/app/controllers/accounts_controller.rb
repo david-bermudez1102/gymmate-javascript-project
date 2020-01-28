@@ -1,4 +1,4 @@
-class TrainersController < ApplicationController
+class AccountsController < ApplicationController
 
   skip_before_action :require_login!, only: [:create]
 
@@ -18,7 +18,7 @@ class TrainersController < ApplicationController
   end
 
   def show
-    trainer = Trainer.find_by(id: params[:id])
+    trainer = Account.find_by(auth_token: params[:id])
     render json: trainer
   end
 
