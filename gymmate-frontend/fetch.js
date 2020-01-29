@@ -35,6 +35,7 @@ class Fetch {
   }
 
   submit() {
+    Render.spinner(main);
     fetch(this.url, this.configObj)
       .then(this.parseJson)
       .then(this.callback);
@@ -44,6 +45,7 @@ class Fetch {
     const token = sessionStorage.getItem("auth_token")
     const h = new Headers();
     h.append("Authorization", `Token token=${token}`);
+    Render.spinner(main);
     fetch(this.url, {headers: h})
       .then(this.parseJson)
       .then(this.callback);

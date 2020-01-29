@@ -1,6 +1,6 @@
 const body = d.querySelector("body");
-
 const main = d.querySelector("main");
+const container = d.querySelector(".container-fluid.min-vh-100.p-0");
 
 class Button {
   static new(id = null, innerText, className, callback = null, url = null) {
@@ -49,7 +49,11 @@ class Form {
 }
 
 class FormGroup {
-  static new(input, icon = false, className = "form-group row no-gutters flex-nowrap") {
+  static new(
+    input,
+    icon = false,
+    className = "form-group row no-gutters flex-nowrap"
+  ) {
     const div = d.createElement("div");
     div.className = className;
     if (icon) {
@@ -92,10 +96,10 @@ class Icon {
 }
 
 class Section {
-  static new(child,className=null) {
+  static new(child, className = null) {
     const section = d.createElement("section");
     section.className = "bg-white text-left p-3 p-sm-5 rounded shadow ";
-    if(className) section.className += className;
+    if (className) section.className += className;
     section.append(child);
     return section;
   }
@@ -119,17 +123,38 @@ class Article {
   }
 }
 
-class H1{
-  static new(title, className="text-primary mb-4"){
+class H1 {
+  static new(title, className = "text-primary mb-4") {
     const header = d.createElement("h1");
-    header.append(title)
+    header.append(title);
     header.className = className;
-    return header
+    return header;
   }
 }
 
+class Link {
+  static new(innerText, className, callback) {
+    const link = d.createElement("a");
+    link.append(innerText);
+    link.className = className;
+    link.addEventListener("link", e => {
+      e.preventDefault();
+      callback;
+    });
+    return link;
+  }
+}
+
+const removeAll = node => {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+};
+
 const setSession = auth_token => {
   if (sessionStorage.getItem("auth_token")) {
+    DELETE_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
+    ACCOUNT_URL = `${ACCOUNTS_URL}/${sessionStorage.getItem("auth_token")}`;
   } else if (auth_token) {
     sessionStorage.setItem("auth_token", auth_token);
   }
@@ -137,6 +162,5 @@ const setSession = auth_token => {
 
 d.addEventListener("DOMContentLoaded", () => {
   body.prepend(Render.navbar());
-  main.append(new Grid().headerRow(), new Grid().loginRow(), new Grid().signupRow());
   body.append(Render.footer());
 });

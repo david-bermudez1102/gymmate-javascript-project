@@ -21,10 +21,10 @@ class Render {
     <div class="collapse navbar-collapse border-secondary" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto nav-pills nav-fill nav-justify">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link active" href="#" onclick="removeAll(main);Welcome.render()">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="main.append(Render.loginForm())">Login</a>
+          <a class="nav-link" href="#" onclick="removeAll(main);main.append(new Grid().loginRow())">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Sign Up</a>
@@ -130,6 +130,7 @@ class Render {
 
       const callback = json => {
         console.log(formData());
+        Render.hideSpinner(main);
         setSession(json.auth_token);
         const render = new Render(json);
         render.home();
@@ -149,7 +150,7 @@ class Render {
       "form-group bg-light shadow-sm row border-0 py-5"
     );
 
-    loginForm.append(H1.new("Login"),email, password, button, options);
+    loginForm.append(H1.new("Login"), email, password, button, options);
     return loginForm;
   }
 
@@ -163,5 +164,19 @@ class Render {
 
   logoutBtn() {
     return Button.new("logout_button", "Log Out", null, Account.logout);
+  }
+
+  static spinner(node,where=container) {
+    const spinner = d.createElement("div");
+    spinner.setAttribute("id", "spinner");
+    spinner.style.visibility = "visible";
+    where.prepend(spinner)
+    node.style.display = "none"
+  }
+
+  static hideSpinner(node) {
+    const spinner = document.getElementById("spinner");
+    spinner.style.visibility = "hidden";
+    node.style.display = "";
   }
 }
