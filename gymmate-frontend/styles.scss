@@ -1,0 +1,105 @@
+container {
+  min-height: 100vh;
+}
+
+footer {
+  padding: 3rem;
+}
+
+.nav-pills>li>a.active {
+  background-color: #00000011 !important;
+}
+
+.nav-pills>li>a:hover {
+  background-color: #00000011 !important;
+}
+
+.btn-facebook {
+  color: #3b5998;
+}
+
+.btn-facebook:hover {
+  color: #496ab1;
+}
+
+.btn-twitter {
+  color: #55acee;
+}
+
+.btn-twitter:hover {
+  color: #7bbcee;
+}
+
+.card-tooltip:after {
+  border-right: solid 20px transparent;
+  border-left: solid 20px transparent;
+  border-top: solid 20px rgb(34, 34, 34);
+  position: absolute;
+  z-index: -1;
+  content: '';
+  transform: rotate(180deg);
+  top: -20px;
+  left: 45%;
+
+  @media (min-width: 767px) {
+    transform: rotate(90deg);
+    top: 50%;
+    left: -30px;
+  }
+
+  height: 0;
+  width: 0;
+  -webkit-filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+  filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+}
+
+.inverse-card-tooltip {
+  width: 100%;
+}
+
+.inverse-card-tooltip:after {
+  border-right: solid 20px transparent;
+  border-left: solid 20px transparent;
+  border-top: solid 20px rgb(34, 34, 34);
+  position: absolute;
+  z-index: 1;
+  content: '';
+  transform: rotate(0deg);
+  top: 100%;
+  right: 45%;
+
+  @media (min-width: 767px) {
+    transform: rotate(270deg);
+    top: 50%;
+    right: -30px;
+  }
+
+  height: 0;
+  width: 0;
+  -webkit-filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+  filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.075));
+}
+
+@import url(https://use.fontawesome.com/releases/v5.0.10/css/all.css);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:200,300,400,700);
+$font-family-base:Montserrat;
+@import url(https://fonts.googleapis.com/css?family=Comfortaa:200,300,400,700);
+$headings-font-family:Comfortaa;
+
+$enable-grid-classes:true;
+$primary:#FF304F;
+$secondary:#CACACA;
+$success:#015668;
+$danger:#06648C;
+$info:#0F81C7;
+$warning:#0DE2EA;
+$light:#f8f9fa;
+$dark:#222222;
+$spacer:1rem;
+$btn-border-radius:.25rem;
+$border-width:1px;
+$input-color: #555;
+$input-border:#e3e3e3;
+$input-color-placeholder: #e3e3e3;
+
+@import "bootstrap/scss/bootstrap.scss";

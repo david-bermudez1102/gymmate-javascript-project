@@ -2,16 +2,6 @@ class AccountsController < ApplicationController
 
   skip_before_action :require_login!, only: [:create]
 
-  def create
-    trainer = Trainer.new
-    account = trainer.build_account(trainer_params)
-
-    if trainer.save
-       account.generate_auth_token
-       render json: trainer
-    end
-  end
-
   def index
     trainers = Trainer.all
     render json: trainers

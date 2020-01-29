@@ -19,6 +19,6 @@ class Trainer {
       const req = new Fetch(trainer.data, "POST", TRAINERS_URL, callback);
       req.submit();
     });
-    main.append(newTrainer);
+    main.append(Section.new(newTrainer));
   }
 }

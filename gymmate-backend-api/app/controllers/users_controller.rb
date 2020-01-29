@@ -4,10 +4,11 @@ class UsersController < ApplicationController
 
   def create
     user = User.new
-    account = user.build_account(trainer_params)
-    if user.save
+    account = user.build_account(account_params)
+    
+    if account.save
       account.generate_auth_token
-      render json: user
+      render json: account
     end
   end
 
@@ -22,7 +23,7 @@ class UsersController < ApplicationController
   end
 
   private
-    def trainer_params
+    def account_params
       params.require(:account).permit(:name,:lastname,:username,:email,:password)
     end
 end
