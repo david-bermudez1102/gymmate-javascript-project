@@ -1,7 +1,5 @@
 class TrainersController < ApplicationController
 
-  skip_before_action :require_login!, only: [:create]
-
   def create
     trainer = Trainer.new
     account = trainer.build_account(account_params)

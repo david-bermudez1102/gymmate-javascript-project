@@ -1,18 +1,23 @@
-class User {
-  static new(url) {
-    const newUser = Render.newUserForm(url);
+class User extends Account {
+  constructor(id, name, lastname, dateOfBirth, sex, username, email, userId) {
+    super(id, name, lastname, dateOfBirth, sex, username, email);
+    this._userId = userId;
+  }
 
-    newUser.create_user.addEventListener("click", () => {
-      const user = new Account(
-        newUser.name.value,
-        newUser.lastname.value,
-        newUser.username.value,
-        newUser.email.value,
-        newUser.password.value
-      );
-      const submit = new Fetch(user.data, "POST", USERS_URL);
-      submit.request();
-    });
-    main.append(newUser);
+  get userId() {
+    return this._userId;
+  }
+
+  renderForm(target) {
+    removeAll(target);
+    const newUser = Welcome.newUserForm(USERS_URL);
+    newUser.prepend(H1.new("Sign Up"));
+    target.append(newUser);
+    newUser.append(
+      Link.new("Sign up as a Trainer instead.", "small", () => {
+        removeAll(target);
+        new Trainer().renderForm(target);
+      })
+    );
   }
 }

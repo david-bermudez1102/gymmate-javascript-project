@@ -1,12 +1,4 @@
 class Render {
-  constructor(json) {
-    this._json = json;
-  }
-
-  get json() {
-    return this._json;
-  }
-
   static navbar = () => {
     const navbar = d.createElement("nav");
     navbar.className =
@@ -66,117 +58,33 @@ class Render {
     return footer;
   };
 
-  static newUserForm(url) {
-    const newUserForm = Form.new("new_user", url, "POST");
-    const name = FormGroup.new(
-      Input.new("text", "name", "Your Name..."),
-      Icon.new("fas fa-user")
-    );
-    const lastname = FormGroup.new(
-      Input.new("text", "lastname", "Your Lastname..."),
-      Icon.new("fas fa-user")
-    );
-    const username = FormGroup.new(
-      Input.new("text", "username", "Your Username..."),
-      Icon.new("fas fa-at")
-    );
-    const email = FormGroup.new(
-      Input.new("email", "email", "Your Email..."),
-      Icon.new("fas fa-envelope")
-    );
-    const password = FormGroup.new(
-      Input.new("password", "password", "Your Password..."),
-      Icon.new("fas fa-lock")
-    );
-    const button = FormGroup.new(
-      Button.new(
-        "create_user",
-        "Sign Up",
-        "btn btn-block btn-primary border-0 shadow rounded-pill",
-        null,
-        url
-      )
-    );
-    newUserForm.append(name, lastname, username, email, password, button);
-    return newUserForm;
-  }
-
-  static loginForm() {
-    const loginForm = Form.new("new_session", SESSIONS_URL, "POST");
-    const email = FormGroup.new(
-      Input.new("email", "email", "Your Email..."),
-      Icon.new("fas fa-envelope")
-    );
-    const password = FormGroup.new(
-      Input.new("password", "password", "Your Password..."),
-      Icon.new("fas fa-lock")
-    );
-    const button = Button.new(
-      "create_session",
-      "Login",
-      "btn btn-lg btn-block btn-dark border-0 shadow rounded-pill mb-3",
-      null,
-      SESSIONS_URL
-    );
-    button.addEventListener("click", () => {
-      const formData = () => {
-        return {
-          account: {
-            email: loginForm.email.value,
-            password: loginForm.password.value
-          }
-        };
-      };
-
-      const callback = json => {
-        console.log(formData());
-        Render.hideSpinner(main);
-        setSession(json.auth_token);
-        const render = new Render(json);
-        render.home();
-      };
-
-      const sessionsRequest = new Fetch(
-        formData(),
-        "POST",
-        SESSIONS_URL,
-        callback
-      );
-      sessionsRequest.submit();
-    });
-    const options = FormGroup.new(
-      Welcome.socialMediaOptions(),
-      null,
-      "form-group bg-light shadow-sm row border-0 py-5"
-    );
-
-    loginForm.append(H1.new("Login"), email, password, button, options);
-    return loginForm;
-  }
-
-  home() {
-    if (this.json.message === "success") {
-      setSession(this.json.auth_token);
-      main.innerHTML = `Welcome ${this.json.name}`;
+  static home() {
+    if (currentUser && sessionStorage.getItem("auth_token")) {
+      main.innerHTML = `Welcome ${currentUser.name}`;
       main.append(this.logoutBtn());
+      if (currentUser instanceof Trainer) {
+        main.append(new Grid().newProgramRow());
+      }
     }
   }
 
-  logoutBtn() {
+  static logoutBtn() {
     return Button.new("logout_button", "Log Out", null, Account.logout);
   }
 
-  static spinner(node,where=container) {
+  static spinner(node, where = container) {
+    document.documentElement.scrollTop = 0;
     const spinner = d.createElement("div");
     spinner.setAttribute("id", "spinner");
     spinner.style.visibility = "visible";
-    where.prepend(spinner)
-    node.style.display = "none"
+    where.prepend(spinner);
+    node.style.display = "none";
   }
 
   static hideSpinner(node) {
     const spinner = document.getElementById("spinner");
     spinner.style.visibility = "hidden";
     node.style.display = "";
+    spinner.remove();
   }
 }

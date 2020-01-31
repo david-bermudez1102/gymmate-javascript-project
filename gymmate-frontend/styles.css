@@ -61,7 +61,7 @@ footer {
 .card-tooltip:after {
   border-right: solid 20px transparent;
   border-left: solid 20px transparent;
-  border-top: solid 20px #222222;
+  border-top: solid 20px #CACACA;
   position: absolute;
   z-index: -1;
   content: '';
@@ -116,7 +116,7 @@ footer {
 }
 .header-banner-3 {
   background-image:linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-  url('./src/img/AdobeStock_113571196-min.jpeg');
+  url('./src/img/AdobeStock_113571196-min.jpg');
 }
 .login-banner{
   background-image:linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
@@ -127,7 +127,6 @@ footer {
   background-image:linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)),
   url('./src/img/AdobeStock_286330506-min.jpeg');
 }
-
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors

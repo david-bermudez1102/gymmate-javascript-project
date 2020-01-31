@@ -1,15 +1,13 @@
 class AccountsController < ApplicationController
 
-  skip_before_action :require_login!, only: [:create]
-
   def index
-    trainers = Trainer.all
-    render json: trainers
+    accounts = Account.all
+    render json: accounts
   end
 
   def show
-    trainer = Account.find_by(auth_token: params[:id])
-    render json: trainer
+    account = Account.find_by(auth_token: params[:auth_token])
+    render json: account
   end
 
   private

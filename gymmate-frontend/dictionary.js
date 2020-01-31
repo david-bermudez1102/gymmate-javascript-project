@@ -10,3 +10,5 @@ if (sessionStorage.getItem("auth_token")){
   DELETE_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
   ACCOUNT_URL = `${ACCOUNTS_URL}/${sessionStorage.getItem("auth_token")}`;
 }
+
+let currentUser = null;

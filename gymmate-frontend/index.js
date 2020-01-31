@@ -3,15 +3,17 @@ const main = d.querySelector("main");
 const container = d.querySelector(".container-fluid.min-vh-100.p-0");
 
 class Button {
-  static new(id = null, innerText, className, callback = null, url = null) {
+  static new(id, innerText, className, callback = null, url = null) {
     const button = d.createElement("button");
     if (id) button.id = id;
     if (name) button.name = id;
     button.append(innerText);
     button.className = className;
     button.addEventListener("click", function() {
-      if (callback) {
+      if (callback && url) {
         callback(url);
+      } else if (callback && !url) {
+        callback();
       }
     });
     return button;
@@ -19,6 +21,11 @@ class Button {
 }
 
 class Input {
+  constructor(type,name,placeholder,className){
+    this._type = type
+    this._name = name
+    this._placeholder = placeholder
+  }
   static new(
     type,
     name,
@@ -34,17 +41,32 @@ class Input {
   }
 }
 
+class TextArea {
+  static new(name, placeholder, className = "form-control pl-5 rounded-pill") {
+    const textArea = d.createElement("textarea");
+    textArea.name = name;
+    textArea.placeholder = placeholder;
+    textArea.className = className;
+    return textArea;
+  }
+}
+
 class Form {
-  static new(id, action, method) {
-    this.form = d.createElement("form");
-    this.form.id = id;
-    this.form.action = action;
-    this.form.method = method;
-    this.form.addEventListener("submit", function(e) {
+  static new(id, action, method, data, callback = json => setSession(json), auth_token = null) {
+    const f = d.createElement("form");
+    f.id = id;
+    f.action = action;
+    f.method = method;
+    f.addEventListener("submit", function(e) {
       e.preventDefault();
+      const formData = new FormData(this);
+      const newData = {};
+      newData[data] = Object.fromEntries(formData);
+      if (auth_token) newData["auth_token"] = auth_token;
+      new Fetch(newData, "POST", action, callback).submit();
       e.target.reset();
     });
-    return this.form;
+    return f;
   }
 }
 
@@ -133,13 +155,14 @@ class H1 {
 }
 
 class Link {
-  static new(innerText, className, callback) {
+  static new(innerText, className, callback, href = "#") {
     const link = d.createElement("a");
-    link.append(innerText);
+    link.href = href;
+    link.innerText = innerText;
     link.className = className;
-    link.addEventListener("link", e => {
+    link.addEventListener("click", e => {
+      callback();
       e.preventDefault();
-      callback;
     });
     return link;
   }
@@ -151,14 +174,68 @@ const removeAll = node => {
   }
 };
 
-const setSession = auth_token => {
+const setSession = (json = null) => {
+  const callback = json => {
+    console.log(json);
+    Render.hideSpinner(main);
+    if (json.userable_type === "Trainer") {
+      new Fetch(null,"GET",TRAINERS_URL+`/${json.userable_id}`,(trainer) => {
+        Render.hideSpinner(main);
+        currentUser = new Trainer(
+          trainer.account.id,
+          trainer.account.name,
+          trainer.account.lastname,
+          trainer.account.date_of_birth,
+          trainer.account.sex,
+          trainer.account.username,
+          trainer.account.email,
+          trainer.account.userable_id,
+          []
+        );
+        trainer.programs.forEach(program => {
+          currentUser.programs.push(
+            new Program(
+              program.id,
+              program.title,
+              program.description,
+              currentUser,
+              program.created_at,
+              program.updated_at
+            )
+          );
+        });
+        Render.home();
+      }).request()
+      
+    } else if (json.userable_type === "User") {
+      currentUser = new User(
+        json.id,
+        json.name,
+        json.lastname,
+        json.date_of_birth,
+        json.sex,
+        json.username,
+        json.email,
+        json.userable_id
+      );
+    }
+    Render.home();
+  };
   if (sessionStorage.getItem("auth_token")) {
     DELETE_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
     ACCOUNT_URL = `${ACCOUNTS_URL}/${sessionStorage.getItem("auth_token")}`;
-  } else if (auth_token) {
-    sessionStorage.setItem("auth_token", auth_token);
+    new Fetch(null, null, ACCOUNT_URL, callback).request();
+  } else if (json && json.auth_token) {
+    sessionStorage.setItem("auth_token", json.auth_token);
+    DELETE_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
+    ACCOUNT_URL = `${ACCOUNTS_URL}/${sessionStorage.getItem("auth_token")}`;
+    callback(json);
   }
 };
+
+const setAccount = (json) => {
+
+}
 
 d.addEventListener("DOMContentLoaded", () => {
   body.prepend(Render.navbar());

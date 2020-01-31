@@ -1,10 +1,16 @@
 class Account {
-  constructor(name, lastname, username, email, password) {
+  constructor(id, name, lastname, dateOfBirth, sex, username, email) {
+    this._id = id;
     this._name = name;
     this._lastname = lastname;
+    this._dateOfBirth = dateOfBirth;
+    this._sex = sex;
     this._username = username;
     this._email = email;
-    this._password = password;
+  }
+
+  get id() {
+    return this._id;
   }
 
   get name() {
@@ -15,6 +21,14 @@ class Account {
     return this._lastname;
   }
 
+  get dateOfBirth() {
+    return this._dateOfBirth;
+  }
+
+  get sex() {
+    return this._sex;
+  }
+
   get username() {
     return this._username;
   }
@@ -23,34 +37,11 @@ class Account {
     return this._email;
   }
 
-  get password() {
-    return this._password;
-  }
-
-  get data() {
-    return {
-      account: {
-        name: this.name,
-        lastname: this.lastname,
-        username: this.username,
-        email: this.email,
-        password: this.password
-      }
-    };
-  }
-
-  static logout(){
+  static logout() {
     const callback = json => {
-      console.log(json);
       sessionStorage.clear();
-      window.location.reload()
+      window.location.reload();
     };
-    const req = new Fetch(
-      null,
-      "DELETE",
-      DELETE_URL,
-      callback
-    );
-    req.submit();
+    new Fetch(null, "DELETE", DELETE_URL, callback).submit();
   }
 }

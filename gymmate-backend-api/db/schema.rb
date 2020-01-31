@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_014815) do
 
   create_table "programs", force: :cascade do |t|
     t.string "title"
+    t.string "description"
     t.integer "trainer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

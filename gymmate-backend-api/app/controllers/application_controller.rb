@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Token::ControllerMethods
 
-  before_action :require_login!
-
   def user_signed_in?
     current_user.present?
   end
