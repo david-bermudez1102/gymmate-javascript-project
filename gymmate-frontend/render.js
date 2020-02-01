@@ -1,42 +1,97 @@
 class Render {
   static navbar = () => {
     const navbar = d.createElement("nav");
+    const brand = H1.new(Icon.new("fas fa-bolt"), null)
+    brand.prepend("Gymmate ")
     navbar.className =
       "navbar shadow sticky-top navbar-expand-lg navbar-dark bg-primary solid ";
-    navbar.innerHTML = `<div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <h1>Gymmate <i class="fas fa-bolt"></i></h1>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse border-secondary" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto nav-pills nav-fill nav-justify">
-        <li class="nav-item">
-          <a class="nav-link active" href="#" onclick="removeAll(main);Welcome.render()">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" onclick="removeAll(main);main.append(new Grid().loginRow())">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Sign Up</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>`;
+    const container = Div.new("container-fluid", null);
+
+    container.append(
+      Link.new(
+        brand,
+        "navbar-brand"
+      ),
+      this.navbarToggler(),
+      Div.new(
+        "collapse navbar-collapse border-secondary",
+        "navbarSupportedContent",
+        this.navbarOptions()
+      )
+    );
+    navbar.append(container);
     return navbar;
   };
+
+  static navbarOptions() {
+    const navbarOptions = List.new(
+      "navbar-nav ml-auto nav-pills nav-fill nav-justify"
+    );
+    navbarOptions.append(
+      Item.new(this.homeLink()),
+      Item.new(this.loginLink()),
+      Item.new(this.signUpLink()),
+      this.accountLink()
+    );
+    return navbarOptions;
+  }
+
+  static homeLink() {
+    return Link.new(`Home`, "nav-link active", () => {
+      removeAll(main);
+      Welcome.render();
+    });
+  }
+
+  static navbarToggler() {
+    return new DOMParser().parseFromString(
+      `
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    `,
+      "text/html"
+    ).body.firstChild;
+  }
+
+  static loginLink() {
+    return Link.new(`Login`, "nav-link", () => {
+      removeAll(main);
+      append(new Grid().loginRow(), null, main);
+    });
+  }
+
+  static signUpLink() {
+    return Link.new(`Sign Up`, "nav-link", () => {
+      removeAll(main);
+      append(new Grid().loginRow(), null, main);
+    });
+  }
+
+  static accountLink() {
+    const link = Item.new(
+      new DOMParser().parseFromString(
+        `
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Account
+      </a>
+      `,
+        "text/html"
+      ).body.firstChild
+    );
+    link.append(this.accountLinkOptions());
+    return link;
+  }
+
+  static accountLinkOptions() {
+    return new DOMParser().parseFromString(`
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Something else here</a>
+    </div>`, "text/html").body.firstChild;
+  }
 
   static footer = () => {
     const footer = d.createElement("footer");
@@ -63,6 +118,7 @@ class Render {
       main.innerHTML = `Welcome ${currentUser.name}`;
       main.append(this.logoutBtn());
       if (currentUser instanceof Trainer) {
+        main.append(this.allProgramsLink());
         main.append(new Grid().newProgramRow());
       }
     }
@@ -70,6 +126,17 @@ class Render {
 
   static logoutBtn() {
     return Button.new("logout_button", "Log Out", null, Account.logout);
+  }
+
+  static allProgramsLink() {
+    return Link.new(
+      "View My Routines",
+      null,
+      () => {
+        currentUser.allPrograms();
+      },
+      "#"
+    );
   }
 
   static spinner(node, where = container) {

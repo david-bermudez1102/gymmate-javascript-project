@@ -40,6 +40,7 @@ class Grid {
         )
       )
     );
+    this.row.id = "header_row";
     return this.row;
   }
 
@@ -54,6 +55,7 @@ class Grid {
         "col-md mt-4 mt-md-3 pl-1 pl-md-4 pr-1"
       )
     );
+    this.row.id = "login_row";
     return this.row;
   }
 
@@ -68,6 +70,7 @@ class Grid {
       ),
       Column.new(Section.new(Welcome.signUpMenu()), "col-md-4 mt-3 px-1")
     );
+    this.row.id = "signup_row";
     return this.row;
   }
 
@@ -75,6 +78,16 @@ class Grid {
     this.row.append(
       Column.new(
         Section.new(currentUser.renderNewProgramForm()),
+        "col-md-4 mt-3 px-1"
+      )
+    );
+    return this.row;
+  }
+
+  newExerciseRow(program) {
+    this.row.append(
+      Column.new(
+        Section.new(program.renderNewExerciseForm()),
         "col-md-4 mt-3 px-1"
       )
     );

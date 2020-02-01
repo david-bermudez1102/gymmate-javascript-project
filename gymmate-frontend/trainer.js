@@ -31,4 +31,11 @@ class Trainer extends Account {
   renderNewProgramForm() {
     return new Program().form();
   }
+
+  allPrograms() {
+    console.log(this)
+    this.programs.forEach(program => {
+      main.append(Section.new(program.title));
+    });
+  }
 }

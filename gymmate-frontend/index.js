@@ -21,22 +21,19 @@ class Button {
 }
 
 class Input {
-  constructor(type,name,placeholder,className){
-    this._type = type
-    this._name = name
-    this._placeholder = placeholder
-  }
   static new(
     type,
     name,
     placeholder,
-    className = "form-control pl-5 rounded-pill"
+    className = "form-control pl-5 rounded-pill",
+    value = ""
   ) {
     this.input = d.createElement("input");
     this.input.type = type;
     this.input.name = name;
     this.input.placeholder = placeholder;
     this.input.className = className;
+    this.input.value = value;
     return this.input;
   }
 }
@@ -52,7 +49,14 @@ class TextArea {
 }
 
 class Form {
-  static new(id, action, method, data, callback = json => setSession(json), auth_token = null) {
+  static new(
+    id,
+    action,
+    method,
+    data,
+    callback = json => setSession(json),
+    auth_token = null
+  ) {
     const f = d.createElement("form");
     f.id = id;
     f.action = action;
@@ -155,16 +159,52 @@ class H1 {
 }
 
 class Link {
-  static new(innerText, className, callback, href = "#") {
+  static new(innerHTML, className, callback, href = "#") {
     const link = d.createElement("a");
     link.href = href;
-    link.innerText = innerText;
+    link.append(innerHTML);
     link.className = className;
     link.addEventListener("click", e => {
       callback();
       e.preventDefault();
     });
     return link;
+  }
+}
+
+class List {
+  static new(className, callback = null) {
+    const ul = d.createElement("ul");
+    ul.className = className;
+    ul.addEventListener("click", e => {
+      if (callback) callback();
+    });
+    return ul;
+  }
+}
+
+class Item {
+  static new(child, className, callback = null) {
+    const li = d.createElement("li");
+    li.className = className;
+    li.append(child);
+    li.addEventListener("click", e => {
+      if (callback) callback();
+    });
+    return li;
+  }
+}
+
+class Div {
+  static new(className = null, id = null, innerHTML = null, callback = null) {
+    const div = d.createElement("div");
+    div.className = className;
+    if(innerHTML) div.append(innerHTML)
+    div.addEventListener("click", e => {
+      if(callback) callback();
+      e.preventDefault();
+    });
+    return div;
   }
 }
 
@@ -179,7 +219,7 @@ const setSession = (json = null) => {
     console.log(json);
     Render.hideSpinner(main);
     if (json.userable_type === "Trainer") {
-      new Fetch(null,"GET",TRAINERS_URL+`/${json.userable_id}`,(trainer) => {
+      new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
         Render.hideSpinner(main);
         currentUser = new Trainer(
           trainer.account.id,
@@ -198,15 +238,29 @@ const setSession = (json = null) => {
               program.id,
               program.title,
               program.description,
+              [],
               currentUser,
               program.created_at,
               program.updated_at
             )
           );
+
+          program.exercises.forEach(exercise => {
+            currentUser.programs
+              .find(program => program.id == exercise.program_id)
+              .exercises.push(
+                new Exercise(
+                  exercise.id,
+                  exercise.title,
+                  exercise.sets,
+                  program
+                )
+              );
+          });
         });
+
         Render.home();
-      }).request()
-      
+      }).request();
     } else if (json.userable_type === "User") {
       currentUser = new User(
         json.id,
@@ -233,11 +287,14 @@ const setSession = (json = null) => {
   }
 };
 
-const setAccount = (json) => {
-
-}
+const setAccount = json => {};
 
 d.addEventListener("DOMContentLoaded", () => {
   body.prepend(Render.navbar());
   body.append(Render.footer());
 });
+
+function append(element, id, target) {
+  if (target.querySelector(`#${id}`)) target.querySelector(`#${id}`).remove();
+  target.append(element);
+}

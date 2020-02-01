@@ -127,14 +127,14 @@ class Welcome {
     return new Promise(res => {
       Render.spinner(main);
       setTimeout(() => {
-        res(main.append(new Grid().headerRow()));
+        res(append(new Grid().headerRow(), "header_row", main));
       }, 10);
     })
       .then(() => {
-        main.append(new Grid().loginRow());
+        append(new Grid().loginRow(), "login_row", main);
       })
       .then(() => {
-        main.append(new Grid().signupRow());
+        append(new Grid().signupRow(), "signup_row", main);
       })
       .then(() => Render.hideSpinner(main));
   }
@@ -143,5 +143,5 @@ class Welcome {
 if (sessionStorage.getItem("auth_token")) {
   setSession();
 } else {
-  Welcome.render();
+ Welcome.render();
 }

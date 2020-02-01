@@ -1,8 +1,9 @@
 class Program {
-  constructor(id, title, description, trainer, createdAt, updatedAt) {
+  constructor(id, title, description, exercises, trainer, createdAt, updatedAt) {
     this._id = id;
     this._title = title;
     this._description = description;
+    this.exercises = exercises;
     this._trainer = trainer;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
@@ -40,18 +41,20 @@ class Program {
       "program",
       json => {
         const trainer = Object.assign({}, currentUser);
-        trainer.programs.push(
-          new Program(
-            json.id,
-            json.title,
-            json.description,
-            trainer,
-            json.created_at,
-            json.updated_at
-          )
+        const program = new Program(
+          json.id,
+          json.title,
+          json.description,
+          [],
+          trainer,
+          json.created_at,
+          json.updated_at
         );
+
+        trainer.programs.push(program);
         currentUser = trainer;
         Render.hideSpinner(main);
+        main.append(new Grid().newExerciseRow(program))
       },
       sessionStorage.getItem("auth_token")
     );
@@ -76,5 +79,10 @@ class Program {
     );
 
     return newProgramForm;
+  }
+
+  renderNewExerciseForm() {
+    console.log(this);
+    return new Exercise(null,null,null,this).form();
   }
 }
