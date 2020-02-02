@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_28_014815) do
+ActiveRecord::Schema.define(version: 2020_02_02_030202) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_014815) do
 
   create_table "exercises", force: :cascade do |t|
     t.string "title"
+    t.string "description"
     t.integer "sets"
     t.integer "program_id"
     t.datetime "created_at", null: false
@@ -84,6 +85,10 @@ ActiveRecord::Schema.define(version: 2020_01_28_014815) do
     t.integer "trainer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "video_file_name"
+    t.string "video_content_type"
+    t.integer "video_file_size"
+    t.datetime "video_updated_at"
     t.index ["trainer_id"], name: "index_programs_on_trainer_id"
   end
 

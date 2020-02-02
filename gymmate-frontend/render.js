@@ -1,17 +1,14 @@
 class Render {
   static navbar = () => {
     const navbar = d.createElement("nav");
-    const brand = H1.new(Icon.new("fas fa-bolt"), null)
-    brand.prepend("Gymmate ")
+    const brand = H1.new(Icon.new("fas fa-bolt"), null);
+    brand.prepend("Gymmate ");
     navbar.className =
       "navbar shadow sticky-top navbar-expand-lg navbar-dark bg-primary solid ";
     const container = Div.new("container-fluid", null);
 
     container.append(
-      Link.new(
-        brand,
-        "navbar-brand"
-      ),
+      Link.new(brand, "navbar-brand"),
       this.navbarToggler(),
       Div.new(
         "collapse navbar-collapse border-secondary",
@@ -84,13 +81,16 @@ class Render {
   }
 
   static accountLinkOptions() {
-    return new DOMParser().parseFromString(`
+    return new DOMParser().parseFromString(
+      `
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
         <a class="dropdown-item" href="#">Action</a>
         <a class="dropdown-item" href="#">Another action</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">Something else here</a>
-    </div>`, "text/html").body.firstChild;
+        <a class="dropdown-item" href="#" onclick="Account.logout()">Logout</a>
+    </div>`,
+      "text/html"
+    ).body.firstChild;
   }
 
   static footer = () => {
@@ -114,29 +114,73 @@ class Render {
   };
 
   static home() {
+    const div = d.createElement("div");
     if (currentUser && sessionStorage.getItem("auth_token")) {
-      main.innerHTML = `Welcome ${currentUser.name}`;
-      main.append(this.logoutBtn());
       if (currentUser instanceof Trainer) {
-        main.append(this.allProgramsLink());
-        main.append(new Grid().newProgramRow());
+        div.append(new Grid().newProgramRow());
       }
     }
+    return div;
+  }
+
+  static menu() {
+    const menu = Div.new("nav text-dark flex-column nav-pills w-50 dark", "v-pills-tab");
+    menu.setAttribute("role", "tablist");
+    menu.setAttribute("aria-orientation", "vertical");
+    menu.append(
+      `Welcome ${currentUser.name}`,
+      Render.mainMenuHomeLink(),
+      Render.mainMenuMessagesLink(),
+      Render.mainMenuRoutinesLink(),
+      Render.mainMenuProfileLink()
+    );
+    return menu;
+  }
+
+  static mainMenuHomeLink() {
+    const link = Link.new("Home", "nav-link active", () => {
+      if (d.querySelector("#main_container")) {
+        const mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        mainContainer.append(Render.home());
+      }
+    });
+    link.setAttribute("data-toggle", "pill");
+    return link;
+  }
+
+  static mainMenuProfileLink() {
+    const link = Link.new("Profile", "nav-link", () => {
+      if (d.querySelector("#main_container")) {
+        mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        mainContainer.append(Render.home());
+      }
+    });
+    link.setAttribute("data-toggle", "pill");
+    return link;
+  }
+
+  static mainMenuMessagesLink() {
+    const link = Link.new("Messages", "nav-link");
+    link.setAttribute("data-toggle", "pill");
+    return link;
+  }
+
+  static mainMenuRoutinesLink() {
+    const link = Link.new("My Routines", "nav-link", () => {
+      if (d.querySelector("#main_container")) {
+        const mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        currentUser.allPrograms();
+      }
+    });
+    link.setAttribute("data-toggle", "pill");
+    return link;
   }
 
   static logoutBtn() {
     return Button.new("logout_button", "Log Out", null, Account.logout);
-  }
-
-  static allProgramsLink() {
-    return Link.new(
-      "View My Routines",
-      null,
-      () => {
-        currentUser.allPrograms();
-      },
-      "#"
-    );
   }
 
   static spinner(node, where = container) {

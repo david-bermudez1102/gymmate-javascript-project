@@ -31,7 +31,7 @@ class Input {
     this.input = d.createElement("input");
     this.input.type = type;
     this.input.name = name;
-    this.input.placeholder = placeholder;
+    if (placeholder) this.input.placeholder = placeholder;
     this.input.className = className;
     this.input.value = value;
     return this.input;
@@ -53,7 +53,6 @@ class Form {
     id,
     action,
     method,
-    data,
     callback = json => setSession(json),
     auth_token = null
   ) {
@@ -64,10 +63,9 @@ class Form {
     f.addEventListener("submit", function(e) {
       e.preventDefault();
       const formData = new FormData(this);
-      const newData = {};
-      newData[data] = Object.fromEntries(formData);
-      if (auth_token) newData["auth_token"] = auth_token;
-      new Fetch(newData, "POST", action, callback).submit();
+      if (auth_token) action = action + `/?auth_token=${auth_token}`;
+      console.log(action)
+      new Fetch(formData, method, action, callback).submit();
       e.target.reset();
     });
     return f;
@@ -104,8 +102,9 @@ class Row {
 }
 
 class Column {
-  static new(child, className = "col-sm mt-2 px-1", style = null) {
+  static new(child, className = "col-sm mt-2 px-1", style = null, id = null) {
     const div = d.createElement("div");
+    if (id) div.id = id;
     div.className = className;
     div.style = style;
     div.append(child);
@@ -122,10 +121,13 @@ class Icon {
 }
 
 class Section {
-  static new(child, className = null) {
+  static new(child, className = null, handleOnClick = null) {
     const section = d.createElement("section");
     section.className = "bg-white text-left p-3 p-sm-5 rounded shadow ";
     if (className) section.className += className;
+    section.addEventListener("click", e => {
+      if (handleOnClick) handleOnClick();
+    });
     section.append(child);
     return section;
   }
@@ -155,6 +157,15 @@ class H1 {
     header.append(title);
     header.className = className;
     return header;
+  }
+}
+
+class Subtitle {
+  static new(title, className = "text-primary mb-4 subtitle") {
+    const subtitle = d.createElement("h5");
+    subtitle.append(title);
+    subtitle.className = className;
+    return subtitle;
   }
 }
 
@@ -199,12 +210,26 @@ class Div {
   static new(className = null, id = null, innerHTML = null, callback = null) {
     const div = d.createElement("div");
     div.className = className;
-    if(innerHTML) div.append(innerHTML)
-    div.addEventListener("click", e => {
-      if(callback) callback();
-      e.preventDefault();
-    });
+    if (innerHTML) div.append(innerHTML);
+    if (callback)
+      div.addEventListener("click", e => {
+        callback();
+        e.preventDefault();
+      });
     return div;
+  }
+}
+
+class Video {
+  static new(url, className = "embed-responsive embed-responsive-16by9") {
+    const video = d.createElement("video");
+    const source = d.createElement("source")
+    source.src = `${BASE_URL}${url}`
+    video.className = className;
+    video.autoplay = true;
+    video.controls = true;
+    video.append(source)
+    return video;
   }
 }
 
@@ -238,6 +263,7 @@ const setSession = (json = null) => {
               program.id,
               program.title,
               program.description,
+              program.video,
               [],
               currentUser,
               program.created_at,
@@ -252,14 +278,15 @@ const setSession = (json = null) => {
                 new Exercise(
                   exercise.id,
                   exercise.title,
+                  exercise.description,
                   exercise.sets,
                   program
                 )
               );
           });
         });
-
-        Render.home();
+        removeAll(main);
+        main.append(new Grid().homeRow());
       }).request();
     } else if (json.userable_type === "User") {
       currentUser = new User(
@@ -273,7 +300,6 @@ const setSession = (json = null) => {
         json.userable_id
       );
     }
-    Render.home();
   };
   if (sessionStorage.getItem("auth_token")) {
     DELETE_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
@@ -285,6 +311,13 @@ const setSession = (json = null) => {
     ACCOUNT_URL = `${ACCOUNTS_URL}/${sessionStorage.getItem("auth_token")}`;
     callback(json);
   }
+};
+
+const fileUploader = () => {
+  const file = Input.new("file", "program[video]", null, "form-control-file");
+  file.accept = "video/mp4, video/ogg, video/webm";
+  file.onchange = "handleFiles(this.files)";
+  return Div.new("drop-area", null, file);
 };
 
 const setAccount = json => {};

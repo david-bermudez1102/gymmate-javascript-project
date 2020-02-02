@@ -33,9 +33,20 @@ class Trainer extends Account {
   }
 
   allPrograms() {
-    console.log(this)
+    const mainContainer = d.querySelector("#main_container");
+    removeAll(mainContainer);
     this.programs.forEach(program => {
-      main.append(Section.new(program.title));
+      mainContainer.append(
+        Section.new(program.title, "mt-1", () => {
+          removeAll(mainContainer);
+          append(
+            new Grid().showProgramRow(program),
+            `program_${program.id}`,
+            mainContainer
+          );
+          program.allExercises();
+        })
+      );
     });
   }
 }

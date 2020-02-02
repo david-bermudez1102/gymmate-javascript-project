@@ -1,8 +1,18 @@
 class Program {
-  constructor(id, title, description, exercises, trainer, createdAt, updatedAt) {
+  constructor(
+    id,
+    title,
+    description,
+    video,
+    exercises,
+    trainer,
+    createdAt,
+    updatedAt
+  ) {
     this._id = id;
     this._title = title;
     this._description = description;
+    this._video = video;
     this.exercises = exercises;
     this._trainer = trainer;
     this._createdAt = createdAt;
@@ -21,6 +31,10 @@ class Program {
     return this._description;
   }
 
+  get video() {
+    return this._video;
+  }
+
   get trainer() {
     return this._trainer;
   }
@@ -34,17 +48,18 @@ class Program {
   }
 
   form() {
+    const mainContainer = d.querySelector("#main_container");
     const newProgramForm = Form.new(
       "new_program",
       PROGRAMS_URL,
       "POST",
-      "program",
       json => {
         const trainer = Object.assign({}, currentUser);
         const program = new Program(
           json.id,
           json.title,
           json.description,
+          json.video,
           [],
           trainer,
           json.created_at,
@@ -54,19 +69,30 @@ class Program {
         trainer.programs.push(program);
         currentUser = trainer;
         Render.hideSpinner(main);
-        main.append(new Grid().newExerciseRow(program))
+        removeAll(mainContainer);
+        append(
+          new Grid().showProgramRow(program),
+          `program_${program.id}`,
+          mainContainer
+        );
+        mainContainer.append(new Grid().newExerciseRow(program));
       },
       sessionStorage.getItem("auth_token")
     );
     newProgramForm.append(
       H1.new("Create Program"),
       FormGroup.new(
-        Input.new("text", "title", "Enter a title for your program..."),
+        Input.new(
+          "text",
+          "program[title]",
+          "Enter a title for your program..."
+        ),
         Icon.new("fas fa-envelope")
       ),
+      fileUploader(),
       FormGroup.new(
         TextArea.new(
-          "description",
+          "program[description]",
           "Enter a brief description for your program..."
         ),
         Icon.new("fas fa-lock")
@@ -83,6 +109,49 @@ class Program {
 
   renderNewExerciseForm() {
     console.log(this);
-    return new Exercise(null,null,null,this).form();
+    return new Exercise(null, null, null, null, this).form();
+  }
+
+  allExercises() {
+    const mainContainer = d.querySelector("#main_container");
+    this.exercises.forEach(exercise => {
+      append(
+        new Grid().showExerciseRow(exercise),
+        `exercise_${exercise.id}`,
+        mainContainer
+      );
+    });
+  }
+
+  exercisesCount() {
+    if (this.exercises.length === 0) {
+      return "This program has no exercises yet.";
+    } else {
+      return Link.new(`${this.exercises.length} Exercises.`, null, () =>
+        this.allExercises()
+      );
+    }
+  }
+
+  show() {
+    const mainContainer = d.querySelector("#main_container");
+    const section = Section.new(H1.new(`${this.title}`, "text-primary"));
+    section.id = `program_${this.id}`;
+    section.append(
+      Subtitle.new(`By ${this.trainer.name} ${this.trainer.lastname}`),
+      Div.new(null, null, this.description),
+      Video.new(this.video),
+      this.exercisesCount(),
+      Button.new(
+        "add_new_exercise",
+        "Add New Exercise",
+        "btn btn-primary",
+        () => {
+          removeAll(mainContainer);
+          mainContainer.append(new Grid().newExerciseRow(this));
+        }
+      )
+    );
+    return section;
   }
 }

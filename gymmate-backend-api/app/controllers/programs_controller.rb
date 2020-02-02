@@ -20,6 +20,6 @@ class ProgramsController < ApplicationController
 
   private
     def program_params
-      params.require(:program).permit(:title,:description)
+      params.require(:program).permit(:title,:description,:video)
     end
 end

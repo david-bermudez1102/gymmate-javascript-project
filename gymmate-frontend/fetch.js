@@ -26,11 +26,10 @@ class Fetch {
     return {
       method: this.method,
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
         "Authorization": `Token token=${sessionStorage.getItem("auth_token")}`
       },
-      body: JSON.stringify(this.data)
+      body: this.data
     };
   }
 

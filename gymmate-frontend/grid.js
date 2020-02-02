@@ -73,14 +73,29 @@ class Grid {
     this.row.id = "signup_row";
     return this.row;
   }
+  
+  homeRow() {
+    this.row.append(
+      Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
+      Column.new(Render.home(), "col-sm mt-2 px-1", "", "main_container")
+    );
+    return this.row;
+  }
 
   newProgramRow() {
     this.row.append(
-      Column.new(
-        Section.new(currentUser.renderNewProgramForm()),
-        "col-md-4 mt-3 px-1"
-      )
+      Column.new(Section.new(currentUser.renderNewProgramForm()), "col-md")
     );
+    return this.row;
+  }
+
+  showProgramRow(program) {
+    this.row.append(Column.new(program.show(), "col-md pt-1"));
+    return this.row;
+  }
+
+  showExerciseRow(exercise) {
+    this.row.append(Column.new(exercise.show(), "col-md pt-1"));
     return this.row;
   }
 
@@ -88,7 +103,7 @@ class Grid {
     this.row.append(
       Column.new(
         Section.new(program.renderNewExerciseForm()),
-        "col-md-4 mt-3 px-1"
+        "col-md"
       )
     );
     return this.row;

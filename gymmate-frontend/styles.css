@@ -127,6 +127,19 @@ footer {
   background-image:linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)),
   url('./src/img/AdobeStock_286330506-min.jpeg');
 }
+
+.drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 100%;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.drop-area.highlight {
+  border-color: purple;
+}
+
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
