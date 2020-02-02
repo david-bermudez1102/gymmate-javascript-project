@@ -152,7 +152,7 @@ class Render {
   static mainMenuProfileLink() {
     const link = Link.new("Profile", "nav-link", () => {
       if (d.querySelector("#main_container")) {
-        mainContainer = d.querySelector("#main_container");
+        const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
         mainContainer.append(Render.home());
       }

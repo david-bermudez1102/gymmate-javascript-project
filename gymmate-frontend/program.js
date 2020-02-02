@@ -48,13 +48,12 @@ class Program {
   }
 
   form() {
-    const mainContainer = d.querySelector("#main_container");
     const newProgramForm = Form.new(
       "new_program",
       PROGRAMS_URL,
       "POST",
       json => {
-        const trainer = Object.assign({}, currentUser);
+        const trainer = currentUser;
         const program = new Program(
           json.id,
           json.title,
@@ -65,17 +64,19 @@ class Program {
           json.created_at,
           json.updated_at
         );
-
         trainer.programs.push(program);
         currentUser = trainer;
         Render.hideSpinner(main);
-        removeAll(mainContainer);
-        append(
-          new Grid().showProgramRow(program),
-          `program_${program.id}`,
-          mainContainer
-        );
-        mainContainer.append(new Grid().newExerciseRow(program));
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(mainContainer);
+          append(
+            new Grid().showProgramRow(program),
+            `program_${program.id}`,
+            mainContainer
+          );
+          mainContainer.append(new Grid().newExerciseRow(program));
+        }
       },
       sessionStorage.getItem("auth_token")
     );
@@ -89,7 +90,7 @@ class Program {
         ),
         Icon.new("fas fa-envelope")
       ),
-      fileUploader(),
+      fileUploader("program[video]"),
       FormGroup.new(
         TextArea.new(
           "program[description]",

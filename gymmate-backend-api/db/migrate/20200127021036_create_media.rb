@@ -1,7 +1,6 @@
 class CreateMedia < ActiveRecord::Migration[5.2]
   def change
     create_table :media do |t|
-      t.string :url
       t.text :caption
       t.references :mediable, polymorphic: true
       t.references :account

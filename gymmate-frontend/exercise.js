@@ -1,9 +1,11 @@
 class Exercise {
-  constructor(id, title, description, sets, program) {
+  constructor(id, title, description, sets, repetitions, video, program) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._sets = sets;
+    this._repetitions = repetitions;
+    this._video = video;
     this._program = program;
   }
 
@@ -23,17 +25,23 @@ class Exercise {
     return this._sets;
   }
 
+  get repetitions() {
+    return this._repetitions;
+  }
+
+  get video() {
+    return this._video;
+  }
+
   get program() {
     return this._program;
   }
 
   form() {
-    const mainContainer = d.querySelector("#main_container");
     const newExerciseForm = Form.new(
       "new_exercise",
       EXERCISES_URL,
       "POST",
-      "exercise",
       json => {
         const trainer = Object.assign({}, currentUser);
         const exercise = new Exercise(
@@ -41,40 +49,48 @@ class Exercise {
           json.title,
           json.description,
           json.sets,
+          json.repetitions,
+          json.video,
           this.program
         );
 
         trainer.programs
           .find(program => program.id === json.program_id)
-          .exercises.push(
-            exercise
-          );
+          .exercises.push(exercise);
         currentUser = trainer;
         Render.hideSpinner(main);
-        removeAll(main)
-        mainContainer.append(new Grid().showProgramRow(this.program));
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(main);
+          mainContainer.append(new Grid().showProgramRow(this.program));
+        }
       },
       sessionStorage.getItem("auth_token")
     );
     newExerciseForm.append(
       H1.new("Add New Exercise"),
       FormGroup.new(
-        Input.new("text", "title", "Enter title of exercise..."),
+        Input.new("text", "exercise[title]", "Enter title of exercise..."),
         Icon.new("fas fa-envelope")
       ),
       FormGroup.new(
         Input.new(
           "text",
-          "description",
+          "exercise[description]",
           "Add a brief description for this exercise..."
         ),
         Icon.new("fas fa-envelope")
       ),
+      fileUploader("exercise[video]"),
       FormGroup.new(
-        Input.new("number", "sets", "How many sets?..."),
+        Input.new("number", "exercise[sets]", "How many sets?..."),
         Icon.new("fas fa-envelope")
       ),
-      Input.new("hidden", "program_id", null, null, this.program.id),
+      FormGroup.new(
+        Input.new("number", "exercise[repetitions]", "How many reps?..."),
+        Icon.new("fas fa-envelope")
+      ),
+      Input.new("hidden", "exercise[program_id]", null, null, this.program.id),
       Button.new(
         "create_exercise",
         "Create Exercise",
@@ -92,7 +108,12 @@ class Exercise {
   show() {
     const section = Section.new(H1.new(this.title));
     section.id = `exercise_${this.id}`;
-    section.append(Div.new(null, null, this.description), `Sets: ${this.sets}`);
+    section.append(
+      Video.new(this.video),
+      Div.new(null, null, this.description),
+      `Sets: ${this.sets}`,
+      `Reps: ${this.reps}`
+    );
     return section;
   }
 }

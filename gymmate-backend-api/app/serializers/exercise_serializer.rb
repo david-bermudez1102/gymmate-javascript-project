@@ -1,3 +1,3 @@
 class ExerciseSerializer < ActiveModel::Serializer
-  attributes :id, :title, :sets, :program_id
+  attributes :id, :title, :description, :sets, :repetitions, :program_id, :video
 end

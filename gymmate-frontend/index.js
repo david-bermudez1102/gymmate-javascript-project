@@ -280,6 +280,8 @@ const setSession = (json = null) => {
                   exercise.title,
                   exercise.description,
                   exercise.sets,
+                  exercise.repetitions,
+                  exercise.video,
                   program
                 )
               );
@@ -313,8 +315,8 @@ const setSession = (json = null) => {
   }
 };
 
-const fileUploader = () => {
-  const file = Input.new("file", "program[video]", null, "form-control-file");
+const fileUploader = (name) => {
+  const file = Input.new("file", name, null, "form-control-file");
   file.accept = "video/mp4, video/ogg, video/webm";
   file.onchange = "handleFiles(this.files)";
   return Div.new("drop-area", null, file);
