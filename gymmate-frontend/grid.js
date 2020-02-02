@@ -73,7 +73,7 @@ class Grid {
     this.row.id = "signup_row";
     return this.row;
   }
-  
+
   homeRow() {
     this.row.append(
       Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
@@ -90,7 +90,11 @@ class Grid {
   }
 
   showProgramRow(program) {
-    this.row.append(Column.new(program.show(), "col-md pt-1"));
+    new Promise(res => {
+      res(this.row.append(Column.new(program.show(), "col-md pt-1")));
+    }).then(() => {
+      program.allExercises();
+    });
     return this.row;
   }
 
@@ -101,10 +105,7 @@ class Grid {
 
   newExerciseRow(program) {
     this.row.append(
-      Column.new(
-        Section.new(program.renderNewExerciseForm()),
-        "col-md"
-      )
+      Column.new(Section.new(program.renderNewExerciseForm()), "col-md")
     );
     return this.row;
   }

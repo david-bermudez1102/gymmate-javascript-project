@@ -47,23 +47,32 @@ class Program {
     return this._updatedAt;
   }
 
+  static create(trainer, json) {
+    const program = new Program(
+      json.id,
+      json.title,
+      json.description,
+      json.video,
+      [],
+      trainer,
+      json.created_at,
+      json.updated_at
+    );
+    program.exercises = json.exercises.map(exercise =>
+      Exercise.create(program, exercise)
+    );
+
+    return program;
+  }
+
   form() {
     const newProgramForm = Form.new(
       "new_program",
       PROGRAMS_URL,
       "POST",
       json => {
-        const trainer = currentUser;
-        const program = new Program(
-          json.id,
-          json.title,
-          json.description,
-          json.video,
-          [],
-          trainer,
-          json.created_at,
-          json.updated_at
-        );
+        const trainer = Object.assign(new Trainer, currentUser);
+        const program = Program.create(trainer,json)
         trainer.programs.push(program);
         currentUser = trainer;
         Render.hideSpinner(main);
@@ -110,7 +119,7 @@ class Program {
 
   renderNewExerciseForm() {
     console.log(this);
-    return new Exercise(null, null, null, null, this).form();
+    return new Exercise(null, null, null, null, null, null, this).form();
   }
 
   allExercises() {

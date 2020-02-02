@@ -37,23 +37,26 @@ class Exercise {
     return this._program;
   }
 
+  static create(program, json) {
+    return new Exercise(
+      json.id,
+      json.title,
+      json.description,
+      json.sets,
+      json.repetitions,
+      json.video,
+      program
+    );
+  }
+
   form() {
     const newExerciseForm = Form.new(
       "new_exercise",
       EXERCISES_URL,
       "POST",
       json => {
-        const trainer = Object.assign({}, currentUser);
-        const exercise = new Exercise(
-          json.id,
-          json.title,
-          json.description,
-          json.sets,
-          json.repetitions,
-          json.video,
-          this.program
-        );
-
+        const trainer = Object.assign(new Trainer, currentUser);
+        const exercise = Exercise.create(this.program, json)
         trainer.programs
           .find(program => program.id === json.program_id)
           .exercises.push(exercise);
@@ -61,7 +64,7 @@ class Exercise {
         Render.hideSpinner(main);
         if (d.querySelector("#main_container")) {
           const mainContainer = d.querySelector("#main_container");
-          removeAll(main);
+          removeAll(mainContainer);
           mainContainer.append(new Grid().showProgramRow(this.program));
         }
       },
@@ -112,7 +115,7 @@ class Exercise {
       Video.new(this.video),
       Div.new(null, null, this.description),
       `Sets: ${this.sets}`,
-      `Reps: ${this.reps}`
+      `Reps: ${this.repetitions}`
     );
     return section;
   }

@@ -14,6 +14,24 @@ class Trainer extends Account {
     this._trainerId = trainerId;
     this.programs = programs;
   }
+  get trainerId() {
+    return this._trainerId
+  }
+
+  static create(json) {
+    const trainer = new Trainer(
+      json.account.id,
+      json.account.name,
+      json.account.lastname,
+      json.account.date_of_birth,
+      json.account.sex,
+      json.account.username,
+      json.account.email,
+      json.account.userable_id
+    );
+    trainer.programs = json.programs.map(program => Program.create(trainer, program));
+    return trainer;
+  }
 
   renderForm(target) {
     removeAll(target);
@@ -44,7 +62,6 @@ class Trainer extends Account {
             `program_${program.id}`,
             mainContainer
           );
-          program.allExercises();
         })
       );
     });

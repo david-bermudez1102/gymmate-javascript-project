@@ -36,7 +36,7 @@ class Account {
   get email() {
     return this._email;
   }
-
+  
   static logout() {
     const callback = json => {
       sessionStorage.clear();

@@ -64,7 +64,7 @@ class Form {
       e.preventDefault();
       const formData = new FormData(this);
       if (auth_token) action = action + `/?auth_token=${auth_token}`;
-      console.log(action)
+      console.log(action);
       new Fetch(formData, method, action, callback).submit();
       e.target.reset();
     });
@@ -223,12 +223,12 @@ class Div {
 class Video {
   static new(url, className = "embed-responsive embed-responsive-16by9") {
     const video = d.createElement("video");
-    const source = d.createElement("source")
-    source.src = `${BASE_URL}${url}`
+    const source = d.createElement("source");
+    source.src = `${BASE_URL}${url}`;
     video.className = className;
     video.autoplay = true;
     video.controls = true;
-    video.append(source)
+    video.append(source);
     return video;
   }
 }
@@ -246,47 +246,7 @@ const setSession = (json = null) => {
     if (json.userable_type === "Trainer") {
       new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
         Render.hideSpinner(main);
-        currentUser = new Trainer(
-          trainer.account.id,
-          trainer.account.name,
-          trainer.account.lastname,
-          trainer.account.date_of_birth,
-          trainer.account.sex,
-          trainer.account.username,
-          trainer.account.email,
-          trainer.account.userable_id,
-          []
-        );
-        trainer.programs.forEach(program => {
-          currentUser.programs.push(
-            new Program(
-              program.id,
-              program.title,
-              program.description,
-              program.video,
-              [],
-              currentUser,
-              program.created_at,
-              program.updated_at
-            )
-          );
-
-          program.exercises.forEach(exercise => {
-            currentUser.programs
-              .find(program => program.id == exercise.program_id)
-              .exercises.push(
-                new Exercise(
-                  exercise.id,
-                  exercise.title,
-                  exercise.description,
-                  exercise.sets,
-                  exercise.repetitions,
-                  exercise.video,
-                  program
-                )
-              );
-          });
-        });
+        currentUser = Trainer.create(trainer);
         removeAll(main);
         main.append(new Grid().homeRow());
       }).request();
@@ -315,7 +275,7 @@ const setSession = (json = null) => {
   }
 };
 
-const fileUploader = (name) => {
+const fileUploader = name => {
   const file = Input.new("file", name, null, "form-control-file");
   file.accept = "video/mp4, video/ogg, video/webm";
   file.onchange = "handleFiles(this.files)";
