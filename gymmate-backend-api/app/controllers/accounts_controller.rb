@@ -6,7 +6,7 @@ class AccountsController < ApplicationController
   end
 
   def show
-    account = Account.find_by(auth_token: params[:auth_token])
+    account = Account.find_by(id: params[:id])
     render json: account
   end
 

@@ -14,4 +14,8 @@ class Account < ApplicationRecord
   def invalidate_auth_token
     self.update_columns(auth_token: nil)
   end
+
+  def self.search(query)
+    where('name LIKE ? OR lastname LIKE ?', "%#{query}%", "%#{query}%")
+  end
 end

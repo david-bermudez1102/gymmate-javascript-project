@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :searches
+  get '/search', to: 'search#index', as: 'search'
+  
   resources :trainers
   resources :likes
   resources :pictures
@@ -7,8 +8,8 @@ Rails.application.routes.draw do
   resources :exercises
   resources :programs
   resources :users
-  resources :sessions
-  resources :accounts, except:[:show]
-  get 'accounts/:auth_token', to:'accounts#show'
+  resources :sessions, except: :show
+  resources :accounts
+  get 'sessions/:auth_token', to:'sessions#show'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -58,6 +58,7 @@ class Render {
     );
     if (sessionStorage.getItem("auth_token"))
       navbarOptions.append(Item.new(this.searchBar()));
+      
     navbarOptions.append(
       Item.new(this.homeLink()),
       Item.new(this.loginLink()),

@@ -7,4 +7,5 @@ class Trainer < ApplicationRecord
       trainer.account
     end
   end
+
 end
