@@ -3,8 +3,7 @@ class Render {
     const navbar = d.createElement("nav");
     const brand = H1.new(Icon.new("fas fa-bolt"), null);
     brand.prepend("Gymmate ");
-    navbar.className =
-      "navbar shadow sticky-top navbar-expand-lg navbar-dark bg-primary solid ";
+    navbar.className = navbarClass;
     const container = Div.new("container-fluid", null);
 
     container.append(
@@ -20,10 +19,45 @@ class Render {
     return navbar;
   };
 
+  static searchBar() {
+    const form = Form.new(
+      "new_search",
+      SEARCH_URL,
+      "GET",
+      null,
+      sessionStorage.getItem("auth_token")
+    );
+    form.className = "mx-auto";
+
+    const div = Div.new("input-group");
+    const span = d.createElement("span");
+    span.className = "input-group-append";
+    span.append(
+      Div.new(
+        "input-group-text bg-white rounded-top-right-50 rounded-bottom-right-50 border-0",
+        "",
+        Icon.new("fa fa-search")
+      )
+    );
+    div.append(
+      Input.new(
+        "search",
+        "search",
+        "Search routines, trainers, etc...",
+        "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
+      ),
+      span
+    );
+    form.append(div);
+    return form;
+  }
+
   static navbarOptions() {
     const navbarOptions = List.new(
       "navbar-nav ml-auto nav-pills nav-fill nav-justify"
     );
+    if (sessionStorage.getItem("auth_token"))
+      navbarOptions.append(Item.new(this.searchBar()));
     navbarOptions.append(
       Item.new(this.homeLink()),
       Item.new(this.loginLink()),
@@ -124,7 +158,10 @@ class Render {
   }
 
   static menu() {
-    const menu = Div.new("nav text-dark flex-column nav-pills w-50 dark", "v-pills-tab");
+    const menu = Div.new(
+      "nav text-dark flex-column nav-pills w-50 dark",
+      "v-pills-tab"
+    );
     menu.setAttribute("role", "tablist");
     menu.setAttribute("aria-orientation", "vertical");
     menu.append(

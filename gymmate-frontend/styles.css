@@ -140,6 +140,21 @@ footer {
   border-color: purple;
 }
 
+.rounded-top-left-50 {
+  border-top-left-radius: 50rem !important;
+}
+
+.rounded-top-right-50 {
+  border-top-right-radius: 50rem !important;
+}
+
+.rounded-bottom-left-50 {
+  border-bottom-left-radius: 50rem !important;
+}
+
+.rounded-bottom-right-50 {
+  border-bottom-right-radius: 50rem !important;
+}
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors

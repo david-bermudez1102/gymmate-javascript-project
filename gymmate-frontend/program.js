@@ -66,29 +66,32 @@ class Program {
   }
 
   form() {
+    const handleSubmit = json => {
+      const trainer = Object.assign(new Trainer(), currentUser);
+      const program = Program.create(trainer, json);
+      trainer.programs.push(program);
+      currentUser = trainer;
+      Render.hideSpinner(main);
+      if (d.querySelector("#main_container")) {
+        const mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        append(
+          new Grid().showProgramRow(program),
+          `program_${program.id}`,
+          mainContainer
+        );
+        mainContainer.append(new Grid().newExerciseRow(program));
+      }
+    };
+
     const newProgramForm = Form.new(
       "new_program",
       PROGRAMS_URL,
       "POST",
-      json => {
-        const trainer = Object.assign(new Trainer, currentUser);
-        const program = Program.create(trainer,json)
-        trainer.programs.push(program);
-        currentUser = trainer;
-        Render.hideSpinner(main);
-        if (d.querySelector("#main_container")) {
-          const mainContainer = d.querySelector("#main_container");
-          removeAll(mainContainer);
-          append(
-            new Grid().showProgramRow(program),
-            `program_${program.id}`,
-            mainContainer
-          );
-          mainContainer.append(new Grid().newExerciseRow(program));
-        }
-      },
+      handleSubmit,
       sessionStorage.getItem("auth_token")
     );
+    
     newProgramForm.append(
       H1.new("Create Program"),
       FormGroup.new(
