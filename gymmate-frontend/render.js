@@ -22,7 +22,7 @@ class Render {
   static searchBar() {
     const handleSubmit = json => {
       this.hideSpinner(main);
-      if (!main.querySelector("#home_row")){
+      if (!main.querySelector("#home_row")) {
         new Promise(res =>
           res(append(new Grid().homeRow(), "home_row", main))
         ).then(() => this.listResults(json));
@@ -69,6 +69,24 @@ class Render {
       json.trainers.forEach(trainer =>
         Trainer.create(trainer).trainer(mainContainer)
       );
+
+      json.programs.forEach(program =>
+        new Fetch(
+          null,
+          "GET",
+          `${TRAINERS_URL}/${program.trainer_id}`,
+          json => {
+            this.hideSpinner(main)
+            const trainer = Trainer.create(json);
+            mainContainer.append(
+              new Grid().programRow(
+                Program.create(trainer, program),
+                mainContainer
+              )
+            );
+          }
+        ).request()
+      );
     }
   }
 
@@ -91,7 +109,7 @@ class Render {
 
   static homeLink() {
     return Link.new(`Home`, "nav-link active", () => {
-      if (currentUser && sessionStorage.getItem("auth_token")) {
+      if (isLoggedIn()) {
         main.append(new Grid().homeRow());
       } else {
         Welcome.render();
@@ -112,8 +130,10 @@ class Render {
 
   static loginLink() {
     return Link.new(`Login`, "nav-link", () => {
-      removeAll(main);
-      append(new Grid().loginRow(), null, main);
+      if (!isLoggedIn()) {
+        removeAll(main);
+        append(new Grid().loginRow(), null, main);
+      }
     });
   }
 
@@ -175,7 +195,7 @@ class Render {
   static home() {
     removeAll(main);
     const div = d.createElement("div");
-    if (currentUser && sessionStorage.getItem("auth_token")) {
+    if (isLoggedIn()) {
       if (currentUser instanceof Trainer) {
         div.append(new Grid().newProgramRow());
       }

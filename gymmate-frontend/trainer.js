@@ -19,6 +19,10 @@ class Trainer extends Account {
     return this._trainerId;
   }
 
+  set trainerId(trainerId) {
+    this._trainerId = trainerId;
+  }
+
   static create(json) {
     const trainer = new Trainer(
       json.account.id,

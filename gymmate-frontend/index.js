@@ -308,6 +308,11 @@ d.addEventListener("DOMContentLoaded", () => {
 });
 
 function append(element, id, target) {
- if (target.querySelector(`#${id}`)) target.querySelector(`#${id}`).remove();
- target.append(element);
+  if (target.querySelector(`#${id}`)) target.querySelector(`#${id}`).remove();
+  target.append(element);
 }
+
+const isLoggedIn = () => {
+  if (currentUser && sessionStorage.getItem("auth_token")) return true;
+  return false;
+};
