@@ -22,7 +22,13 @@ class Render {
   static searchBar() {
     const handleSubmit = json => {
       this.hideSpinner(main);
-      new Promise(res => res(main.append(new Grid().homeRow()))).then(() => this.listResults(json));
+      if (!main.querySelector("#home_row")){
+        new Promise(res =>
+          res(append(new Grid().homeRow(), "home_row", main))
+        ).then(() => this.listResults(json));
+      } else {
+        this.listResults(json);
+      }
     };
 
     const form = Form.new(
@@ -212,7 +218,7 @@ class Render {
       if (d.querySelector("#main_container")) {
         const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
-        mainContainer.append(Render.home());
+        mainContainer.append(currentUser.show());
       }
     });
     link.setAttribute("data-toggle", "pill");
@@ -241,12 +247,12 @@ class Render {
     return Button.new("logout_button", "Log Out", null, Account.logout);
   }
 
-  static spinner(node, where = container) {
+  static spinner(node, target = container) {
     document.documentElement.scrollTop = 0;
     const spinner = d.createElement("div");
     spinner.setAttribute("id", "spinner");
     spinner.style.visibility = "visible";
-    where.prepend(spinner);
+    target.prepend(spinner);
     node.style.display = "none";
   }
 

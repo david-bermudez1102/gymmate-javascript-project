@@ -44,7 +44,7 @@ class Trainer extends Account {
 
   show() {
     removeAll(main);
-    main.append(new Grid().showTrainerRow(this));
+    main.append(new Grid().showProfileRow(this));
     main.append(this.menu());
     this.allPrograms(main);
     window.history.pushState(
@@ -52,22 +52,6 @@ class Trainer extends Account {
       null,
       `/trainers/${this.trainerId}`
     );
-  }
-
-  profilePic() {
-    const div = Div.new(null, `trainer_${this.id}_avatar`, null);
-    div.append(H1.new(`${this.name}`));
-    div.append(Icon.new("far fa-user-circle", "font-size:140px"));
-    return div;
-  }
-
-  info() {
-    const div = Div.new(null, `trainer_${this.id}_avatar`, null);
-    div.append(P.new(`Username: ${this.username}`));
-    div.append(P.new(`Bio: ${this.bio}`));
-    div.append(P.new(`Date of birth: ${this.dateOfBirth}`));
-    div.append(P.new(`Sex: ${this.sex}`));
-    return div;
   }
 
   renderForm(target) {

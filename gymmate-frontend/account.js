@@ -42,6 +42,22 @@ class Account {
     return this._email;
   }
 
+  profilePic() {
+    const div = Div.new(null, `account_${this.id}_avatar`, null);
+    div.append(H1.new(`${this.name}`));
+    div.append(Icon.new("far fa-user-circle", "font-size:140px"));
+    return div;
+  }
+
+  info() {
+    const div = Div.new(null, `account_${this.id}_info`, null);
+    div.append(P.new(`Username: ${this.username}`));
+    div.append(P.new(`Bio: ${this.bio}`));
+    div.append(P.new(`Date of birth: ${this.dateOfBirth}`));
+    div.append(P.new(`Sex: ${this.sex}`));
+    return div;
+  }
+
   static logout() {
     const callback = json => {
       sessionStorage.clear();

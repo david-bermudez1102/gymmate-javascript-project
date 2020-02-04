@@ -215,7 +215,8 @@ class Item {
 class Div {
   static new(className = null, id = null, innerHTML = null, callback = null) {
     const div = d.createElement("div");
-    div.className = className;
+    if (className) div.className = className;
+    if (id) div.id = id;
     if (innerHTML) div.append(innerHTML);
     if (callback)
       div.addEventListener("click", e => {
@@ -277,7 +278,7 @@ const setSession = (json = null) => {
     } else if (json.userable_type === "User") {
       new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
         Render.hideSpinner(main);
-        currentUser = User.create(json);
+        currentUser = User.create(user);
         main.append(new Grid().homeRow());
       }).request();
     }
@@ -307,6 +308,6 @@ d.addEventListener("DOMContentLoaded", () => {
 });
 
 function append(element, id, target) {
-  if (target.querySelector(`#${id}`)) target.querySelector(`#${id}`).remove();
-  target.append(element);
+ if (target.querySelector(`#${id}`)) target.querySelector(`#${id}`).remove();
+ target.append(element);
 }

@@ -44,6 +44,16 @@ function showTrainers(path) {
   new Fetch(null, "GET", TRAINERS_URL + "/" + path, handleSubmit).request();
 }
 
+function users(path) {
+  const handleSubmit = json => {
+    const user = User.create(json);
+    console.log(user);
+    Render.hideSpinner(main);
+    user.show();
+  };
+  new Fetch(null, "GET", USERS_URL + "/" + path, handleSubmit).request();
+}
+
 const pathName = [
   location.pathname.split("/")[1],
   location.pathname.split("/")[2]
@@ -51,7 +61,8 @@ const pathName = [
 
 let routes = {
   search: "search()",
-  trainers: `showTrainers("${pathName[1]}")`
+  trainers: `showTrainers("${pathName[1]}")`,
+  users: `users("${pathName[1]}")`
 };
 
 const loadUrl = () => {

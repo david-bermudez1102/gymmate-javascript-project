@@ -79,16 +79,17 @@ class Grid {
       Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
       Column.new(Render.home(), "col-sm mt-2 px-1", "", "main_container")
     );
+    this.row.id = "home_row"
     return this.row;
   }
 
-  showTrainerRow(trainer) {
+  showProfileRow(account) {
     this.row.append(
       Column.new(
-        trainer.profilePic(),
+        account.profilePic(),
         "col-md-3 d-flex justify-content-left"
       ),
-      Column.new(trainer.info(), "col-md d-flex justify-content-left")
+      Column.new(account.info(), "col-md d-flex justify-content-left")
     );
     return this.row;
   }
