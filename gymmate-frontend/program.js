@@ -125,13 +125,12 @@ class Program {
     return new Exercise(null, null, null, null, null, null, this).form();
   }
 
-  allExercises() {
-    const mainContainer = d.querySelector("#main_container");
+  allExercises(target) {
     this.exercises.forEach(exercise => {
       append(
-        new Grid().showExerciseRow(exercise),
+        new Grid().showExerciseRow(exercise,target),
         `exercise_${exercise.id}`,
-        mainContainer
+        target
       );
     });
   }
@@ -147,13 +146,12 @@ class Program {
   }
 
   program(target) {
-    removeAll(target);
     const container = Section.new(
       "",
       "mt-1 w-100 d-flex align-items-center justify-content-between",
       () => {
         removeAll(target);
-        append(new Grid().showProgramRow(this), `program_${this.id}`, target);
+        append(new Grid().showProgramRow(this,target), `program_${this.id}`, target);
       }
     );
 

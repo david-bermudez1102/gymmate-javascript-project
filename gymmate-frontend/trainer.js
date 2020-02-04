@@ -77,7 +77,7 @@ class Trainer extends Account {
 
   allPrograms(target) {
     this.programs.forEach(program => {
-      target.append(new Grid().programRow(program, target));
+      append(new Grid().programRow(program, target), `program_${program.id}`, target);
     });
   }
 

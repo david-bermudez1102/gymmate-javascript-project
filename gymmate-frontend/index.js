@@ -232,8 +232,8 @@ class Video {
     const video = d.createElement("video");
     const source = d.createElement("source");
     source.src = `${BASE_URL}${url}`;
+    source.className = "embed-responsive-item";
     video.className = className;
-    video.autoplay = true;
     video.controls = true;
     video.append(source);
     return video;
@@ -273,12 +273,14 @@ const setSession = (json = null) => {
       new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
         Render.hideSpinner(main);
         currentUser = Trainer.create(trainer);
+        removeAll(main);
         main.append(new Grid().homeRow());
       }).request();
     } else if (json.userable_type === "User") {
       new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
         Render.hideSpinner(main);
         currentUser = User.create(user);
+        removeAll(main);
         main.append(new Grid().homeRow());
       }).request();
     }
@@ -300,10 +302,13 @@ const fileUploader = name => {
   return Div.new("drop-area", null, file);
 };
 
-const setAccount = json => {};
+const loadNavbar = () => {
+  if (document.querySelector("nav")) document.querySelector("nav").remove();
+  body.prepend(Render.navbar());
+};
 
 d.addEventListener("DOMContentLoaded", () => {
-  body.prepend(Render.navbar());
+  loadNavbar();
   body.append(Render.footer());
 });
 

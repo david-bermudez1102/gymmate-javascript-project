@@ -75,6 +75,7 @@ class Grid {
   }
 
   homeRow() {
+    loadNavbar();
     this.row.append(
       Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
       Column.new(Render.home(), "col-sm mt-2 px-1", "", "main_container")
@@ -111,17 +112,17 @@ class Grid {
     return this.row;
   }
 
-  showProgramRow(program) {
+  showProgramRow(program,target) {
     new Promise(res => {
       res(this.row.append(Column.new(program.show(), "col-md pt-1")));
     }).then(() => {
-      program.allExercises();
+      program.allExercises(target);
     });
     return this.row;
   }
 
-  showExerciseRow(exercise) {
-    this.row.append(Column.new(exercise.show(), "col-md pt-1"));
+  showExerciseRow(exercise,target) {
+    this.row.append(Column.new(exercise.show(target), "col-md pt-1"));
     return this.row;
   }
 

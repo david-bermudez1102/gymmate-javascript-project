@@ -23,6 +23,7 @@ class Render {
     const handleSubmit = json => {
       this.hideSpinner(main);
       if (!main.querySelector("#home_row")) {
+        removeAll(main);
         new Promise(res =>
           res(append(new Grid().homeRow(), "home_row", main))
         ).then(() => this.listResults(json));
@@ -65,9 +66,16 @@ class Render {
 
   static listResults(json) {
     if (d.querySelector("#main_container")) {
+
       const mainContainer = d.querySelector("#main_container");
+      removeAll(mainContainer);
+
       json.trainers.forEach(trainer =>
         Trainer.create(trainer).trainer(mainContainer)
+      );
+
+      json.users.forEach(user =>
+        User.create(user).user(mainContainer)
       );
 
       json.programs.forEach(program =>
@@ -76,7 +84,7 @@ class Render {
           "GET",
           `${TRAINERS_URL}/${program.trainer_id}`,
           json => {
-            this.hideSpinner(main)
+            this.hideSpinner(main);
             const trainer = Trainer.create(json);
             mainContainer.append(
               new Grid().programRow(
@@ -110,6 +118,7 @@ class Render {
   static homeLink() {
     return Link.new(`Home`, "nav-link active", () => {
       if (isLoggedIn()) {
+        removeAll(main);
         main.append(new Grid().homeRow());
       } else {
         Welcome.render();
@@ -193,7 +202,6 @@ class Render {
   };
 
   static home() {
-    removeAll(main);
     const div = d.createElement("div");
     if (isLoggedIn()) {
       if (currentUser instanceof Trainer) {
@@ -206,7 +214,7 @@ class Render {
 
   static menu() {
     const menu = Div.new(
-      "nav text-dark flex-column nav-pills w-50 dark",
+      "nav text-dark flex-column nav-pills w-100 dark",
       "v-pills-tab"
     );
     menu.setAttribute("role", "tablist");
@@ -223,11 +231,8 @@ class Render {
 
   static mainMenuHomeLink() {
     const link = Link.new("Home", "nav-link active", () => {
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        mainContainer.append(Render.home());
-      }
+      removeAll(main);
+      main.append(new Grid().homeRow());
     });
     link.setAttribute("data-toggle", "pill");
     return link;
