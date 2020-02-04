@@ -53,7 +53,7 @@ class Form {
     id,
     action,
     method,
-    callback = json => setSession(json),
+    handleSubmit = json => setSession(json),
     auth_token = null
   ) {
     const f = d.createElement("form");
@@ -64,8 +64,13 @@ class Form {
       e.preventDefault();
       const formData = new FormData(this);
       if (auth_token) action = action + `/?auth_token=${auth_token}`;
-      console.log(action);
-      new Fetch(formData, method, action, callback).submit();
+      if (method == "GET")
+        action = action + `&${new URLSearchParams(formData).toString()}`;
+      if (method !== "GET") {
+        new Fetch(formData, method, action, handleSubmit).submit();
+      } else {
+        new Fetch(formData, method, action, handleSubmit).request();
+      }
       e.target.reset();
     });
     return f;
@@ -113,9 +118,10 @@ class Column {
 }
 
 class Icon {
-  static new(className) {
+  static new(className, style = null) {
     const i = d.createElement("i");
     i.className = className;
+    if (style) i.style = style;
     return i;
   }
 }
@@ -233,6 +239,25 @@ class Video {
   }
 }
 
+class P {
+  static new(innerHTML, className = null) {
+    const p = d.createElement("p");
+    p.append(innerHTML);
+    if (className) p.className = className;
+    return p;
+  }
+}
+
+class Span {
+  static new(innerHTML = null, className = null, style = null) {
+    const span = d.createElement("span");
+    if (innerHTML) span.append(innerHTML);
+    if (className) span.className = className;
+    if (style) span.style = style;
+    return span;
+  }
+}
+
 const removeAll = node => {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
@@ -247,20 +272,14 @@ const setSession = (json = null) => {
       new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
         Render.hideSpinner(main);
         currentUser = Trainer.create(trainer);
-        removeAll(main);
         main.append(new Grid().homeRow());
       }).request();
     } else if (json.userable_type === "User") {
-      currentUser = new User(
-        json.id,
-        json.name,
-        json.lastname,
-        json.date_of_birth,
-        json.sex,
-        json.username,
-        json.email,
-        json.userable_id
-      );
+      new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
+        Render.hideSpinner(main);
+        currentUser = User.create(json);
+        main.append(new Grid().homeRow());
+      }).request();
     }
   };
   if (sessionStorage.getItem("auth_token")) {
@@ -268,9 +287,7 @@ const setSession = (json = null) => {
     new Fetch(null, null, SESSION_URL, callback).request();
   } else if (json && json.auth_token) {
     sessionStorage.setItem("auth_token", json.auth_token);
-    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem(
-      "auth_token"
-    )}`;
+    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
     callback(json);
   }
 };

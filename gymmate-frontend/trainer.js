@@ -3,6 +3,7 @@ class Trainer extends Account {
     id,
     name,
     lastname,
+    bio,
     dateOfBirth,
     sex,
     username,
@@ -10,12 +11,12 @@ class Trainer extends Account {
     trainerId,
     programs
   ) {
-    super(id, name, lastname, dateOfBirth, sex, username, email);
+    super(id, name, lastname, bio, dateOfBirth, sex, username, email);
     this._trainerId = trainerId;
     this.programs = programs;
   }
   get trainerId() {
-    return this._trainerId
+    return this._trainerId;
   }
 
   static create(json) {
@@ -23,14 +24,50 @@ class Trainer extends Account {
       json.account.id,
       json.account.name,
       json.account.lastname,
+      json.account.bio,
       json.account.date_of_birth,
       json.account.sex,
       json.account.username,
       json.account.email,
       json.account.userable_id
     );
-    trainer.programs = json.programs.map(program => Program.create(trainer, program));
+    trainer.programs = json.programs.map(program =>
+      Program.create(trainer, program)
+    );
     return trainer;
+  }
+
+  trainer(target) {
+    removeAll(target);
+    target.append(Section.new(this.name, null, () => this.show()));
+  }
+
+  show() {
+    removeAll(main);
+    main.append(new Grid().showTrainerRow(this));
+    main.append(this.menu());
+    this.allPrograms(main);
+    window.history.pushState(
+      { load: `showTrainers("${pathName[1]}")` },
+      null,
+      `/trainers/${this.trainerId}`
+    );
+  }
+
+  profilePic() {
+    const div = Div.new(null, `trainer_${this.id}_avatar`, null);
+    div.append(H1.new(`${this.name}`));
+    div.append(Icon.new("far fa-user-circle", "font-size:140px"));
+    return div;
+  }
+
+  info() {
+    const div = Div.new(null, `trainer_${this.id}_avatar`, null);
+    div.append(P.new(`Username: ${this.username}`));
+    div.append(P.new(`Bio: ${this.bio}`));
+    div.append(P.new(`Date of birth: ${this.dateOfBirth}`));
+    div.append(P.new(`Sex: ${this.sex}`));
+    return div;
   }
 
   renderForm(target) {
@@ -50,20 +87,23 @@ class Trainer extends Account {
     return new Program().form();
   }
 
-  allPrograms() {
-    const mainContainer = d.querySelector("#main_container");
-    removeAll(mainContainer);
+  allPrograms(target) {
     this.programs.forEach(program => {
-      mainContainer.append(
-        Section.new(program.title, "mt-1", () => {
-          removeAll(mainContainer);
-          append(
-            new Grid().showProgramRow(program),
-            `program_${program.id}`,
-            mainContainer
-          );
-        })
-      );
+      target.append(new Grid().programRow(program, target));
     });
+  }
+
+  menu() {
+    return new DOMParser().parseFromString(
+      `<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Programs</a>
+    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Pictures</a>
+    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Videos</a>
+  </div>
+</nav>
+`,
+      "text/html"
+    ).body.firstChild;
   }
 }

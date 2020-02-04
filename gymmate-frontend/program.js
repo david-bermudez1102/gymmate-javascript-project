@@ -91,7 +91,7 @@ class Program {
       handleSubmit,
       sessionStorage.getItem("auth_token")
     );
-    
+
     newProgramForm.append(
       H1.new("Create Program"),
       FormGroup.new(
@@ -144,6 +144,28 @@ class Program {
         this.allExercises()
       );
     }
+  }
+
+  program(target){
+    const container = Section.new("", "mt-1 w-100 d-flex align-items-center justify-content-between", () => {
+      removeAll(target);
+      append(
+        new Grid().showProgramRow(this),
+        `program_${this.id}`,
+        target
+      );
+    });
+    const title = Span.new(null,"display-4", "font-size: 40px;")
+    title.append(Icon.new("fas fa-dumbbell text-primary"),` ${this.title}`)
+    container.append(title)
+    if(currentUser instanceof User && currentUser!==this.trainer) container.append(
+      Button.new(
+        `start_routine_button_${this.id}`,
+        `Start this routine`,
+        "btn btn-primary shadow"
+      )
+    )
+    return container
   }
 
   show() {

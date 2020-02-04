@@ -8,4 +8,7 @@ class Trainer < ApplicationRecord
     end
   end
 
+  def self.search(query)
+    joins(:account).where('name LIKE ?', "%#{query}%")
+  end
 end

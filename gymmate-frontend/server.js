@@ -5,14 +5,15 @@ const server = express();
 server.use("/", express.static(__dirname + "/"));
 
 /* other routes defined before catch-all */
-server.get("/some-route", (req, res) => {
+server.get("/x", (req, res) => {
   res.send("ok");
 });
 
 /* final catch-all route to index.html defined last */
-server.get("/*", (req, res) => {
+server.get("*", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
+
 
 const port = 8000;
 server.listen(port, function() {

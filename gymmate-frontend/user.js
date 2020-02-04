@@ -8,6 +8,19 @@ class User extends Account {
     return this._userId;
   }
 
+  static create(json) {
+    return new User(
+      json.id,
+      json.name,
+      json.lastname,
+      json.date_of_birth,
+      json.sex,
+      json.username,
+      json.email,
+      json.userable_id
+    );
+  }
+
   renderForm(target) {
     removeAll(target);
     const newUser = Welcome.newUserForm(USERS_URL);

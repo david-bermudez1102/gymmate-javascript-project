@@ -141,7 +141,8 @@ class Welcome {
 }
 
 if (sessionStorage.getItem("auth_token")) {
-  setSession();
+  setSession()
+  setTimeout(loadUrl,50)
 } else {
  Welcome.render();
 }

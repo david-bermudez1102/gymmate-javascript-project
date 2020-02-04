@@ -82,6 +82,27 @@ class Grid {
     return this.row;
   }
 
+  showTrainerRow(trainer) {
+    this.row.append(
+      Column.new(
+        trainer.profilePic(),
+        "col-md-3 d-flex justify-content-left"
+      ),
+      Column.new(trainer.info(), "col-md d-flex justify-content-left")
+    );
+    return this.row;
+  }
+
+  programRow(program,target) {
+    this.row.append(
+      Column.new(
+        program.program(target),
+        "col-md d-flex justify-content-center"
+      )
+    );
+    return this.row;
+  }
+
   newProgramRow() {
     this.row.append(
       Column.new(Section.new(currentUser.renderNewProgramForm()), "col-md")

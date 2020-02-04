@@ -20,11 +20,16 @@ class Render {
   };
 
   static searchBar() {
+    const handleSubmit = json => {
+      this.hideSpinner(main);
+      new Promise(res => res(main.append(new Grid().homeRow()))).then(() => this.listResults(json));
+    };
+
     const form = Form.new(
       "new_search",
       SEARCH_URL,
       "GET",
-      null,
+      handleSubmit,
       sessionStorage.getItem("auth_token")
     );
     form.className = "mx-auto";
@@ -42,7 +47,7 @@ class Render {
     div.append(
       Input.new(
         "search",
-        "search",
+        "query",
         "Search routines, trainers, etc...",
         "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
       ),
@@ -52,13 +57,23 @@ class Render {
     return form;
   }
 
+  static listResults(json) {
+    if (d.querySelector("#main_container")) {
+      const mainContainer = d.querySelector("#main_container");
+      json.trainers.forEach(trainer =>
+        Trainer.create(trainer).trainer(mainContainer)
+      );
+    }
+  }
+
   static navbarOptions() {
     const navbarOptions = List.new(
       "navbar-nav ml-auto nav-pills nav-fill nav-justify"
     );
+
     if (sessionStorage.getItem("auth_token"))
       navbarOptions.append(Item.new(this.searchBar()));
-      
+
     navbarOptions.append(
       Item.new(this.homeLink()),
       Item.new(this.loginLink()),
@@ -70,8 +85,11 @@ class Render {
 
   static homeLink() {
     return Link.new(`Home`, "nav-link active", () => {
-      removeAll(main);
-      Welcome.render();
+      if (currentUser && sessionStorage.getItem("auth_token")) {
+        main.append(new Grid().homeRow());
+      } else {
+        Welcome.render();
+      }
     });
   }
 
@@ -149,12 +167,14 @@ class Render {
   };
 
   static home() {
+    removeAll(main);
     const div = d.createElement("div");
     if (currentUser && sessionStorage.getItem("auth_token")) {
       if (currentUser instanceof Trainer) {
         div.append(new Grid().newProgramRow());
       }
     }
+    window.history.pushState({ load: "Render.home()" }, null, "/");
     return div;
   }
 
@@ -210,7 +230,7 @@ class Render {
       if (d.querySelector("#main_container")) {
         const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
-        currentUser.allPrograms();
+        currentUser.allPrograms(mainContainer);
       }
     });
     link.setAttribute("data-toggle", "pill");
