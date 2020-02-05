@@ -266,6 +266,16 @@ const removeAll = node => {
 };
 
 const setSession = (json = null) => {
+  if (sessionStorage.getItem("auth_token")) {
+    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
+    new Fetch(null, null, SESSION_URL, callback).request();
+  } else if (json && json.auth_token) {
+    sessionStorage.setItem("auth_token", json.auth_token);
+    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
+    callback(json);
+  }
+};
+
   const callback = json => {
     console.log(json);
     Render.hideSpinner(main);
@@ -285,15 +295,6 @@ const setSession = (json = null) => {
       }).request();
     }
   };
-  if (sessionStorage.getItem("auth_token")) {
-    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
-    new Fetch(null, null, SESSION_URL, callback).request();
-  } else if (json && json.auth_token) {
-    sessionStorage.setItem("auth_token", json.auth_token);
-    SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
-    callback(json);
-  }
-};
 
 const fileUploader = name => {
   const file = Input.new("file", name, null, "form-control-file");

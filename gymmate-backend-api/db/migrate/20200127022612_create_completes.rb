@@ -1,8 +1,8 @@
 class CreateCompletes < ActiveRecord::Migration[5.2]
   def change
     create_table :completes do |t|
-      t.references :user, foreign_key: true
-      t.references :completable, polymorphic: true
+      t.references :workout, foreign_key: true
+      t.references :exercise
       t.timestamps
     end
   end

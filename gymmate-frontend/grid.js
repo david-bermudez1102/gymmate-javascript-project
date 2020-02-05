@@ -132,7 +132,7 @@ class Grid {
     new Promise(res => {
       res(this.row.append(Column.new(workout.show(), "col-md pt-1")));
     }).then(() => {
-      workout.program.allExercises(target);
+      workout.allExercises(target);
     });
     return this.row;
   }

@@ -33,13 +33,12 @@ ActiveRecord::Schema.define(version: 2020_02_02_185615) do
   end
 
   create_table "completes", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "completable_type"
-    t.integer "completable_id"
+    t.integer "workout_id"
+    t.integer "exercise_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["completable_type", "completable_id"], name: "index_completes_on_completable_type_and_completable_id"
-    t.index ["user_id"], name: "index_completes_on_user_id"
+    t.index ["exercise_id"], name: "index_completes_on_exercise_id"
+    t.index ["workout_id"], name: "index_completes_on_workout_id"
   end
 
   create_table "exercises", force: :cascade do |t|
@@ -134,6 +133,7 @@ ActiveRecord::Schema.define(version: 2020_02_02_185615) do
   create_table "workouts", force: :cascade do |t|
     t.integer "program_id"
     t.integer "user_id"
+    t.boolean "complete"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_workouts_on_program_id"

@@ -198,15 +198,24 @@ class Program {
       WORKOUTS_URL,
       "POST",
       json => {
-        console.log(json);
+        Render.hideSpinner(main);
+        const user = Object.assign(new User(), currentUser);
+        const workout = Workout.create(user, json);
+        user.workouts.push(workout);
+        currentUser = user;
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(mainContainer);
+          currentUser.allWorkouts(mainContainer);
+        }
       },
       sessionStorage.getItem("auth_token")
     );
     form.append(
-      Input.new("hidden","workout[program_id]",null,null,this.id),
+      Input.new("hidden", "workout[program_id]", null, null, this.id),
       Button.new(
         `start_routine_button_${this.id}`,
-        `Start this routine`,
+        `Add this routine to my workouts`,
         "btn btn-primary shadow"
       )
     );

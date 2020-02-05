@@ -4,8 +4,8 @@ class UsersController < ApplicationController
     account = user.build_account(account_params)
     
     if account.save
-      account.generate_auth_token
-      render json: account
+       auth_token = account.generate_auth_token
+       render json: {auth_token:auth_token, userable_id:account.userable_id, userable_type:account.userable_type}
     end
   end
 

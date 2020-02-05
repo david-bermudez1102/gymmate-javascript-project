@@ -1,9 +1,18 @@
 class Workout {
-  constructor(id, user, program, complete, createdAt, updatedAt) {
+  constructor(
+    id,
+    user,
+    program,
+    complete,
+    completeExercises,
+    createdAt,
+    updatedAt
+  ) {
     this._id = id;
     this._user = user;
     this._program = program;
     this._complete = complete;
+    this._completeExercises = completeExercises;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
   }
@@ -24,6 +33,10 @@ class Workout {
     return this._complete;
   }
 
+  get completeExercises() {
+    return this._completeExercises;
+  }
+
   get createdAt() {
     return this._createdAt;
   }
@@ -38,6 +51,7 @@ class Workout {
       user,
       null,
       json.complete,
+      json.completes.map(complete => Complete.create(complete)),
       json.created_at,
       json.updated_at
     );
@@ -82,7 +96,10 @@ class Workout {
       container.append(
         Icon.new("fas fa-check-square text-primary", "font-size: 24px;")
       );
-    else container.append(Icon.new("fas fa-spinner text-primary", "font-size: 24px;"));
+    else
+      container.append(
+        Icon.new("fas fa-spinner text-primary", "font-size: 24px;")
+      );
 
     return container;
   }
@@ -102,5 +119,15 @@ class Workout {
       this.program.exercisesCount()
     );
     return section;
+  }
+
+  allExercises(target) {
+    this.program.exercises.forEach(exercise => {
+      append(
+        new Grid().showExerciseRow(exercise, target),
+        `exercise_${exercise.id}`,
+        target
+      );
+    });
   }
 }
