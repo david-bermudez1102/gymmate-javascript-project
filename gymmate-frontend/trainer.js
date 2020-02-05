@@ -33,7 +33,8 @@ class Trainer extends Account {
       json.account.sex,
       json.account.username,
       json.account.email,
-      json.account.userable_id
+      json.account.userable_id,
+      []
     );
     trainer.programs = json.programs.map(program =>
       Program.create(trainer, program)

@@ -321,3 +321,6 @@ const isLoggedIn = () => {
   if (currentUser && sessionStorage.getItem("auth_token")) return true;
   return false;
 };
+
+const isUser = () => currentUser instanceof User;
+const isTrainer = () => currentUser instanceof Trainer;

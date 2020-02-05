@@ -128,7 +128,7 @@ class Program {
   allExercises(target) {
     this.exercises.forEach(exercise => {
       append(
-        new Grid().showExerciseRow(exercise,target),
+        new Grid().showExerciseRow(exercise, target),
         `exercise_${exercise.id}`,
         target
       );
@@ -151,21 +151,18 @@ class Program {
       "mt-1 w-100 d-flex align-items-center justify-content-between",
       () => {
         removeAll(target);
-        append(new Grid().showProgramRow(this,target), `program_${this.id}`, target);
+        append(
+          new Grid().showProgramRow(this, target),
+          `program_${this.id}`,
+          target
+        );
       }
     );
 
     const title = Span.new(null, "display-4", "font-size: 40px;");
     title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
     container.append(title);
-    if (currentUser instanceof User && currentUser !== this.trainer)
-      container.append(
-        Button.new(
-          `start_routine_button_${this.id}`,
-          `Start this routine`,
-          "btn btn-primary shadow"
-        )
-      );
+    if (isUser()) container.append(this.startProgramBtn());
     return container;
   }
 
@@ -177,17 +174,42 @@ class Program {
       Subtitle.new(`By ${this.trainer.name} ${this.trainer.lastname}`),
       Div.new(null, null, this.description),
       Video.new(this.video),
-      this.exercisesCount(),
+      this.exercisesCount()
+    );
+    if (isTrainer && currentUser == this.trainer)
+      section.append(
+        Button.new(
+          "add_new_exercise",
+          "Add New Exercise",
+          "btn btn-primary",
+          () => {
+            removeAll(mainContainer);
+            mainContainer.append(new Grid().newExerciseRow(this));
+          }
+        )
+      );
+    if (isUser()) section.append(this.startProgramBtn());
+    return section;
+  }
+
+  startProgramBtn() {
+    const form = Form.new(
+      "new_workout",
+      WORKOUTS_URL,
+      "POST",
+      json => {
+        console.log(json);
+      },
+      sessionStorage.getItem("auth_token")
+    );
+    form.append(
+      Input.new("hidden","workout[program_id]",null,null,this.id),
       Button.new(
-        "add_new_exercise",
-        "Add New Exercise",
-        "btn btn-primary",
-        () => {
-          removeAll(mainContainer);
-          mainContainer.append(new Grid().newExerciseRow(this));
-        }
+        `start_routine_button_${this.id}`,
+        `Start this routine`,
+        "btn btn-primary shadow"
       )
     );
-    return section;
+    return form;
   }
 }

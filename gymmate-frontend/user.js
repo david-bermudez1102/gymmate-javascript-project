@@ -1,7 +1,19 @@
 class User extends Account {
-  constructor(id, name, lastname, bio, dateOfBirth, sex, username, email, userId) {
+  constructor(
+    id,
+    name,
+    lastname,
+    bio,
+    dateOfBirth,
+    sex,
+    username,
+    email,
+    userId,
+    workouts
+  ) {
     super(id, name, lastname, bio, dateOfBirth, sex, username, email);
     this._userId = userId;
+    this.workouts = workouts;
   }
 
   get userId() {
@@ -9,7 +21,7 @@ class User extends Account {
   }
 
   static create(json) {
-    return new User(
+    const user = new User(
       json.account.id,
       json.account.name,
       json.account.lastname,
@@ -18,8 +30,15 @@ class User extends Account {
       json.account.sex,
       json.account.username,
       json.account.email,
-      json.account.userable_id
+      json.account.userable_id,
+      []
     );
+
+    
+    user.workouts = json.workouts.map(workout =>
+      Workout.create(user, workout)
+    );
+    return user;
   }
 
   user(target) {

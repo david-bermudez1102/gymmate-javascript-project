@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-
-
   def create
     user = User.new
     account = user.build_account(account_params)

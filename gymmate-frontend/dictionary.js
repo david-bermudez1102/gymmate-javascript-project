@@ -3,6 +3,7 @@ const BASE_URL = "http://localhost:3000";
 const TRAINERS_URL = `${BASE_URL}/trainers`;
 const PROGRAMS_URL = `${BASE_URL}/programs`;
 const EXERCISES_URL = `${BASE_URL}/exercises`;
+const WORKOUTS_URL = `${BASE_URL}/workouts`;
 const USERS_URL = `${BASE_URL}/users`;
 const ACCOUNTS_URL = `${BASE_URL}/accounts`;
 const SESSIONS_URL = `${BASE_URL}/sessions`;
