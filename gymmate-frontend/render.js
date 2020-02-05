@@ -271,7 +271,7 @@ class Render {
       if (d.querySelector("#main_container")) {
         const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
-        currentUser.allPrograms(mainContainer);
+        currentUser.allWorkouts(mainContainer);
       }
     });
     link.setAttribute("data-toggle", "pill");

@@ -80,25 +80,32 @@ class Grid {
       Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
       Column.new(Render.home(), "col-sm mt-2 px-1", "", "main_container")
     );
-    this.row.id = "home_row"
+    this.row.id = "home_row";
     return this.row;
   }
 
   showProfileRow(account) {
     this.row.append(
-      Column.new(
-        account.profilePic(),
-        "col-md-3 d-flex justify-content-left"
-      ),
+      Column.new(account.profilePic(), "col-md-3 d-flex justify-content-left"),
       Column.new(account.info(), "col-md d-flex justify-content-left")
     );
     return this.row;
   }
 
-  programRow(program,target) {
+  programRow(program, target) {
     this.row.append(
       Column.new(
         program.program(target),
+        "col-md d-flex justify-content-center"
+      )
+    );
+    return this.row;
+  }
+
+  workoutRow(workout, target) {
+    this.row.append(
+      Column.new(
+        workout.workout(target),
         "col-md d-flex justify-content-center"
       )
     );
@@ -112,7 +119,7 @@ class Grid {
     return this.row;
   }
 
-  showProgramRow(program,target) {
+  showProgramRow(program, target) {
     new Promise(res => {
       res(this.row.append(Column.new(program.show(), "col-md pt-1")));
     }).then(() => {
@@ -121,7 +128,16 @@ class Grid {
     return this.row;
   }
 
-  showExerciseRow(exercise,target) {
+  showWorkoutRow(workout, target) {
+    new Promise(res => {
+      res(this.row.append(Column.new(workout.show(), "col-md pt-1")));
+    }).then(() => {
+      workout.program.allExercises(target);
+    });
+    return this.row;
+  }
+
+  showExerciseRow(exercise, target) {
     this.row.append(Column.new(exercise.show(target), "col-md pt-1"));
     return this.row;
   }

@@ -34,10 +34,7 @@ class User extends Account {
       []
     );
 
-    
-    user.workouts = json.workouts.map(workout =>
-      Workout.create(user, workout)
-    );
+    user.workouts = json.workouts.map(workout => Workout.create(user, workout));
     return user;
   }
 
@@ -68,6 +65,16 @@ class User extends Account {
         new Trainer().renderForm(target);
       })
     );
+  }
+
+  allWorkouts(target) {
+    this.workouts.forEach(workout => {
+      append(
+        new Grid().workoutRow(workout, target),
+        `workout_${workout.id}`,
+        target
+      );
+    });
   }
 
   menu() {

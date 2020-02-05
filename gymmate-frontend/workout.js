@@ -57,4 +57,50 @@ class Workout {
 
     return workout;
   }
+
+  workout(target) {
+    const container = Section.new(
+      "",
+      "mt-1 w-100 d-flex align-items-center justify-content-between",
+      () => {
+        removeAll(target);
+        append(
+          new Grid().showWorkoutRow(this, target),
+          `workout_${this.id}`,
+          target
+        );
+      }
+    );
+
+    const title = Span.new(null, "display-4", "font-size: 40px;");
+    title.append(
+      Icon.new("fas fa-dumbbell text-primary"),
+      ` ${this.program.title}`
+    );
+    container.append(title);
+    if (this.complete)
+      container.append(
+        Icon.new("fas fa-check-square text-primary", "font-size: 24px;")
+      );
+    else container.append(Icon.new("fas fa-spinner text-primary", "font-size: 24px;"));
+
+    return container;
+  }
+
+  show() {
+    const mainContainer = d.querySelector("#main_container");
+    const section = Section.new(
+      H1.new(`${this.program.title}`, "text-primary")
+    );
+    section.id = `workout_${this.id}`;
+    section.append(
+      Subtitle.new(
+        `By ${this.program.trainer.name} ${this.program.trainer.lastname}`
+      ),
+      Div.new(null, null, this.program.description),
+      Video.new(this.program.video),
+      this.program.exercisesCount()
+    );
+    return section;
+  }
 }
