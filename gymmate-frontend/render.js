@@ -66,7 +66,6 @@ class Render {
 
   static listResults(json) {
     if (d.querySelector("#main_container")) {
-
       const mainContainer = d.querySelector("#main_container");
       removeAll(mainContainer);
 
@@ -74,9 +73,7 @@ class Render {
         Trainer.create(trainer).trainer(mainContainer)
       );
 
-      json.users.forEach(user =>
-        User.create(user).user(mainContainer)
-      );
+      json.users.forEach(user => User.create(user).user(mainContainer));
 
       json.programs.forEach(program =>
         new Fetch(
@@ -221,11 +218,12 @@ class Render {
     menu.setAttribute("aria-orientation", "vertical");
     menu.append(
       `Welcome ${currentUser.name}`,
-      Render.mainMenuHomeLink(),
-      Render.mainMenuMessagesLink(),
-      Render.mainMenuRoutinesLink(),
-      Render.mainMenuProfileLink()
+      this.mainMenuHomeLink(),
+      this.mainMenuMessagesLink()
     );
+    if (isTrainer()) menu.append(this.mainMenuRoutinesLink());
+    if (isUser()) menu.append(this.mainMenuWorkoutsLink());
+    menu.append(this.mainMenuProfileLink());
     return menu;
   }
 
@@ -258,6 +256,18 @@ class Render {
 
   static mainMenuRoutinesLink() {
     const link = Link.new("My Routines", "nav-link", () => {
+      if (d.querySelector("#main_container")) {
+        const mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        currentUser.allPrograms(mainContainer);
+      }
+    });
+    link.setAttribute("data-toggle", "pill");
+    return link;
+  }
+
+  static mainMenuWorkoutsLink() {
+    const link = Link.new("My Workouts", "nav-link", () => {
       if (d.querySelector("#main_container")) {
         const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
