@@ -199,7 +199,7 @@ class Program {
       "POST",
       json => {
         Render.hideSpinner(main);
-        const user = Object.assign(new User(), currentUser);
+        const user = Object.assign(new User, currentUser);
         const workout = Workout.create(user, json);
         user.workouts.push(workout);
         currentUser = user;

@@ -51,7 +51,7 @@ class Workout {
       user,
       null,
       json.complete,
-      json.completes.map(complete => Complete.create(complete)),
+      json.completes.map(complete => CompleteExercise.create(complete)),
       json.created_at,
       json.updated_at
     );
@@ -124,10 +124,48 @@ class Workout {
   allExercises(target) {
     this.program.exercises.forEach(exercise => {
       append(
-        new Grid().showExerciseRow(exercise, target),
+        new Grid().showWorkoutExerciseRow(this, exercise),
         `exercise_${exercise.id}`,
         target
       );
     });
+  }
+
+  showExercise(exercise) {
+    const section = Section.new(H1.new(exercise.title));
+    section.id = `exercise_${exercise.id}`;
+    section.append(Progress.new({value:25,max:100}));
+
+    const video = Video.new(exercise.video);
+
+    video.addEventListener("timeupdate", () => {
+      if (video.currentTime == video.duration) this.completeExercise(exercise);
+    });
+
+    section.append(
+      video,
+      Div.new(null, null, exercise.description),
+      `Sets: ${exercise.sets}`,
+      `Reps: ${exercise.repetitions}`
+    );
+    return section;
+  }
+
+  completeExercise(exercise) {
+    const formData = new FormData();
+    const data = {
+      workout_id: this.id,
+      exercise_id: exercise.id
+    };
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
+      Render.hideSpinner(main);
+      const user = Object.assign(new User(), currentUser);
+      user.workouts.find(workout =>
+        workout.completeExercises.push(CompleteExercise.create(json))
+      );
+      currentUser = user;
+      console.log(json);
+    }).submit();
   }
 }

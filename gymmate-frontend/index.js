@@ -259,6 +259,16 @@ class Span {
   }
 }
 
+class Progress {
+  static new(attributes) {
+    const progress = d.createElement("progress");
+    Object.keys(attributes).forEach(attr =>
+      progress.setAttribute(attr, attributes[attr])
+    );
+    return progress;
+  }
+}
+
 const removeAll = node => {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
@@ -276,25 +286,25 @@ const setSession = (json = null) => {
   }
 };
 
-  const callback = json => {
-    console.log(json);
-    Render.hideSpinner(main);
-    if (json.userable_type === "Trainer") {
-      new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
-        Render.hideSpinner(main);
-        currentUser = Trainer.create(trainer);
-        removeAll(main);
-        main.append(new Grid().homeRow());
-      }).request();
-    } else if (json.userable_type === "User") {
-      new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
-        Render.hideSpinner(main);
-        currentUser = User.create(user);
-        removeAll(main);
-        main.append(new Grid().homeRow());
-      }).request();
-    }
-  };
+const callback = json => {
+  console.log(json);
+  Render.hideSpinner(main);
+  if (json.userable_type === "Trainer") {
+    new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
+      Render.hideSpinner(main);
+      currentUser = Trainer.create(trainer);
+      removeAll(main);
+      main.append(new Grid().homeRow());
+    }).request();
+  } else if (json.userable_type === "User") {
+    new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
+      Render.hideSpinner(main);
+      currentUser = User.create(user);
+      removeAll(main);
+      main.append(new Grid().homeRow());
+    }).request();
+  }
+};
 
 const fileUploader = name => {
   const file = Input.new("file", name, null, "form-control-file");

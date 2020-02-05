@@ -1,4 +1,4 @@
-class Complete {
+class CompleteExercise {
   constructor(id, workoutId, exerciseId) {
     this._id = id;
     this._workoutId = workoutId;
@@ -13,7 +13,11 @@ class Complete {
     return this._exerciseId;
   }
 
-  static create(complete) {
-    return new Complete(complete.id,complete.workout_id,complete.exercise_id)
+  static create(completeExercise) {
+    return new CompleteExercise(
+      completeExercise.id,
+      completeExercise.workout_id,
+      completeExercise.exercise_id
+    );
   }
 }

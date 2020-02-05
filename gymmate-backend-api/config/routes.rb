@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :pictures
   resources :workouts
   resources :exercises
+  resources :completes
   resources :programs
   resources :users
   resources :sessions, except: :show

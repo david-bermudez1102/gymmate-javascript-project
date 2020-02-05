@@ -1,4 +1,4 @@
 class Complete < ApplicationRecord
-  belongs_to :completable, polymorphic: true
-  belongs_to :user
+  belongs_to :workout
+  belongs_to :exercise
 end

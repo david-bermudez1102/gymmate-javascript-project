@@ -137,8 +137,13 @@ class Grid {
     return this.row;
   }
 
+  showWorkoutExerciseRow(workout, exercise) {
+    this.row.append(Column.new(workout.showExercise(exercise), "col-md pt-1"));
+    return this.row;
+  }
+
   showExerciseRow(exercise, target) {
-    this.row.append(Column.new(exercise.show(target), "col-md pt-1"));
+    this.row.append(Column.new(exercise.show(), "col-md pt-1"));
     return this.row;
   }
 
