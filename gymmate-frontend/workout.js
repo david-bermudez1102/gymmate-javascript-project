@@ -75,7 +75,7 @@ class Workout {
   workout(target) {
     const container = Section.new(
       "",
-      "mt-1 w-100 d-flex align-items-center justify-content-between",
+      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light",
       () => {
         removeAll(target);
         append(
@@ -104,11 +104,49 @@ class Workout {
     return container;
   }
 
-  show() {
-    const mainContainer = d.querySelector("#main_container");
-    const section = Section.new(
-      H1.new(`${this.program.title}`, "text-primary")
+  exercise(exercise, target) {
+    const container = Section.new(
+      "",
+      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white",
+      () => {
+        removeAll(target);
+        append(
+          new Grid().showWorkoutExerciseHeaderRow(exercise),
+          `exercise_header_${exercise.id}`,
+          target
+        );
+        append(
+          new Grid().showWorkoutExerciseRow(this, exercise, target),
+          `exercise_${exercise.id}`,
+          target
+        );
+      }
     );
+
+    const title = Span.new(null, "display-4", "font-size: 40px;");
+    title.append(Icon.new("fas fa-running text-primary"), ` ${exercise.title}`);
+    container.append(title);
+    container.append(
+      ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
+    );
+
+    return container;
+  }
+
+  percentageComplete(exercise) {
+    return (
+      (this.completeExercises.length * 100) / this.program.exercises.length
+    );
+  }
+
+  show(target) {
+    removeAll(target);
+
+    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
+
+    title.append(Icon.new("fas fa-running text-primary"), ` ${this.program.title}`);
+
+    const section = Section.new(title, "bg-dark text-white");
     section.id = `workout_${this.id}`;
     section.append(
       Subtitle.new(
@@ -124,17 +162,42 @@ class Workout {
   allExercises(target) {
     this.program.exercises.forEach(exercise => {
       append(
-        new Grid().showWorkoutExerciseRow(this, exercise),
+        new Grid().workoutExerciseRow(this, exercise, target),
         `exercise_${exercise.id}`,
         target
       );
     });
   }
 
-  showExercise(exercise) {
-    const section = Section.new(H1.new(exercise.title));
+  showExercise(exercise, target) {
+    const header = Div.new(
+      "w-100 d-flex justify-content-between align-items-center flex-wrap"
+    );
+
+    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
+    const footer = Div.new(
+      "w-100 d-flex justify-content-between align-items-center"
+    );
+
+    title.append(Icon.new("fas fa-running text-primary"), ` ${exercise.title}`);
+
+    header.append(
+      title,
+      ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
+    );
+
+    footer.append(
+      Span.new(`Sets: ${exercise.sets}`, "display-4", "font-size: 40px;"),
+      Span.new(
+        `Reps: ${exercise.repetitions}`,
+        "display-4",
+        "font-size: 40px;"
+      ),
+      exercise.caloriesBurnt()
+    );
+
+    const section = Section.new(header, "bg-dark text-white");
     section.id = `exercise_${exercise.id}`;
-    section.append(Progress.new({value:25,max:100}));
 
     const video = Video.new(exercise.video);
 
@@ -144,9 +207,8 @@ class Workout {
 
     section.append(
       video,
-      Div.new(null, null, exercise.description),
-      `Sets: ${exercise.sets}`,
-      `Reps: ${exercise.repetitions}`
+      Div.new(null, null, P.new(exercise.description)),
+      footer
     );
     return section;
   }

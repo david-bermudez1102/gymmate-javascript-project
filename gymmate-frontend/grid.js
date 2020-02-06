@@ -112,6 +112,13 @@ class Grid {
     return this.row;
   }
 
+  workoutExerciseRow(workout, exercise, target) {
+    this.row.append(
+      Column.new(workout.exercise(exercise, target), "col-md pt-1")
+    );
+    return this.row;
+  }
+
   newProgramRow() {
     this.row.append(
       Column.new(Section.new(currentUser.renderNewProgramForm()), "col-md")
@@ -130,15 +137,25 @@ class Grid {
 
   showWorkoutRow(workout, target) {
     new Promise(res => {
-      res(this.row.append(Column.new(workout.show(), "col-md pt-1")));
+      res(this.row.append(Column.new(workout.show(target), "col-md pt-1")));
     }).then(() => {
       workout.allExercises(target);
     });
     return this.row;
   }
 
-  showWorkoutExerciseRow(workout, exercise) {
-    this.row.append(Column.new(workout.showExercise(exercise), "col-md pt-1"));
+  showWorkoutExerciseRow(workout, exercise, target) {
+    this.row.append(
+      Column.new(workout.showExercise(exercise, target), "col-md pt-1")
+    );
+    return this.row;
+  }
+
+  showWorkoutExerciseHeaderRow(exercise) {
+    this.row.append(
+      Column.new(exercise.headerMenu(), "col-md pt-1")
+    );
+    this.row.id = `exercise_header_${exercise.id}`;
     return this.row;
   }
 

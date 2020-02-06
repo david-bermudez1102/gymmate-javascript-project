@@ -121,7 +121,6 @@ class Program {
   }
 
   renderNewExerciseForm() {
-    console.log(this);
     return new Exercise(null, null, null, null, null, null, this).form();
   }
 
@@ -148,7 +147,7 @@ class Program {
   program(target) {
     const container = Section.new(
       "",
-      "mt-1 w-100 d-flex align-items-center justify-content-between",
+      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white",
       () => {
         removeAll(target);
         append(
@@ -168,7 +167,12 @@ class Program {
 
   show() {
     const mainContainer = d.querySelector("#main_container");
-    const section = Section.new(H1.new(`${this.title}`, "text-primary"));
+    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
+
+    title.append(Icon.new("fas fa-dumbbell"), ` ${this.title}`);
+
+    const section = Section.new(title, "bg-dark text-white");
+
     section.id = `program_${this.id}`;
     section.append(
       Subtitle.new(`By ${this.trainer.name} ${this.trainer.lastname}`),

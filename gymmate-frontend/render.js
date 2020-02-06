@@ -217,7 +217,7 @@ class Render {
     menu.setAttribute("role", "tablist");
     menu.setAttribute("aria-orientation", "vertical");
     menu.append(
-      `Welcome ${currentUser.name}`,
+      currentUser.profilePic(),
       this.mainMenuHomeLink(),
       this.mainMenuMessagesLink()
     );

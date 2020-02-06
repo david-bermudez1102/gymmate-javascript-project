@@ -129,7 +129,7 @@ class Icon {
 class Section {
   static new(child, className = null, handleOnClick = null) {
     const section = d.createElement("section");
-    section.className = "bg-white text-left p-3 p-sm-5 rounded shadow ";
+    section.className = "text-left p-3 p-sm-5 rounded shadow ";
     if (className) section.className += className;
     section.addEventListener("click", e => {
       if (handleOnClick) handleOnClick();
@@ -259,13 +259,30 @@ class Span {
   }
 }
 
-class Progress {
-  static new(attributes) {
-    const progress = d.createElement("progress");
-    Object.keys(attributes).forEach(attr =>
-      progress.setAttribute(attr, attributes[attr])
-    );
-    return progress;
+class ProgressBar {
+  static new(value,bgColor) {
+    const progressRadius = (251.2*value)/100
+    return new DOMParser().parseFromString(
+      `
+    <svg id="svg" viewbox="0 0 100 100" style="width:70px;">
+      <circle cx="50" cy="50" r="45" fill="${bgColor}" />
+      <path
+        fill="none"
+        stroke-linecap="round"
+        stroke-width="5"
+        stroke="#fff"
+        stroke-dasharray="${progressRadius},${251.2-progressRadius}"
+        d="M50 10
+           a 40 40 0 0 1 0 80
+           a 40 40 0 0 1 0 -80"
+      />
+      <text x="50" y="50" text-anchor="middle" dy="7" font-size="20" fill="#FFF">
+        ${value}%
+      </text>
+    </svg>;
+    `,
+      "text/html"
+    ).body.firstChild;
   }
 }
 

@@ -1,28 +1,7 @@
-<form action="http://localhost:3000/programs" onsubmit="f(new FormData(this)); return false; " id="test" method="POST">
-  <input type="text" name="program[title]">
-  <input type="text" name="program[description]">
-  <input type="file" name="program[video]">
-  <input type="submit" value="helele">
-</form>
-<script>
-  function f(data) {
-  fetch("http://localhost:3000/programs?auth_token=62c91bf1aff9c23a9389e7d54fb0996f", {
-  mode: 'no-cors',
-  method: "POST",
-  headers: {
-  'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
-  },
-  body: data,
-  }).then(function(response) {
-  console.log(response.status)
-  console.log("response");
-  console.log(response)
-  })
-}
-</script>
-<video width="320" height="240" autoplay>
-  <source src="http://localhost:3000/system/programs/videos/000/000/004/original/180419_Boxing_15_06.mp4?1580615177"
-    type="video/mp4">
-
-  Your browser does not support the video tag.
-</video>
+<svg id="svg" viewbox="0 0 100 100">
+  <circle cx="50" cy="50" r="45" fill="#FDB900" />
+  <path fill="none" stroke-linecap="round" stroke-width="5" stroke="#fff" stroke-dasharray="1,250.2" d="M50 10
+           a 40 40 0 0 1 0 80
+           a 40 40 0 0 1 0 -80" />
+  <text x="50" y="50" text-anchor="middle" dy="7" font-size="20">1%</text>
+</svg>

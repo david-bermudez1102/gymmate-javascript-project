@@ -55,8 +55,8 @@ class Exercise {
       EXERCISES_URL,
       "POST",
       json => {
-        const trainer = Object.assign(new Trainer, currentUser);
-        const exercise = Exercise.create(this.program, json)
+        const trainer = Object.assign(new Trainer(), currentUser);
+        const exercise = Exercise.create(this.program, json);
         trainer.programs
           .find(program => program.id === json.program_id)
           .exercises.push(exercise);
@@ -109,7 +109,10 @@ class Exercise {
   }
 
   show() {
-    const section = Section.new(H1.new(this.title));
+    const title = Span.new(null, "display-4", "font-size: 40px;");
+    title.append(Icon.new("fas fa-running text-primary"), ` ${this.title}`);
+
+    const section = Section.new(title, "bg-dark text-white");
     section.id = `exercise_${this.id}`;
     section.append(
       Video.new(this.video),
@@ -118,5 +121,24 @@ class Exercise {
       `Reps: ${this.repetitions}`
     );
     return section;
+  }
+
+  headerMenu() {
+    const headerMenu = Span.new(
+      null,
+      "display-4 d-flex p-2 w-100 bg-white text-primary mb-1 align-items-center",
+      "font-size: 40px;"
+    );
+    headerMenu.append(
+      Icon.new("fas fa-chevron-left"),
+      `  ${this.program.title}`
+    );
+    return headerMenu;
+  }
+
+  caloriesBurnt() {
+    const calories = Span.new(null, "display-4");
+    calories.append(Icon.new("fas fa-fire"), ` 250`);
+    return calories;
   }
 }

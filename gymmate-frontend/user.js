@@ -47,6 +47,7 @@ class User extends Account {
     removeAll(main);
     main.append(new Grid().showProfileRow(this));
     main.append(this.menu());
+    this.allWorkouts(main);
     window.history.pushState(
       { load: `users("${pathName[1]}")` },
       null,
