@@ -43,7 +43,7 @@ class Fetch {
     fetch(this.url, this.configObj)
       .then(this.parseJson)
       .then(json => {
-        if (json.message === "success") this.callback(json);
+        if (!json.errors) this.callback(json);
         else Render.error(json, this.target);
       })
       .catch(console.log);

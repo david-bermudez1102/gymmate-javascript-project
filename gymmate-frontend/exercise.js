@@ -73,27 +73,48 @@ class Exercise {
     newExerciseForm.append(
       H1.new("Add New Exercise"),
       FormGroup.new(
-        Input.new("text", "exercise[title]", "Enter title of exercise..."),
+        Input.new({
+          type: "text",
+          name: "exercise[title]",
+          placeholder: "Enter title of exercise...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-envelope")
       ),
       FormGroup.new(
-        Input.new(
-          "text",
-          "exercise[description]",
-          "Add a brief description for this exercise..."
-        ),
+        Input.new({
+          type: "text",
+          name: "exercise[description]",
+          placeholder: "Add a brief description for this exercise...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-envelope")
       ),
       fileUploader("exercise[video]"),
       FormGroup.new(
-        Input.new("number", "exercise[sets]", "How many sets?..."),
+        Input.new({
+          type: "number",
+          name: "exercise[sets]",
+          placeholder: "How many sets?...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-envelope")
       ),
       FormGroup.new(
-        Input.new("number", "exercise[repetitions]", "How many reps?..."),
+        Input.new({
+          type: "number",
+          name: "exercise[repetitions]",
+          placeholder: "How many reps?...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-envelope")
       ),
-      Input.new("hidden", "exercise[program_id]", null, null, this.program.id),
+      Input.new({
+        type: "hidden",
+        name: "exercise[program_id]",
+        id: this.program.id,
+        class: "form-control pl-5 rounded-pill"
+      }),
       Button.new(
         "create_exercise",
         "Create Exercise",

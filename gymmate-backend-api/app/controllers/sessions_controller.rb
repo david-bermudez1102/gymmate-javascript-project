@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
         auth_token = account.generate_auth_token
         render json: { auth_token:auth_token, userable_id:account.userable_id, userable_type:account.userable_type }
       else
-        render json: { message: "error", error: "Email or Password incorrect. Try again", status: 400}, status: :bad_request
+        render json: { message: "error", errors: ["Email or Password incorrect. Try again"]}
       end
   end
 

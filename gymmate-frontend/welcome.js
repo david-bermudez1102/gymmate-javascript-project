@@ -29,25 +29,65 @@ class Welcome {
 
   static newUserForm(url) {
     const newUserForm = Form.new("new_user", url, "POST");
+    newUserForm.setAttribute("novalidate", true)
     newUserForm.append(
       FormGroup.new(
-        Input.new("text", "account[name]", "Your Name..."),
+        Input.new({
+          type: "text",
+          name: "account[name]",
+          placeholder: "Your Name...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your name requires minimum 3 characters."
+        }),
         Icon.new("fas fa-user")
       ),
       FormGroup.new(
-        Input.new("text", "account[lastname]", "Your Lastname..."),
+        Input.new({
+          type: "text",
+          name: "account[lastname]",
+          placeholder: "Your Lastname...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your lastname requires minimum 3 characters."
+        }),
         Icon.new("fas fa-user")
       ),
       FormGroup.new(
-        Input.new("text", "account[username]", "Your Username..."),
+        Input.new({
+          type: "text",
+          name: "account[username]",
+          placeholder: "Your Username...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your username requires at least 6 characters."
+        }),
         Icon.new("fas fa-at")
       ),
       FormGroup.new(
-        Input.new("email", "account[email]", "Your Email..."),
+        Input.new({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your Email...",
+          class: "form-control pl-5 rounded-pill",
+          required: "required",
+          "data-alert": "Please provide a valid email."
+        }),
         Icon.new("fas fa-envelope")
       ),
       FormGroup.new(
-        Input.new("password", "account[password]", "Your Password..."),
+        Input.new({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your password requires minimum 6 characters."
+        }),
         Icon.new("fas fa-lock")
       ),
       FormGroup.new(
@@ -67,11 +107,21 @@ class Welcome {
     loginForm.append(
       H1.new("Login"),
       FormGroup.new(
-        Input.new("email", "account[email]", "Your Email..."),
+        Input.new({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your email...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-envelope")
       ),
       FormGroup.new(
-        Input.new("password", "account[password]", "Your Password..."),
+        Input.new({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill"
+        }),
         Icon.new("fas fa-lock")
       ),
       Button.new(
@@ -141,8 +191,8 @@ class Welcome {
 }
 
 if (sessionStorage.getItem("auth_token")) {
-  setSession()
-  setTimeout(loadUrl,50)
+  setSession();
+  setTimeout(loadUrl, 50);
 } else {
- Welcome.render();
+  Welcome.render();
 }

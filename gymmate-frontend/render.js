@@ -32,13 +32,7 @@ class Render {
       }
     };
 
-    const form = Form.new(
-      "new_search",
-      SEARCH_URL,
-      "GET",
-      handleSubmit,
-      sessionStorage.getItem("auth_token")
-    );
+    const form = Form.new("new_search", SEARCH_URL, "GET", handleSubmit);
     form.className = "mx-auto";
 
     const div = Div.new("input-group");
@@ -52,12 +46,13 @@ class Render {
       )
     );
     div.append(
-      Input.new(
-        "search",
-        "query",
-        "Search routines, trainers, etc...",
-        "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
-      ),
+      Input.new({
+        type: "search",
+        name: "query",
+        placeholder: "Search routines, trainers, etc...",
+        class:
+          "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
+      }),
       span
     );
     form.append(div);
@@ -186,7 +181,7 @@ class Render {
     <p class="float-sm-right">
       <a href="#">Back to top</a>
     </p>
-    <p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+    <p>Gymmate &copy; Bootstrap, but please download and customize it for yourself!</p>
     <p class="float-sm-right lead">
       <a href="#" class="footer-link text-light"><i class="fab fa-facebook-square"></i></a>
       <a href="#" class="footer-link text-light"><i class="fab fa-twitter-square"></i></a>
@@ -293,7 +288,7 @@ class Render {
         counterDiv.innerHTML = count;
         count--;
       } else {
-        countDownDiv.parentNode.querySelector("video").play()
+        countDownDiv.parentNode.querySelector("video").play();
         countDownDiv.remove();
         clearInterval(counter);
       }
@@ -321,9 +316,15 @@ class Render {
     spinner.remove();
   }
 
-  static error(json,target){
-    Render.hideSpinner(main)
-    target.prepend(Div.new("alert alert-danger", undefined, json.error))
-    target.querySelectorAll("input").forEach(input => input.className += " is-invalid")
+  static error(json, target) {
+    console.log(json);
+    Render.hideSpinner(main);
+    const errorsList = List.new();
+    json.errors.forEach(error => errorsList.append(Item.new(error)));
+    if (d.querySelector(".alert")) d.querySelector(".alert").remove();
+    target.prepend(Div.new("alert alert-danger", undefined, errorsList));
+    target
+      .querySelectorAll("input")
+      .forEach(input => (input.className += " is-invalid"));
   }
 }

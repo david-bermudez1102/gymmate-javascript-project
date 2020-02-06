@@ -21,20 +21,12 @@ class Button {
 }
 
 class Input {
-  static new(
-    type,
-    name,
-    placeholder,
-    className = "form-control pl-5 rounded-pill",
-    value = ""
-  ) {
-    this.input = d.createElement("input");
-    this.input.type = type;
-    this.input.name = name;
-    if (placeholder) this.input.placeholder = placeholder;
-    this.input.className = className;
-    this.input.value = value;
-    return this.input;
+  static new(attributes) {
+    const input = d.createElement("input");
+    Object.keys(attributes).forEach(attribute =>
+      input.setAttribute(attribute, attributes[attribute])
+    );
+    return input;
   }
 }
 
@@ -60,19 +52,28 @@ class Form {
     f.id = id;
     f.action = action;
     f.method = method;
-    if(!target) target = f;
-    f.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      if (method == "GET")
-        action = action + `&${new URLSearchParams(formData).toString()}`;
-      if (method !== "GET") {
-        new Fetch(formData, method, action, handleSubmit, target).submit();
-      } else {
-        new Fetch(formData, method, action, handleSubmit, target).request();
-      }
-      e.target.reset();
-    });
+    f.className = "needs-validation";
+    if (!target) target = f;
+    f.addEventListener(
+      "submit",
+      function(e) {
+        f.classList.add("was-validated");
+        e.preventDefault();
+        e.stopPropagation();
+        if (f.checkValidity() === true) {
+          const formData = new FormData(this);
+          if (method == "GET")
+            action = action + `&${new URLSearchParams(formData).toString()}`;
+          if (method !== "GET") {
+            new Fetch(formData, method, action, handleSubmit, target).submit();
+          } else {
+            new Fetch(formData, method, action, handleSubmit, target).request();
+          }
+          e.target.reset();
+        }
+      },
+      false
+    );
     return f;
   }
 }
@@ -93,7 +94,10 @@ class FormGroup {
       );
       div.append(Column.new(btn, "col-auto", "z-index:2;"));
     }
-    div.append(Column.new(input, "col col-sm-12"));
+    const inputColumn = Column.new(input, "col col-sm-12");
+    if (input.dataset.alert)
+      inputColumn.append(Div.new("invalid-tooltip", null, input.dataset.alert));
+    div.append(inputColumn);
     return div;
   }
 }
@@ -260,8 +264,8 @@ class Span {
 }
 
 class ProgressBar {
-  static new(value,bgColor) {
-    const progressRadius = (251.2*value)/100
+  static new(value, bgColor) {
+    const progressRadius = (251.2 * value) / 100;
     return new DOMParser().parseFromString(
       `
     <svg id="svg" viewbox="0 0 100 100" style="width:70px;">
@@ -271,7 +275,7 @@ class ProgressBar {
         stroke-linecap="round"
         stroke-width="5"
         stroke="#fff"
-        stroke-dasharray="${progressRadius},${251.2-progressRadius}"
+        stroke-dasharray="${progressRadius},${251.2 - progressRadius}"
         d="M50 10
            a 40 40 0 0 1 0 80
            a 40 40 0 0 1 0 -80"
@@ -324,7 +328,11 @@ const callback = json => {
 };
 
 const fileUploader = name => {
-  const file = Input.new("file", name, null, "form-control-file");
+  const file = Input.new({
+    type: "file",
+    name: name,
+    class: "form-control-file"
+  });
   file.accept = "video/mp4, video/ogg, video/webm";
   file.onchange = "handleFiles(this.files)";
   return Div.new("drop-area", null, file);
