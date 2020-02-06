@@ -293,6 +293,7 @@ class Render {
         counterDiv.innerHTML = count;
         count--;
       } else {
+        countDownDiv.parentNode.querySelector("video").play()
         countDownDiv.remove();
         clearInterval(counter);
       }

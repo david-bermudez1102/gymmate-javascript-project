@@ -1,7 +1,6 @@
 class ProgramsController < ApplicationController
   def create
-    account = Account.find_by(auth_token: params[:auth_token])
-    trainer = Trainer.find_by(id: account.userable_id)
+    trainer = Trainer.find_by(id: current_user.userable_id)
     program = trainer.programs.new(program_params)
     if program.save
       render json: program

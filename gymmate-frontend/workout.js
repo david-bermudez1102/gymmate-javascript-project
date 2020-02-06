@@ -186,7 +186,7 @@ class Workout {
 
     header.append(
       title,
-      this.startExerciseBtn(exercise, `#exercise_${exercise.id}`),
+      this.startExerciseBtn(exercise),
       ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
     );
 
@@ -204,10 +204,6 @@ class Workout {
     section.id = `exercise_${exercise.id}`;
 
     const video = Video.new(exercise.video);
-
-    video.addEventListener("timeupdate", () => {
-      if (video.currentTime == video.duration) this.completeExercise(exercise);
-    });
 
     section.append(
       video,
@@ -235,11 +231,23 @@ class Workout {
     }).submit();
   }
 
-  startExerciseBtn(exercise, section) {
+  startExerciseBtn(exercise) {
     return Button.new(
       `start_exercise_${exercise.id}`,
       Icon.new("far fa-play-circle display-4", "font-size: 40px;"),
-      "btn btn-primary btn-sm rounded-circle shadow", () => document.querySelector(section).append(Render.counter(5))
+      "btn btn-primary btn-sm rounded-circle shadow",
+      () => {
+        const exerciseContainer = document.querySelector(
+          `#exercise_${exercise.id}`
+        );
+        const video = exerciseContainer.querySelector("video");
+
+        exerciseContainer.append(Render.counter(5));
+        video.addEventListener("timeupdate", () => {
+          if (video.currentTime == video.duration)
+            this.completeExercise(exercise);
+        });
+      }
     );
   }
 }

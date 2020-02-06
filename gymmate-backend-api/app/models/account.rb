@@ -1,4 +1,12 @@
 class Account < ApplicationRecord
+  validates :name, presence: :true, format: { with: /\A[a-zA-Z]+\Z/ }
+  validates :lastname, presence: :true, format: { with: /\A[a-zA-Z]+\Z/ }
+  validates :username, length: { minimum: 6 }, format: { with: /\A[a-zA-Z0-9-_.]+\Z/, message:"can't have any spaces or special characters, except for dashes or dots" }, uniqueness: true
+  validates :email, format: {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i}, uniqueness: {message:"already belongs to an existing account"}
+  validates :password, presence: true, length: { in: 6..50 }, format: { without: /\s/ }, :on => :create
+  validates :password, presence: true, length: { in: 6..50 }, format: { without: /\s/ }, :on => :update, :unless => lambda{ |user| user.password.to_s.empty? }
+  validates :date_of_birth, :sex, presence: true
+
   belongs_to :userable, polymorphic: true
   has_many :pictures
   has_many :videos
