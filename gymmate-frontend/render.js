@@ -278,6 +278,29 @@ class Render {
     return link;
   }
 
+  static counter(start) {
+    let count = start;
+    const countDownDiv = Div.new(
+      "d-flex position-absolute w-100 h-100 align-items-center justify-content-center"
+    );
+    countDownDiv.style = "top:0; left:0; background: rgba(0,0,0,.5);";
+    const counterDiv = Div.new(
+      "d-flex rounded-circle display-4 bg-dark justify-content-center align-items-center"
+    );
+    counterDiv.style = "width:80px; height:80px;";
+    const counter = setInterval(() => {
+      if (count >= 0) {
+        counterDiv.innerHTML = count;
+        count--;
+      } else {
+        countDownDiv.remove();
+        clearInterval(counter);
+      }
+    }, 1000);
+    countDownDiv.append(counterDiv);
+    return countDownDiv;
+  }
+
   static logoutBtn() {
     return Button.new("logout_button", "Log Out", null, Account.logout);
   }

@@ -144,7 +144,10 @@ class Workout {
 
     const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
 
-    title.append(Icon.new("fas fa-running text-primary"), ` ${this.program.title}`);
+    title.append(
+      Icon.new("fas fa-running text-primary"),
+      ` ${this.program.title}`
+    );
 
     const section = Section.new(title, "bg-dark text-white");
     section.id = `workout_${this.id}`;
@@ -183,6 +186,7 @@ class Workout {
 
     header.append(
       title,
+      this.startExerciseBtn(exercise, `#exercise_${exercise.id}`),
       ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
     );
 
@@ -196,7 +200,7 @@ class Workout {
       exercise.caloriesBurnt()
     );
 
-    const section = Section.new(header, "bg-dark text-white");
+    const section = Section.new(header, "position-relative bg-dark text-white");
     section.id = `exercise_${exercise.id}`;
 
     const video = Video.new(exercise.video);
@@ -229,5 +233,13 @@ class Workout {
       currentUser = user;
       console.log(json);
     }).submit();
+  }
+
+  startExerciseBtn(exercise, section) {
+    return Button.new(
+      `start_exercise_${exercise.id}`,
+      Icon.new("far fa-play-circle display-4", "font-size: 40px;"),
+      "btn btn-primary btn-sm rounded-circle shadow", () => document.querySelector(section).append(Render.counter(5))
+    );
   }
 }
