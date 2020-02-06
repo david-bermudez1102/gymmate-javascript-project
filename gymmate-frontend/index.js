@@ -54,22 +54,22 @@ class Form {
     action,
     method,
     handleSubmit = json => setSession(json),
-    auth_token = null
+    target = null
   ) {
     const f = d.createElement("form");
     f.id = id;
     f.action = action;
     f.method = method;
+    if(!target) target = f;
     f.addEventListener("submit", function(e) {
       e.preventDefault();
       const formData = new FormData(this);
-      if (auth_token) action = action + `/?auth_token=${auth_token}`;
       if (method == "GET")
         action = action + `&${new URLSearchParams(formData).toString()}`;
       if (method !== "GET") {
-        new Fetch(formData, method, action, handleSubmit).submit();
+        new Fetch(formData, method, action, handleSubmit, target).submit();
       } else {
-        new Fetch(formData, method, action, handleSubmit).request();
+        new Fetch(formData, method, action, handleSubmit, target).request();
       }
       e.target.reset();
     });

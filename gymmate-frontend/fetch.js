@@ -1,9 +1,10 @@
 class Fetch {
-  constructor(data, method, url, callback) {
+  constructor(data, method, url, callback, target) {
     this._data = data;
     this._method = method;
     this._url = url;
     this._callback = callback;
+    this._target = target;
   }
 
   get data() {
@@ -18,8 +19,12 @@ class Fetch {
     return this._url;
   }
 
-  get callback(){
-    return this._callback
+  get callback() {
+    return this._callback;
+  }
+
+  get target() {
+    return this._target;
   }
 
   get configObj() {
@@ -27,7 +32,7 @@ class Fetch {
       method: this.method,
       headers: {
         Accept: "application/json",
-        "Authorization": `Token token=${sessionStorage.getItem("auth_token")}`
+        Authorization: `Token token=${sessionStorage.getItem("auth_token")}`
       },
       body: this.data
     };
@@ -37,17 +42,22 @@ class Fetch {
     Render.spinner(main);
     fetch(this.url, this.configObj)
       .then(this.parseJson)
-      .then(this.callback);
+      .then(json => {
+        if (json.message === "success") this.callback(json);
+        else Render.error(json, this.target);
+      })
+      .catch(console.log);
   }
 
   request() {
-    const token = sessionStorage.getItem("auth_token")
+    const token = sessionStorage.getItem("auth_token");
     const h = new Headers();
     h.append("Authorization", `Token token=${token}`);
     Render.spinner(main);
-    fetch(this.url, {headers: h})
+    fetch(this.url, { headers: h })
       .then(this.parseJson)
-      .then(this.callback);
+      .then(this.callback)
+      .catch(console.log);
   }
 
   parseJson(response) {

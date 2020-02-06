@@ -307,7 +307,6 @@ class Render {
   }
 
   static spinner(node, target = container) {
-    document.documentElement.scrollTop = 0;
     const spinner = d.createElement("div");
     spinner.setAttribute("id", "spinner");
     spinner.style.visibility = "visible";
@@ -320,5 +319,11 @@ class Render {
     spinner.style.visibility = "hidden";
     node.style.display = "";
     spinner.remove();
+  }
+
+  static error(json,target){
+    Render.hideSpinner(main)
+    target.prepend(Div.new("alert alert-danger", undefined, json.error))
+    target.querySelectorAll("input").forEach(input => input.className += " is-invalid")
   }
 }

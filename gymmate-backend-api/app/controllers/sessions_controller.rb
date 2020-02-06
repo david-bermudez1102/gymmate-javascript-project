@@ -2,9 +2,11 @@ class SessionsController < ApplicationController
 
   def create
     account = Account.find_by(email: session_params[:email])
-      if account.authenticate(session_params[:password])
+      if account && account.authenticate(session_params[:password])
         auth_token = account.generate_auth_token
-        render json: {auth_token:auth_token, userable_id:account.userable_id, userable_type:account.userable_type}
+        render json: { auth_token:auth_token, userable_id:account.userable_id, userable_type:account.userable_type }
+      else
+        render json: { message: "error", error: "Email or Password incorrect. Try again", status: 400}, status: :bad_request
       end
   end
 

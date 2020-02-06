@@ -7,6 +7,8 @@ class Account < ApplicationRecord
   validates :password, presence: true, length: { in: 6..50 }, format: { without: /\s/ }, :on => :update, :unless => lambda{ |user| user.password.to_s.empty? }
   validates :date_of_birth, :sex, presence: true
 
+  enum sex: 0...2
+
   belongs_to :userable, polymorphic: true
   has_many :pictures
   has_many :videos
