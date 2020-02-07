@@ -204,7 +204,7 @@ class Program {
   startProgramBtn() {
     const form = Form.new("new_workout", WORKOUTS_URL, "POST", json => {
       Render.hideSpinner(main);
-      const user = Object.assign(new User(), currentUser);
+      const user = Object.assign(new User, currentUser);
       const workout = Workout.create(user, json);
       user.workouts.push(workout);
       currentUser = user;

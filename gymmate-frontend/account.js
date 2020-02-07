@@ -71,6 +71,13 @@ class Account {
         `${url}/${content.id}`,
         json => {
           Render.hideSpinner(main);
+          const trainer = Object.assign(new Trainer, currentUser);
+          trainer.programs = trainer.programs.filter(
+            program => program.id !== json.id
+          )
+          currentUser = trainer;
+          removeAll(target);
+          currentUser.allPrograms(target);
           console.log(json);
         },
         target

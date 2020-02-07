@@ -19,9 +19,9 @@ class ProgramsController < ApplicationController
 
   def destroy
     trainer = Trainer.find_by(id: current_user.userable_id)
-    program = Program.find_by(id: params[:id])
+    program = trainer.programs.find_by(id: params[:id])
     if program.destroy
-      render json: {message: "Success"}
+      render json: program
     else
       render json: {errors: ["Content could not be deleted"]}
     end
