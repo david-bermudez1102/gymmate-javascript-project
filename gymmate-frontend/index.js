@@ -57,13 +57,13 @@ class Form {
     f.addEventListener(
       "submit",
       function(e) {
-        f.classList.add("was-validated");
+        if (!f.method === "GET") f.classList.add("was-validated");
         e.preventDefault();
         e.stopPropagation();
         if (f.checkValidity() === true) {
           const formData = new FormData(this);
           if (method == "GET")
-            action = action + `&${new URLSearchParams(formData).toString()}`;
+            action = action + `/?${new URLSearchParams(formData).toString()}`;
           if (method !== "GET") {
             new Fetch(formData, method, action, handleSubmit, target).submit();
           } else {
@@ -349,3 +349,5 @@ const isLoggedIn = () => {
 
 const isUser = () => currentUser instanceof User;
 const isTrainer = () => currentUser instanceof Trainer;
+
+const isOwner = account => currentUser === account

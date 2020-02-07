@@ -1,4 +1,6 @@
 class Program < ApplicationRecord
+  validates :title, presence: :true
+
   belongs_to :trainer
   has_many :exercises
   has_many :stars

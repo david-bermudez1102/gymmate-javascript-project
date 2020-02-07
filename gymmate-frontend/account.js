@@ -58,6 +58,20 @@ class Account {
     return div;
   }
 
+  options() {
+    const editBtn = Link.new(Icon.new("fas fa-pen"),"text-light");
+    const deleteBtn = Link.new(
+      Icon.new("fas fa-trash"),
+      "text-light"
+    );
+
+    const div = Div.new(
+      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between"
+    );
+    div.append(editBtn, deleteBtn)
+    return div
+  }
+
   static logout() {
     const callback = json => {
       sessionStorage.clear();

@@ -147,7 +147,7 @@ class Program {
   program(target) {
     const container = Section.new(
       "",
-      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white",
+      "row mt-1 w-100 bg-dark text-white",
       () => {
         removeAll(target);
         append(
@@ -158,9 +158,14 @@ class Program {
       }
     );
 
-    const title = Span.new(null, "display-4", "font-size: 40px;");
+    const title = Span.new(
+      null,
+      "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+      "font-size: 36px;"
+    );
     title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
     container.append(title);
+    if (isOwner(this.trainer)) container.append(this.trainer.options());
     if (isUser()) container.append(this.startProgramBtn());
     return container;
   }
