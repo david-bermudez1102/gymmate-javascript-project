@@ -260,7 +260,11 @@ class Render {
   }
 
   static mainMenuMessagesLink() {
-    return Link.new({ class: "nav-link", "data-toggle": "pill" }, null, "Messages");
+    return Link.new(
+      { class: "nav-link", "data-toggle": "pill" },
+      null,
+      "Messages"
+    );
   }
 
   static mainMenuRoutinesLink() {
@@ -344,5 +348,27 @@ class Render {
     target
       .querySelectorAll("input")
       .forEach(input => (input.className += " is-invalid"));
+  }
+
+  static modal() {
+    main.append(
+      Element.div(
+        { class: "modal d-flex", role:"dialog" },
+        null,
+        Element.div(
+          { class: "modal-dialog" },
+          null,
+          Element.div(
+            { class: "modal-content" },
+            null,
+            Element.div(
+              { class: "modal-header" },
+              null,
+              Element.div({ class: "modal-title display-4" }, null, "Hello")
+            )
+          )
+        )
+      )
+    );
   }
 }

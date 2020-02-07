@@ -95,9 +95,27 @@ class Account {
         },
         target
       ).submit();
-    return Link.new(
-      { class: "text-light" },
-      handleOnclick,
+
+    return Element.link(
+      {
+        class: "text-light",
+        "data-toggle": "tooltip",
+        "data-placement": "top",
+        title: "Delete Routine"
+      },
+      () => {
+        const prompt = Element.prompt(
+          `Delete "${content.title}"`,
+          "Are you sure you want to delete this routine?",
+          "Yes, Delete",
+          "No"
+        );
+        prompt
+          .querySelector("#confirmBtnValue")
+          .addEventListener("click", handleOnclick);
+        append(prompt, "myModal", main);
+        $("#myModal").modal("toggle");
+      },
       Icon.new("fas fa-trash")
     );
   }

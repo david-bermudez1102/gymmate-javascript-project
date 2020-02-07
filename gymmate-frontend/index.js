@@ -231,7 +231,7 @@ class Div {
     if (innerHTML) div.append(innerHTML);
     if (callback)
       div.addEventListener("click", e => {
-        callback();
+        if (callback) callback();
         e.preventDefault();
       });
     return div;
@@ -342,6 +342,7 @@ const loadNavbar = () => {
 d.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
   body.append(Render.footer());
+  $("body").tooltip({ selector: "[data-toggle=tooltip]" });
 });
 
 function append(element, id, target) {
@@ -358,3 +359,4 @@ const isUser = () => currentUser instanceof User;
 const isTrainer = () => currentUser instanceof Trainer;
 
 const isOwner = account => currentUser === account;
+
