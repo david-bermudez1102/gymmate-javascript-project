@@ -7,7 +7,7 @@ class Render {
     const container = Div.new("container-fluid", null);
 
     container.append(
-      Link.new(brand, "navbar-brand"),
+      Link.new({ class: "navbar-brand" }, null, brand),
       this.navbarToggler(),
       Div.new(
         "collapse navbar-collapse border-secondary",
@@ -108,14 +108,18 @@ class Render {
   }
 
   static homeLink() {
-    return Link.new(`Home`, "nav-link active", () => {
-      if (isLoggedIn()) {
-        removeAll(main);
-        main.append(new Grid().homeRow());
-      } else {
-        Welcome.render();
-      }
-    });
+    return Link.new(
+      { class: "nav-link active" },
+      () => {
+        if (isLoggedIn()) {
+          removeAll(main);
+          main.append(new Grid().homeRow());
+        } else {
+          Welcome.render();
+        }
+      },
+      `Home`
+    );
   }
 
   static navbarToggler() {
@@ -130,19 +134,27 @@ class Render {
   }
 
   static loginLink() {
-    return Link.new(`Login`, "nav-link", () => {
-      if (!isLoggedIn()) {
-        removeAll(main);
-        append(new Grid().loginRow(), null, main);
-      }
-    });
+    return Link.new(
+      { class: "nav-link" },
+      () => {
+        if (!isLoggedIn()) {
+          removeAll(main);
+          append(new Grid().loginRow(), null, main);
+        }
+      },
+      `Login`
+    );
   }
 
   static signUpLink() {
-    return Link.new(`Sign Up`, "nav-link", () => {
-      removeAll(main);
-      append(new Grid().loginRow(), null, main);
-    });
+    return Link.new(
+      { class: "nav-link" },
+      () => {
+        removeAll(main);
+        append(new Grid().loginRow(), null, main);
+      },
+      `Sign Up`
+    );
   }
 
   static accountLink() {
@@ -223,54 +235,60 @@ class Render {
   }
 
   static mainMenuHomeLink() {
-    const link = Link.new("Home", "nav-link active", () => {
-      removeAll(main);
-      main.append(new Grid().homeRow());
-    });
-    link.setAttribute("data-toggle", "pill");
-    return link;
+    return Link.new(
+      { class: "nav-link active", "data-toggle": "pill" },
+      () => {
+        removeAll(main);
+        main.append(new Grid().homeRow());
+      },
+      "Home"
+    );
   }
 
   static mainMenuProfileLink() {
-    const link = Link.new("Profile", "nav-link", () => {
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        mainContainer.append(currentUser.show());
-      }
-    });
-    link.setAttribute("data-toggle", "pill");
-    return link;
+    return Link.new(
+      { class: "nav-link", "data-toggle": "pill" },
+      () => {
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(mainContainer);
+          mainContainer.append(currentUser.show());
+        }
+      },
+      "Profile"
+    );
   }
 
   static mainMenuMessagesLink() {
-    const link = Link.new("Messages", "nav-link");
-    link.setAttribute("data-toggle", "pill");
-    return link;
+    return Link.new({ class: "nav-link", "data-toggle": "pill" }, null, "Messages");
   }
 
   static mainMenuRoutinesLink() {
-    const link = Link.new("My Routines", "nav-link", () => {
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        currentUser.allPrograms(mainContainer);
-      }
-    });
-    link.setAttribute("data-toggle", "pill");
-    return link;
+    return Link.new(
+      { class: "nav-link", "data-toggle": "pill" },
+      () => {
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(mainContainer);
+          currentUser.allPrograms(mainContainer);
+        }
+      },
+      "My Routines"
+    );
   }
 
   static mainMenuWorkoutsLink() {
-    const link = Link.new("My Workouts", "nav-link", () => {
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        currentUser.allWorkouts(mainContainer);
-      }
-    });
-    link.setAttribute("data-toggle", "pill");
-    return link;
+    return Link.new(
+      { class: "nav-link", "data-toggle": "pill" },
+      () => {
+        if (d.querySelector("#main_container")) {
+          const mainContainer = d.querySelector("#main_container");
+          removeAll(mainContainer);
+          currentUser.allWorkouts(mainContainer);
+        }
+      },
+      "My Workouts"
+    );
   }
 
   static counter(start) {

@@ -138,8 +138,10 @@ class Program {
     if (this.exercises.length === 0) {
       return "This program has no exercises yet.";
     } else {
-      return Link.new(`${this.exercises.length} Exercises.`, null, () =>
-        this.allExercises()
+      return Link.new(
+        { href: "#" },
+        () => this.allExercises(),
+        `${this.exercises.length} Exercises.`
       );
     }
   }
@@ -165,7 +167,8 @@ class Program {
     );
     title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
     container.append(title);
-    if (isOwner(this.trainer)) container.append(this.trainer.options(PROGRAMS_URL,this,target));
+    if (isOwner(this.trainer))
+      container.append(this.trainer.options(PROGRAMS_URL, this, target));
     if (isUser()) container.append(this.startProgramBtn());
     return container;
   }
@@ -204,7 +207,7 @@ class Program {
   startProgramBtn() {
     const form = Form.new("new_workout", WORKOUTS_URL, "POST", json => {
       Render.hideSpinner(main);
-      const user = Object.assign(new User, currentUser);
+      const user = Object.assign(new User(), currentUser);
       const workout = Workout.create(user, json);
       user.workouts.push(workout);
       currentUser = user;

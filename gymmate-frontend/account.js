@@ -63,32 +63,43 @@ class Account {
   }
 
   options(url, content, target) {
-    const editBtn = Link.new(Icon.new("fas fa-pen"), "text-light");
-    const deleteBtn = Link.new(Icon.new("fas fa-trash"), "text-light", () =>
+    const editBtn = Link.new(
+      { class: "text-light" },
+      null,
+      Icon.new("fas fa-pen")
+    );
+
+    const div = Div.new(
+      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between"
+    );
+    div.append(editBtn, this.deleteBtn(url, content, target));
+    return div;
+  }
+
+  deleteBtn(url, content, target) {
+    const handleOnclick = () =>
       new Fetch(
         null,
         "DELETE",
         `${url}/${content.id}`,
         json => {
           Render.hideSpinner(main);
-          const trainer = Object.assign(new Trainer, currentUser);
+          const trainer = Object.assign(new Trainer(), currentUser);
           trainer.programs = trainer.programs.filter(
             program => program.id !== json.id
-          )
+          );
           currentUser = trainer;
           removeAll(target);
           currentUser.allPrograms(target);
           console.log(json);
         },
         target
-      ).submit()
+      ).submit();
+    return Link.new(
+      { class: "text-light" },
+      handleOnclick,
+      Icon.new("fas fa-trash")
     );
-
-    const div = Div.new(
-      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between"
-    );
-    div.append(editBtn, deleteBtn);
-    return div;
   }
 
   static logout() {

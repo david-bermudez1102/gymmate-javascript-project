@@ -180,15 +180,22 @@ class Subtitle {
 }
 
 class Link {
-  static new(innerHTML, className, callback, href = "#") {
+  static new(attributes, handleOnclick, ...append) {
     const link = d.createElement("a");
-    link.href = href;
-    link.append(innerHTML);
-    link.className = className;
+
+    Object.keys(attributes).forEach(attribute =>
+      link.setAttribute(attribute, attributes[attribute])
+    );
+
+    if (!Object.keys(attributes).some(attribute => attribute === "href"))
+      link.href = "#";
+
     link.addEventListener("click", e => {
-      callback();
+      if (handleOnclick) handleOnclick();
       e.preventDefault();
     });
+
+    append.forEach(a => link.append(a));
     return link;
   }
 }
@@ -350,4 +357,4 @@ const isLoggedIn = () => {
 const isUser = () => currentUser instanceof User;
 const isTrainer = () => currentUser instanceof Trainer;
 
-const isOwner = account => currentUser === account
+const isOwner = account => currentUser === account;

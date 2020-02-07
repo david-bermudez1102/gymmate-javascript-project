@@ -65,10 +65,10 @@ class Trainer extends Account {
     newTrainer.prepend(H1.new("Sign Up As a Trainer"));
     target.append(newTrainer);
     newTrainer.append(
-      Link.new("Sign up as a Gym Goer instead.", "small", () => {
+      Link.new({class:"small"}, () => {
         removeAll(target);
         new User().renderForm(target);
-      })
+      }, "Sign up as a Gym Goer instead.")
     );
   }
 
