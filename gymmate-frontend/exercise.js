@@ -67,8 +67,7 @@ class Exercise {
           removeAll(mainContainer);
           mainContainer.append(new Grid().showProgramRow(this.program));
         }
-      },
-      sessionStorage.getItem("auth_token")
+      }
     );
     newExerciseForm.append(
       H1.new("Add New Exercise"),
@@ -112,7 +111,7 @@ class Exercise {
       Input.new({
         type: "hidden",
         name: "exercise[program_id]",
-        id: this.program.id,
+        value: this.program.id,
         class: "form-control pl-5 rounded-pill"
       }),
       Button.new(

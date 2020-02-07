@@ -43,7 +43,11 @@ class Account {
   }
 
   profilePic() {
-    const div = Div.new("w-100 mb-4 px-0 pb-2 text-dark text-center", `account_${this.id}_avatar`, null);
+    const div = Div.new(
+      "w-100 mb-4 px-0 pb-2 text-dark text-center",
+      `account_${this.id}_avatar`,
+      null
+    );
     div.append(H1.new(`${this.name} ${this.lastname}`, "text-primary"));
     div.append(Icon.new("fas fa-user-circle", "font-size:15vw"));
     return div;
@@ -58,18 +62,26 @@ class Account {
     return div;
   }
 
-  options() {
-    const editBtn = Link.new(Icon.new("fas fa-pen"),"text-light");
-    const deleteBtn = Link.new(
-      Icon.new("fas fa-trash"),
-      "text-light"
+  options(url, content, target) {
+    const editBtn = Link.new(Icon.new("fas fa-pen"), "text-light");
+    const deleteBtn = Link.new(Icon.new("fas fa-trash"), "text-light", () =>
+      new Fetch(
+        null,
+        "DELETE",
+        `${url}/${content.id}`,
+        json => {
+          Render.hideSpinner(main);
+          console.log(json);
+        },
+        target
+      ).submit()
     );
 
     const div = Div.new(
       "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between"
     );
-    div.append(editBtn, deleteBtn)
-    return div
+    div.append(editBtn, deleteBtn);
+    return div;
   }
 
   static logout() {

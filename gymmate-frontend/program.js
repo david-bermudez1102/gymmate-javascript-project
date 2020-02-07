@@ -165,7 +165,7 @@ class Program {
     );
     title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
     container.append(title);
-    if (isOwner(this.trainer)) container.append(this.trainer.options());
+    if (isOwner(this.trainer)) container.append(this.trainer.options(PROGRAMS_URL,this,target));
     if (isUser()) container.append(this.startProgramBtn());
     return container;
   }

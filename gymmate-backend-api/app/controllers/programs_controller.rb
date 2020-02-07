@@ -17,6 +17,16 @@ class ProgramsController < ApplicationController
     render json: program
   end
 
+  def destroy
+    trainer = Trainer.find_by(id: current_user.userable_id)
+    program = Program.find_by(id: params[:id])
+    if program.destroy
+      render json: {message: "Success"}
+    else
+      render json: {errors: ["Content could not be deleted"]}
+    end
+  end
+
   private
     def program_params
       params.require(:program).permit(:title,:description,:video)

@@ -1,6 +1,6 @@
 class Trainer < ApplicationRecord
   has_one :account, as: :userable, dependent: :destroy
-  has_many :programs
+  has_many :programs, :dependent => :delete_all 
 
   def self.accounts
     self.all.map do |trainer|

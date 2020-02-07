@@ -5,7 +5,7 @@ class Account < ApplicationRecord
   validates :email, format: {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i}, uniqueness: {message:"already belongs to an existing account"}
   validates :password, presence: true, length: { in: 6..50 }, format: { without: /\s/ }, :on => :create
   validates :password, presence: true, length: { in: 6..50 }, format: { without: /\s/ }, :on => :update, :unless => lambda{ |user| user.password.to_s.empty? }
-  validates :date_of_birth, :sex, presence: true
+
 
   enum sex: 0...2
 
