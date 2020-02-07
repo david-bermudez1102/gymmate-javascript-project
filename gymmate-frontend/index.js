@@ -268,22 +268,22 @@ class ProgressBar {
     const progressRadius = (251.2 * value) / 100;
     return new DOMParser().parseFromString(
       `
-    <svg id="svg" viewbox="0 0 100 100" style="width:70px;">
-      <circle cx="50" cy="50" r="45" fill="${bgColor}" />
-      <path
-        fill="none"
-        stroke-linecap="round"
-        stroke-width="5"
-        stroke="#fff"
-        stroke-dasharray="${progressRadius},${251.2 - progressRadius}"
-        d="M50 10
-           a 40 40 0 0 1 0 80
-           a 40 40 0 0 1 0 -80"
-      />
-      <text x="50" y="50" text-anchor="middle" dy="7" font-size="20" fill="#FFF">
-        ${value}%
-      </text>
-    </svg>;
+      <svg id="svg" viewbox="0 0 100 100" style="width:70px;">
+        <circle cx="50" cy="50" r="45" fill="${bgColor}" />
+        <path
+          fill="none"
+          stroke-linecap="round"
+          stroke-width="5"
+          stroke="#fff"
+          stroke-dasharray="${progressRadius},${251.2 - progressRadius}"
+          d="M50 10
+            a 40 40 0 0 1 0 80
+            a 40 40 0 0 1 0 -80"
+        />
+        <text x="50" y="50" text-anchor="middle" dy="7" font-size="20" fill="#FFF">
+          ${value}%
+        </text>
+      </svg>;
     `,
       "text/html"
     ).body.firstChild;
@@ -325,17 +325,6 @@ const callback = json => {
       main.append(new Grid().homeRow());
     }).request();
   }
-};
-
-const fileUploader = name => {
-  const file = Input.new({
-    type: "file",
-    name: name,
-    class: "form-control-file"
-  });
-  file.accept = "video/mp4, video/ogg, video/webm";
-  file.onchange = "handleFiles(this.files)";
-  return Div.new("drop-area", null, file);
 };
 
 const loadNavbar = () => {

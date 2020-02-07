@@ -43,9 +43,9 @@ class Account {
   }
 
   profilePic() {
-    const div = Div.new("mb-4 pb-2", `account_${this.id}_avatar`, null);
-    div.append(H1.new(`${this.name} ${this.lastname}`));
-    div.append(Icon.new("fas fa-user-circle", "font-size:140px"));
+    const div = Div.new("w-100 mb-4 px-0 pb-2 text-dark text-center", `account_${this.id}_avatar`, null);
+    div.append(H1.new(`${this.name} ${this.lastname}`, "text-primary"));
+    div.append(Icon.new("fas fa-user-circle", "font-size:15vw"));
     return div;
   }
 

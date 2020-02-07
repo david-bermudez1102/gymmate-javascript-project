@@ -115,7 +115,9 @@ footer {
   border: 2px dashed #ccc;
   border-radius: 20px;
   width: 100%;
+  cursor: pointer;
   font-family: sans-serif;
+  min-height:40vh;
   padding: 20px; }
 
 .drop-area.highlight {

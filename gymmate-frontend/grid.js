@@ -77,8 +77,8 @@ class Grid {
   homeRow() {
     loadNavbar();
     this.row.append(
-      Column.new(Render.menu(), "col-md-3 d-flex justify-content-center"),
-      Column.new(Render.home(), "col-sm mt-2 px-1", "", "main_container")
+      Column.new(Render.menu(), "col-sm-6 col-md-5 col-lg-3 d-flex"),
+      Column.new(Render.home(), "col-sm-6 col-md px-1", "", "main_container")
     );
     this.row.id = "home_row";
     return this.row;

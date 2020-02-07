@@ -206,7 +206,7 @@ class Render {
 
   static menu() {
     const menu = Div.new(
-      "nav text-dark flex-column nav-pills w-100 dark",
+      "nav flex-column w-100 flex-wrap nav-pills shadow p-4 rounded text-light",
       "v-pills-tab"
     );
     menu.setAttribute("role", "tablist");
