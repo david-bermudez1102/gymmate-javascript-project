@@ -5,7 +5,8 @@ const fileUploader = name => {
     name: name,
     class: "d-none"
   });
-  label.className = "drop-area d-flex justify-content-center align-items-center mb-3";
+  label.className =
+    "drop-area d-flex justify-content-center align-items-center mb-3";
   label.append(
     Icon.new(
       "fas fa-cloud-upload-alt text-large text-primary",
@@ -14,14 +15,16 @@ const fileUploader = name => {
     file
   );
   file.accept = "video/mp4, video/ogg, video/webm";
-  file.onchange = "handleFiles(this.files)";
+  file.addEventListener("change", () => {
+    handleFiles(file.files);
+  });
 
   let dropArea = label;
 
-  function preventDefaults(e) {
+  const preventDefaults = e => {
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
   // Prevent default drag behaviors
   ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
     dropArea.addEventListener(eventName, preventDefaults, false);
@@ -50,21 +53,21 @@ const fileUploader = name => {
   function handleDrop(e) {
     var dt = e.dataTransfer;
     var files = dt.files;
-    removeAll(label);
-    Render.spinner(file,label);
     handleFiles(files);
   }
 
   function handleFiles(files) {
+    removeAll(label);
+    Render.spinner(file, label);
     files = [...files];
     files.forEach(previewFile);
   }
 
-  function previewFile(file) {
+  function previewFile(f) {
     const reader = new FileReader();
     const video = d.createElement("video");
     const source = d.createElement("source");
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(f);
     reader.onloadend = () => {
       source.src = reader.result;
       source.className = "embed-responsive-item";
@@ -72,7 +75,7 @@ const fileUploader = name => {
       video.controls = true;
       video.append(source);
       removeAll(label);
-      label.append(video);
+      label.append(file,video);
     };
   }
 
