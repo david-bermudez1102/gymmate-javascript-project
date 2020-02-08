@@ -19,7 +19,7 @@ class ProgramsController < ApplicationController
 
   def update
     trainer = Trainer.find_by(id: current_user.userable_id)
-    program = trainers.programs.find_by(id: params[:id])
+    program = trainer.programs.find_by(id: params[:id])
     if program.update(program_params)
       render json: program
     end

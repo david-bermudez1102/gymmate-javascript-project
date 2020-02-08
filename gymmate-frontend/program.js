@@ -196,9 +196,13 @@ class Program {
 
   update(json) {
     if (isTrainer && isOwner(currentUser)) {
+      
       const trainer = Object.assign(new Trainer(), currentUser);
-      const program = Program.create(trainer, json);
-      trainer.programs.push(program);
+      const program = Object.assign(
+        new Program(),
+        Program.create(trainer, json)
+      );
+      Object.assign(trainer.programs.find(p => p.id === program.id),program);
       currentUser = trainer;
       Render.hideSpinner(main);
       if (d.querySelector("#main_container")) {

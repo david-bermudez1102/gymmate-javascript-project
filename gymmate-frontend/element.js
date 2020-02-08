@@ -1,9 +1,9 @@
 class Element {
   static create(tagName, attributes, ...append) {
     const element = d.createElement(tagName);
-
-    Object.keys(attributes).forEach(attribute =>
+    Object.keys(attributes).forEach(attribute =>{
       element.setAttribute(attribute, attributes[attribute])
+    }
     );
 
     append.forEach(a => element.append(a));
@@ -23,28 +23,30 @@ class Element {
     });
   }
 
-  static handleOnsubmit(element, handleOnsubmit) {
+  static handleOnsubmit(element, method, handleOnsubmit) {
     return element.addEventListener(
       "submit",
       e => {
         e.preventDefault();
+        
         e.stopPropagation();
-        if (!element.method === "GET") element.classList.add("was-validated");
+        if (!method === "GET") element.classList.add("was-validated");
+        const formData = new FormData(element);
         if (element.checkValidity() === true) {
-          const formData = new FormData(element);
-          if (element.method == "GET")
+          
+          if (method === "GET")
             action = action + `/?${new URLSearchParams(formData).toString()}`;
-          if (element.method !== "GET") {
+          if (method !== "GET") {
             new Fetch(
               formData,
-              element.method,
+              method,
               element.action,
               handleOnsubmit
             ).submit();
           } else {
             new Fetch(
               formData,
-              element.method,
+              method,
               element.action,
               handleOnsubmit
             ).request();
@@ -91,13 +93,14 @@ class Element {
 
   static section(attributes, handleOnclick, ...append) {
     const element = this.create("section", attributes, ...append);
-    this.handleOnclick(element, handleOnclick);
+    this.handleOnclick(element, handleOnclick, false, false);
     return element;
   }
 
   static form(attributes, handleOnsubmit, ...append) {
     const element = this.create("form", attributes, ...append);
-    this.handleOnsubmit(element, handleOnsubmit);
+    this.handleOnsubmit(element, attributes["method"], handleOnsubmit);
+
     return element;
   }
 
