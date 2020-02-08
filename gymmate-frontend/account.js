@@ -49,10 +49,32 @@ class Account {
       null
     );
     div.append(H1.new(`${this.name} ${this.lastname}`, "text-primary"));
-    div.append(Icon.new("fas fa-user-circle", "font-size:15vw"));
+    div.append(
+      Element.form({ action: `${USERS_URL}/${this.id}` }, null, this.icon())
+    );
     return div;
   }
 
+  icon() {
+    const file = Element.input({
+      type: "file",
+      class: "d-none",
+      name: "account[profile_picture]"
+    });
+
+    const label = Element.label(
+      {},
+      null,
+      file,
+      Element.icon({ class: "fas fa-user-circle", style: "font-size:15vw" })
+    );
+
+    file.addEventListener("change", () => {
+      Picture.handleFiles(file.files, label, file);
+    });
+
+    return label;
+  }
   info() {
     const div = Div.new(null, `account_${this.id}_info`, null);
     div.append(P.new(`Username: ${this.username}`));

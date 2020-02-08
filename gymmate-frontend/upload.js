@@ -21,7 +21,7 @@ const fileUploader = (name, video) => {
 
   file.accept = "video/mp4, video/ogg, video/webm";
   file.addEventListener("change", () => {
-    handleFiles(file.files);
+    handleFiles(file.files, label, file);
   });
 
   let dropArea = label;
@@ -45,7 +45,11 @@ const fileUploader = (name, video) => {
   });
 
   // Handle dropped files
-  dropArea.addEventListener("drop", handleDrop, false);
+  dropArea.addEventListener(
+    "drop",
+    (e, label, file) => handleDrop(e, label, file),
+    false
+  );
 
   function highlight(e) {
     dropArea.classList.add("highlight");
@@ -55,34 +59,34 @@ const fileUploader = (name, video) => {
     dropArea.classList.remove("highlight");
   }
 
-  function handleDrop(e) {
-    var dt = e.dataTransfer;
-    var files = dt.files;
-    handleFiles(files);
-  }
-
-  function handleFiles(files) {
-    removeAll(label);
-    Render.spinner(file, label);
-    files = [...files];
-    files.forEach(previewFile);
-  }
-
-  function previewFile(f) {
-    const reader = new FileReader();
-    const video = d.createElement("video");
-    const source = d.createElement("source");
-    reader.readAsDataURL(f);
-    reader.onloadend = () => {
-      source.src = reader.result;
-      source.className = "embed-responsive-item";
-      video.className = "embed-responsive embed-responsive-4by3";
-      video.controls = true;
-      video.append(source);
-      removeAll(label);
-      label.append(file, video);
-    };
-  }
-
   return label;
 };
+
+function handleDrop(e, label, file) {
+  var dt = e.dataTransfer;
+  var files = dt.files;
+  handleFiles(files, label, file);
+}
+
+function handleFiles(files, label, file) {
+  removeAll(label);
+  Render.spinner(file, label);
+  files = [...files];
+  files.forEach(f => previewFile(f, label, file));
+}
+
+function previewFile(f, label, file) {
+  const reader = new FileReader();
+  const video = d.createElement("video");
+  const source = d.createElement("source");
+  reader.readAsDataURL(f);
+  reader.onloadend = () => {
+    source.src = reader.result;
+    source.className = "embed-responsive-item";
+    video.className = "embed-responsive embed-responsive-4by3";
+    video.controls = true;
+    video.append(source);
+    removeAll(label);
+    label.append(file, video);
+  };
+}

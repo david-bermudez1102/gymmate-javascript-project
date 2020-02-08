@@ -100,6 +100,13 @@ class Element {
 
   static icon(attributes, handleOnclick, ...append) {
     const element = this.create("i", attributes, ...append);
+    this.handleOnclick(element, handleOnclick, false, false);
+    return element;
+  }
+
+  static img(attributes, handleOnclick, ...append) {
+    const element = this.create("img", attributes, ...append);
+    this.handleOnclick(element, handleOnclick, false, false);
     return element;
   }
 

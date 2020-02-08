@@ -13,6 +13,10 @@ class Account < ApplicationRecord
   has_many :pictures
   has_many :videos
   has_many :likes
+  has_attached_file :profile_picture
+  validates_attachment :profile_picture, presence: true
+  do_not_validate_attachment_file_type :profile_picture
+  
   has_secure_password
 
   def generate_auth_token

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_02_185615) do
+ActiveRecord::Schema.define(version: 2020_02_08_172908) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -29,6 +29,10 @@ ActiveRecord::Schema.define(version: 2020_02_02_185615) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "auth_token"
+    t.string "profile_picture_file_name"
+    t.string "profile_picture_content_type"
+    t.integer "profile_picture_file_size"
+    t.datetime "profile_picture_updated_at"
     t.index ["userable_type", "userable_id"], name: "index_accounts_on_userable_type_and_userable_id"
   end
 
@@ -116,6 +120,10 @@ ActiveRecord::Schema.define(version: 2020_02_02_185615) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "profile_picture_file_name"
+    t.string "profile_picture_content_type"
+    t.integer "profile_picture_file_size"
+    t.datetime "profile_picture_updated_at"
   end
 
   create_table "videos", force: :cascade do |t|

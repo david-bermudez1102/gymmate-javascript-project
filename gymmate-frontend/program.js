@@ -158,7 +158,14 @@ class Program {
     container.append(title);
     if (isOwner(this.trainer))
       container.append(this.trainer.options(this, target));
-    if (isUser()) container.append(this.startProgramBtn());
+    if (isUser())
+      container.append(
+        Element.span(
+          { class: "col-lg-2 order-2 " },
+          null,
+          this.startProgramBtn()
+        )
+      );
     return container;
   }
 
@@ -202,7 +209,7 @@ class Program {
             "Add New Exercise"
           )
         : "",
-      isUser() ? section.append(this.startProgramBtn()) : ""
+      isUser() ? this.startProgramBtn() : ""
     );
   }
 
@@ -287,7 +294,7 @@ class Program {
       Input.new({ type: "hidden", name: "workout[program_id]", id: this.id }),
       Button.new(
         `start_routine_button_${this.id}`,
-        `Add this routine to my workouts`,
+        `Add to workouts`,
         "btn btn-primary shadow"
       )
     );
