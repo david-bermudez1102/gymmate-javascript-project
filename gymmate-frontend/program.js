@@ -74,29 +74,29 @@ class Program {
         class: "needs-validation"
       },
       handleSubmit,
-      H1.new(title),
+      title,
       FormGroup.new(
-        Input.new({
+        Element.input({
           type: "text",
           name: "program[title]",
           placeholder: "Enter a title for your program...",
           class: "form-control pl-5 rounded-pill",
           value: this.title || ""
         }),
-        Icon.new("fas fa-envelope")
+        Element.icon({ class: "fas fa-heading" })
       ),
       fileUploader("program[video]", this.video),
       FormGroup.new(
         Element.textArea(
           {
-            class: "form-control pl-5 rounded-pill",
+            class: "form-control pl-5",
             name: "program[description]",
             placeholder: "Enter a brief description for your program..."
           },
           null,
           this.description || ""
         ),
-        Icon.new("fas fa-lock")
+        Element.icon({ class: "fas fa-quote-left" })
       ),
       Button.new(
         "create_program",
@@ -195,19 +195,31 @@ class Program {
       return Element.section(
         { class: "text-left p-3 p-sm-5 rounded shadow " },
         null,
-        this.form("PATCH", "Edit Routine", "Update Routine", this.update)
+        this.form(
+          "PATCH",
+          Element.h1(
+            { class: "text-primary mb-4" },
+            null,
+            Element.icon({ class: "fas fa-edit" }),
+            " Edit Routine"
+          ),
+          "Update Routine",
+          this.update
+        )
       );
   }
 
   update(json) {
     if (isTrainer && isOwner(currentUser)) {
-      
       const trainer = Object.assign(new Trainer(), currentUser);
       const program = Object.assign(
         new Program(),
         Program.create(trainer, json)
       );
-      Object.assign(trainer.programs.find(p => p.id === program.id),program);
+      Object.assign(
+        trainer.programs.find(p => p.id === program.id),
+        program
+      );
       currentUser = trainer;
       Render.hideSpinner(main);
       if (d.querySelector("#main_container")) {

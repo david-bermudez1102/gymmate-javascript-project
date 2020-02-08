@@ -65,10 +65,14 @@ class Trainer extends Account {
     newTrainer.prepend(H1.new("Sign Up As a Trainer"));
     target.append(newTrainer);
     newTrainer.append(
-      Link.new({class:"small"}, () => {
-        removeAll(target);
-        new User().renderForm(target);
-      }, "Sign up as a Gym Goer instead.")
+      Link.new(
+        { class: "small" },
+        () => {
+          removeAll(target);
+          new User().renderForm(target);
+        },
+        "Sign up as a Gym Goer instead."
+      )
     );
   }
 
@@ -90,12 +94,26 @@ class Trainer extends Account {
         mainContainer.append(new Grid().newExerciseRow(program));
       }
     };
-    return new Program().form("POST", "Create a new Routine", "Create Routine",handleSubmit);
+    return new Program().form(
+      "POST",
+      Element.h1(
+        { class: "text-primary mb-4" },
+        null,
+        Element.icon({ class: "fas fa-plus-square" }),
+        " Create Routine"
+      ),
+      "Create Routine",
+      handleSubmit
+    );
   }
 
   allPrograms(target) {
     this.programs.forEach(program => {
-      append(new Grid().programRow(program, target), `program_${program.id}`, target);
+      append(
+        new Grid().programRow(program, target),
+        `program_${program.id}`,
+        target
+      );
     });
   }
 

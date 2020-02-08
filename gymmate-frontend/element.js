@@ -62,6 +62,18 @@ class Element {
     return element;
   }
 
+  static input(attributes, handleOnclick, ...append) {
+    const element = this.create("input", attributes, ...append);
+    this.handleOnclick(element, handleOnclick, false, false);
+    return element;
+  }
+
+  static h1(attributes, handleOnclick, ...append) {
+    const element = this.create("h1", attributes, ...append);
+    this.handleOnclick(element, handleOnclick, false, false);
+    return element;
+  }
+
   static textArea(attributes, handleOnclick, ...append) {
     const element = this.create("textarea", attributes, ...append);
     this.handleOnclick(element, handleOnclick);
