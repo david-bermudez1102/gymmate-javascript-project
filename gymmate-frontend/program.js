@@ -65,40 +65,23 @@ class Program {
     return program;
   }
 
-  form() {
-    const handleSubmit = json => {
-      const trainer = Object.assign(new Trainer(), currentUser);
-      const program = Program.create(trainer, json);
-      trainer.programs.push(program);
-      currentUser = trainer;
-      Render.hideSpinner(main);
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        append(
-          new Grid().showProgramRow(program),
-          `program_${program.id}`,
-          mainContainer
-        );
-        mainContainer.append(new Grid().newExerciseRow(program));
-      }
-    };
-
-    const newProgramForm = Form.new(
-      "new_program",
-      PROGRAMS_URL,
-      "POST",
-      handleSubmit
-    );
-
-    newProgramForm.append(
-      H1.new("Create Program"),
+  form(method, title, action, handleSubmit) {
+    return Element.form(
+      {
+        id: "new_program",
+        method: method,
+        action: `${PROGRAMS_URL}/${this.id || ""}`,
+        class: "needs-validation"
+      },
+      handleSubmit,
+      H1.new(title),
       FormGroup.new(
         Input.new({
           type: "text",
           name: "program[title]",
           placeholder: "Enter a title for your program...",
-          class: "form-control pl-5 rounded-pill"
+          class: "form-control pl-5 rounded-pill",
+          value: this.title || ""
         }),
         Icon.new("fas fa-envelope")
       ),
@@ -112,12 +95,10 @@ class Program {
       ),
       Button.new(
         "create_program",
-        "Create Program",
+        `${action}`,
         "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3"
       )
     );
-
-    return newProgramForm;
   }
 
   renderNewExerciseForm() {
@@ -168,7 +149,7 @@ class Program {
     title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
     container.append(title);
     if (isOwner(this.trainer))
-      container.append(this.trainer.options(PROGRAMS_URL, this, target));
+      container.append(this.trainer.options(this, target));
     if (isUser()) container.append(this.startProgramBtn());
     return container;
   }
@@ -202,6 +183,55 @@ class Program {
       );
     if (isUser()) section.append(this.startProgramBtn());
     return section;
+  }
+
+  edit() {
+    if (isTrainer && isOwner(currentUser))
+      return Element.section(
+        { class: "text-left p-3 p-sm-5 rounded shadow " },
+        null,
+        this.form("PATCH", "Edit Routine", "Update Routine", this.update)
+      );
+  }
+
+  update(json) {
+    if (isTrainer && isOwner(currentUser)) {
+      const trainer = Object.assign(new Trainer(), currentUser);
+      const program = Program.create(trainer, json);
+      trainer.programs.push(program);
+      currentUser = trainer;
+      Render.hideSpinner(main);
+      if (d.querySelector("#main_container")) {
+        const mainContainer = d.querySelector("#main_container");
+        removeAll(mainContainer);
+        append(
+          new Grid().showProgramRow(program),
+          `program_${program.id}`,
+          mainContainer
+        );
+        mainContainer.append(new Grid().newExerciseRow(program));
+      }
+    }
+  }
+
+  delete(target) {
+    new Fetch(
+      null,
+      "DELETE",
+      `${PROGRAMS_URL}/${this.id}`,
+      json => {
+        Render.hideSpinner(main);
+        const trainer = Object.assign(new Trainer(), currentUser);
+        trainer.programs = trainer.programs.filter(
+          program => program.id !== json.id
+        );
+        currentUser = trainer;
+        removeAll(target);
+        currentUser.allPrograms(target);
+        console.log(json);
+      },
+      target
+    ).submit();
   }
 
   startProgramBtn() {

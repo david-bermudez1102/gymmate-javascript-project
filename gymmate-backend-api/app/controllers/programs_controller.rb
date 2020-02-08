@@ -17,6 +17,14 @@ class ProgramsController < ApplicationController
     render json: program
   end
 
+  def update
+    trainer = Trainer.find_by(id: current_user.userable_id)
+    program = trainers.programs.find_by(id: params[:id])
+    if program.update(program_params)
+      render json: program
+    end
+  end
+
   def destroy
     trainer = Trainer.find_by(id: current_user.userable_id)
     program = trainer.programs.find_by(id: params[:id])

@@ -62,40 +62,18 @@ class Account {
     return div;
   }
 
-  options(url, content, target) {
-    const editBtn = Link.new(
-      { class: "text-light" },
+  options(content, target) {
+    const optionsClassName =
+      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between";
+    return Element.div(
+      { class: optionsClassName },
       null,
-      Icon.new("fas fa-pen")
+      this.editBtn(content, target),
+      this.deleteBtn(content, target)
     );
-
-    const div = Div.new(
-      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between"
-    );
-    div.append(editBtn, this.deleteBtn(url, content, target));
-    return div;
   }
 
-  deleteBtn(url, content, target) {
-    const handleOnclick = () =>
-      new Fetch(
-        null,
-        "DELETE",
-        `${url}/${content.id}`,
-        json => {
-          Render.hideSpinner(main);
-          const trainer = Object.assign(new Trainer(), currentUser);
-          trainer.programs = trainer.programs.filter(
-            program => program.id !== json.id
-          );
-          currentUser = trainer;
-          removeAll(target);
-          currentUser.allPrograms(target);
-          console.log(json);
-        },
-        target
-      ).submit();
-
+  deleteBtn(content, target) {
     return Element.link(
       {
         class: "text-light",
@@ -112,11 +90,24 @@ class Account {
         );
         prompt
           .querySelector("#confirmBtnValue")
-          .addEventListener("click", handleOnclick);
+          .addEventListener("click", () => content.delete(target));
         append(prompt, "myModal", main);
         $("#myModal").modal("toggle");
       },
-      Icon.new("fas fa-trash")
+      Element.icon({ class: "fas fa-trash" })
+    );
+  }
+
+  editBtn(content, target) {
+    return Element.link(
+      {
+        class: "text-light",
+        "data-toggle": "tooltip",
+        "data-placement": "top",
+        title: "Edit This Routine"
+      },
+      () => render(content.edit(), target, true),
+      Element.icon({ class: "fas fa-pen" })
     );
   }
 

@@ -350,6 +350,11 @@ function append(element, id, target) {
   target.append(element);
 }
 
+const render = (element, target, remove=false) => {
+  if(remove) removeAll(target);
+  target.append(element)
+}
+
 const isLoggedIn = () => {
   if (currentUser && sessionStorage.getItem("auth_token")) return true;
   return false;

@@ -10,12 +10,50 @@ class Element {
     return element;
   }
 
-  static handleOnclick(element, handleOnclick) {
+  static handleOnclick(
+    element,
+    handleOnclick,
+    preventDefault = true,
+    stopPropagation = true
+  ) {
     return element.addEventListener("click", e => {
       if (handleOnclick) handleOnclick();
-      e.preventDefault();
-      e.stopPropagation();
+      if (preventDefault) e.preventDefault();
+      if (stopPropagation) e.stopPropagation();
     });
+  }
+
+  static handleOnsubmit(element, handleOnsubmit) {
+    return element.addEventListener(
+      "submit",
+      e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!element.method === "GET") element.classList.add("was-validated");
+        if (element.checkValidity() === true) {
+          const formData = new FormData(element);
+          if (element.method == "GET")
+            action = action + `/?${new URLSearchParams(formData).toString()}`;
+          if (element.method !== "GET") {
+            new Fetch(
+              formData,
+              element.method,
+              element.action,
+              handleOnsubmit
+            ).submit();
+          } else {
+            new Fetch(
+              formData,
+              element.method,
+              element.action,
+              handleOnsubmit
+            ).request();
+          }
+          e.target.reset();
+        }
+      },
+      false
+    );
   }
 
   static div(attributes, handleOnclick, ...append) {
@@ -36,6 +74,11 @@ class Element {
     return element;
   }
 
+  static icon(attributes, handleOnclick, ...append) {
+    const element = this.create("i", attributes, ...append);
+    return element;
+  }
+
   static link(attributes, handleOnclick, ...append) {
     const element = this.create("a", attributes, ...append);
 
@@ -46,7 +89,19 @@ class Element {
     return element;
   }
 
-  static prompt(title, body, confirmBtnValue, dismissBtnValue){
+  static section(attributes, handleOnclick, ...append) {
+    const element = this.create("section", attributes, ...append);
+    this.handleOnclick(element, handleOnclick);
+    return element;
+  }
+
+  static form(attributes, handleOnsubmit, ...append) {
+    const element = this.create("form", attributes, ...append);
+    this.handleOnsubmit(element, handleOnsubmit);
+    return element;
+  }
+
+  static prompt(title, body, confirmBtnValue, dismissBtnValue) {
     return new DOMParser().parseFromString(
       `
     <div class="modal" id="myModal" tabindex="-1" role="dialog">
