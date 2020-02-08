@@ -1,10 +1,9 @@
 class Element {
   static create(tagName, attributes, ...append) {
     const element = d.createElement(tagName);
-    Object.keys(attributes).forEach(attribute =>{
-      element.setAttribute(attribute, attributes[attribute])
-    }
-    );
+    Object.keys(attributes).forEach(attribute => {
+      element.setAttribute(attribute, attributes[attribute]);
+    });
 
     append.forEach(a => element.append(a));
     return element;
@@ -28,12 +27,11 @@ class Element {
       "submit",
       e => {
         e.preventDefault();
-        
+
         e.stopPropagation();
         if (!method === "GET") element.classList.add("was-validated");
         const formData = new FormData(element);
         if (element.checkValidity() === true) {
-          
           if (method === "GET")
             action = action + `/?${new URLSearchParams(formData).toString()}`;
           if (method !== "GET") {
@@ -56,6 +54,18 @@ class Element {
       },
       false
     );
+  }
+
+  static label(attributes, handleOnclick, ...append) {
+    const element = this.create("label", attributes, ...append);
+    this.handleOnclick(element, handleOnclick, false, false);
+    return element;
+  }
+
+  static textArea(attributes, handleOnclick, ...append) {
+    const element = this.create("textarea", attributes, ...append);
+    this.handleOnclick(element, handleOnclick);
+    return element;
   }
 
   static div(attributes, handleOnclick, ...append) {

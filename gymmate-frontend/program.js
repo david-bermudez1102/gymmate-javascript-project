@@ -85,11 +85,16 @@ class Program {
         }),
         Icon.new("fas fa-envelope")
       ),
-      fileUploader("program[video]"),
+      fileUploader("program[video]", this.video),
       FormGroup.new(
-        TextArea.new(
-          "program[description]",
-          "Enter a brief description for your program..."
+        Element.textArea(
+          {
+            class: "form-control pl-5 rounded-pill",
+            name: "program[description]",
+            placeholder: "Enter a brief description for your program..."
+          },
+          null,
+          this.description || ""
         ),
         Icon.new("fas fa-lock")
       ),

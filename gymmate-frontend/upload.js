@@ -1,19 +1,24 @@
-const fileUploader = name => {
-  const label = d.createElement("label");
+const fileUploader = (name, video) => {
+  let preview = false;
+  if (video) preview = Video.new(video);
   const file = Input.new({
     type: "file",
     name: name,
     class: "d-none"
   });
-  label.className =
-    "drop-area d-flex justify-content-center align-items-center mb-3";
-  label.append(
-    Icon.new(
-      "fas fa-cloud-upload-alt text-large text-primary",
-      "font-size:100pt; cursor:pointer"
-    ),
+  const label = Element.label(
+    {
+      class: "drop-area d-flex justify-content-center align-items-center mb-3"
+    },
+    null,
+    preview ||
+      Icon.new(
+        "fas fa-cloud-upload-alt text-large text-primary",
+        "font-size:100pt; cursor:pointer"
+      ),
     file
   );
+
   file.accept = "video/mp4, video/ogg, video/webm";
   file.addEventListener("change", () => {
     handleFiles(file.files);
@@ -75,7 +80,7 @@ const fileUploader = name => {
       video.controls = true;
       video.append(source);
       removeAll(label);
-      label.append(file,video);
+      label.append(file, video);
     };
   }
 
