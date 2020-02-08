@@ -47,6 +47,9 @@ class Program {
     return this._updatedAt;
   }
 
+  get fullName() {
+    return `${this.trainer.name} ${this.trainer.lastname}`;
+  }
   static create(trainer, json) {
     const program = new Program(
       json.id,
@@ -160,34 +163,47 @@ class Program {
   }
 
   show() {
+    const sectionClassName =
+      "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
     const mainContainer = d.querySelector("#main_container");
-    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
 
-    title.append(Icon.new("fas fa-dumbbell"), ` ${this.title}`);
-
-    const section = Section.new(title, "bg-dark text-white");
-
-    section.id = `program_${this.id}`;
-    section.append(
-      Subtitle.new(`By ${this.trainer.name} ${this.trainer.lastname}`),
-      Div.new(null, null, this.description),
-      Video.new(this.video),
-      this.exercisesCount()
+    return Element.section(
+      {
+        class: sectionClassName,
+        id: `program_${this.id}`
+      },
+      null,
+      Element.div(
+        { class: "row" },
+        null,
+        Element.span(
+          {
+            class:
+              "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+            style: "font-size: 40px;"
+          },
+          null,
+          Element.icon({ class: "fas fa-dumbbell" }),
+          ` ${this.title}`
+        ),
+        isOwner(this.trainer) ? this.trainer.options(this, mainContainer) : ""
+      ),
+      Subtitle.new(`By ${this.fullName}`),
+      Element.div({ class: "display-4" }, null, this.description),
+      Element.video(this.video),
+      this.exercisesCount(),
+      isOwner(this.trainer)
+        ? Element.button(
+            { id: "add_new_exercise", class: "btn btn-primary" },
+            () => {
+              removeAll(mainContainer);
+              mainContainer.append(new Grid().newExerciseRow(this));
+            },
+            "Add New Exercise"
+          )
+        : "",
+      isUser() ? section.append(this.startProgramBtn()) : ""
     );
-    if (isTrainer && currentUser == this.trainer)
-      section.append(
-        Button.new(
-          "add_new_exercise",
-          "Add New Exercise",
-          "btn btn-primary",
-          () => {
-            removeAll(mainContainer);
-            mainContainer.append(new Grid().newExerciseRow(this));
-          }
-        )
-      );
-    if (isUser()) section.append(this.startProgramBtn());
-    return section;
   }
 
   edit() {
@@ -249,7 +265,6 @@ class Program {
         currentUser = trainer;
         removeAll(target);
         currentUser.allPrograms(target);
-        console.log(json);
       },
       target
     ).submit();

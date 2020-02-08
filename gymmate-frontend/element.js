@@ -103,6 +103,17 @@ class Element {
     return element;
   }
 
+  static video(url, className = "embed-responsive embed-responsive-16by9") {
+    const video = d.createElement("video");
+    const source = d.createElement("source");
+    source.src = `${BASE_URL}${url}`;
+    source.className = "embed-responsive-item";
+    video.className = className;
+    video.controls = true;
+    video.append(source);
+    return video;
+  }
+
   static link(attributes, handleOnclick, ...append) {
     const element = this.create("a", attributes, ...append);
 
