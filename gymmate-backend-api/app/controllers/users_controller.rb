@@ -6,6 +6,8 @@ class UsersController < ApplicationController
     if account.save
        auth_token = account.generate_auth_token
        render json: {auth_token:auth_token, userable_id:account.userable_id, userable_type:account.userable_type}
+       else
+       render json: {errors: account.errors.full_messages}
     end
   end
 

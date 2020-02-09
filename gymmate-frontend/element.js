@@ -27,17 +27,19 @@ class Elem {
       "submit",
       e => {
         e.preventDefault();
-
         e.stopPropagation();
+        let action;
         if (!method === "GET") elem.classList.add("was-validated");
         const formData = new FormData(elem);
         if (elem.checkValidity() === true) {
-          if (method === "GET")
-            elem.action = elem.action + `/?${new URLSearchParams(formData).toString()}`;
+          method === "GET"
+            ? (action =
+                elem.action + `/?${new URLSearchParams(formData).toString()}`)
+            : (action = elem.action);
           if (method !== "GET") {
-            new Fetch(formData, method, elem.action, handleOnsubmit).submit();
+            new Fetch(formData, method, action, handleOnsubmit).submit();
           } else {
-            new Fetch(formData, method, elem.action, handleOnsubmit).request();
+            new Fetch(formData, method, action, handleOnsubmit).request();
           }
           e.target.reset();
         }
@@ -96,7 +98,7 @@ class Elem {
 
   static span(attributes, handleOnclick, ...append) {
     const elem = this.create("span", attributes, ...append);
-    this.handleOnclick(elem, handleOnclick);
+    this.handleOnclick(elem, handleOnclick, false, false);
     return elem;
   }
 
@@ -137,7 +139,7 @@ class Elem {
     if (!Object.keys(attributes).some(attribute => attribute === "href"))
       elem.href = "#";
 
-    this.handleOnclick(elem, handleOnclick,true, false);
+    this.handleOnclick(elem, handleOnclick, true, false);
     return elem;
   }
 

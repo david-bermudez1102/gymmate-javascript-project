@@ -73,9 +73,8 @@ class Render {
     const handleSubmit = json => {
       this.hideSpinner(main);
       if (!main.querySelector("#home_row")) {
-        removeAll(main);
         new Promise(res =>
-          res(append(new Grid().homeRow(), "home_row", main))
+          res(render(new Grid().homeRow(), "main", true))
         ).then(() => this.listResults(json));
       } else {
         this.listResults(json);
@@ -189,11 +188,12 @@ class Render {
           json => {
             this.hideSpinner(main);
             const trainer = Trainer.create(json);
-            mainContainer.append(
+            render(
               new Grid().programRow(
                 Program.create(trainer, program),
-                mainContainer
-              )
+                "#main_container"
+              ),
+              "#main_container"
             );
           }
         ).request()
@@ -258,7 +258,7 @@ class Render {
       currentUser.profilePic(),
       this.mainMenuHomeLink(),
       this.mainMenuMessagesLink(),
-      isTrainer() ? this.mainMenuRoutinesLink() : "",
+      isTrainer() ? this.mainMenuRoutinesLink() : this.mainMenuWorkoutsLink(),
       this.mainMenuProfileLink()
     );
   }
@@ -266,10 +266,7 @@ class Render {
   static mainMenuHomeLink() {
     return Elem.link(
       { class: "nav-link active", "data-toggle": "pill" },
-      () => {
-        removeAll(main);
-        main.append(new Grid().homeRow());
-      },
+      () => render(new Grid().homeRow(), "main", true),
       "Home"
     );
   }
@@ -277,13 +274,7 @@ class Render {
   static mainMenuProfileLink() {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
-      () => {
-        if (d.querySelector("#main_container")) {
-          const mainContainer = d.querySelector("#main_container");
-          removeAll(mainContainer);
-          mainContainer.append(currentUser.show());
-        }
-      },
+      () => render(currentUser.show(), "#main_container", true),
       "Profile"
     );
   }
@@ -311,16 +302,21 @@ class Render {
 
   static mainMenuWorkoutsLink() {
     return Elem.link(
-      { class: "nav-link", "data-toggle": "pill" },
-      () => {
-        if (d.querySelector("#main_container")) {
-          const mainContainer = d.querySelector("#main_container");
-          removeAll(mainContainer);
-          currentUser.allWorkouts(mainContainer);
-        }
+      {
+        class: "nav-link",
+        "data-toggle": "pill",
+        id: "main_menu_workouts_link"
       },
+      () => this.allWorkouts(currentUser, "#main_container"),
       "My Workouts"
     );
+  }
+
+  static allWorkouts(user, target) {
+    removeAll(d.querySelector(target));
+    user.workouts.forEach(workout => {
+      if (workout.program) render(workout.workout(target), target);
+    });
   }
 
   static counter(start) {
@@ -353,9 +349,7 @@ class Render {
   }
 
   static spinner(node, target = container) {
-    const spinner = d.createElement("div");
-    spinner.setAttribute("id", "spinner");
-    spinner.style.visibility = "visible";
+    const spinner = Elem.div({ id: "spinner", style: "visibility:visible" });
     target.prepend(spinner);
     node.style.display = "none";
   }

@@ -13,11 +13,15 @@ class User extends Account {
   ) {
     super(id, name, lastname, bio, dateOfBirth, sex, username, email);
     this._userId = userId;
-    this.workouts = workouts;
+    this._workouts = workouts;
   }
 
   get userId() {
     return this._userId;
+  }
+
+  get workouts() {
+    return this._workouts;
   }
 
   static create(json) {
@@ -34,7 +38,9 @@ class User extends Account {
       []
     );
 
-    user.workouts = json.workouts.map(workout => Workout.create(user, workout));
+    user._workouts = json.workouts.map(workout =>
+      Workout.create(user, workout)
+    );
     return user;
   }
 
@@ -73,14 +79,11 @@ class User extends Account {
   }
 
   allWorkouts(target) {
-    this.workouts.forEach(workout => {
-      append(
-        new Grid().workoutRow(workout, target),
-        `workout_${workout.id}`,
-        target
-      );
+    return this.workouts.map(workout => {
+      if (workout.program) return new Grid().workoutRow(workout, target);
     });
   }
+
 
   menu() {
     return Elem.html(`

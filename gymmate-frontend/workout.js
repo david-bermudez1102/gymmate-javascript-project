@@ -29,6 +29,10 @@ class Workout {
     return this._program;
   }
 
+  set program(program) {
+    this._program = program;
+  }
+
   get complete() {
     return this._complete;
   }
@@ -62,46 +66,43 @@ class Workout {
       `${TRAINERS_URL}/${json.program.trainer_id}`,
       trainer => {
         Render.hideSpinner(main);
-        workout._program = Program.create(
+        workout.program = Program.create(
           Trainer.create(trainer),
           json.program
         );
+        return workout;
       }
-    ).request();
+    ).request()
+    return workout
+  }
 
-    return workout;
+  static add(json){
+    const user = Object.assign(new User(), currentUser);
+    const workout = Workout.create(user, json);
+    user.workouts.push(workout);
+    return user;
   }
 
   workout(target) {
-    const container = Section.new(
-      "",
-      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light",
-      () => {
-        removeAll(target);
-        append(
-          new Grid().showWorkoutRow(this, target),
-          `workout_${this.id}`,
-          target
-        );
-      }
+    return Elem.section(
+      {
+        class:
+          "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
+      },
+      () => render(new Grid().showWorkoutRow(this, target), target, true),
+      Elem.span(
+        { class: "display-4", style: "font-size: 40px;" },
+        null,
+        Elem.icon({ class: "fas fa-dumbbell text-primary" }),
+        ` ${this.program.title}`
+      ),
+      this.complete
+        ? Elem.icon({
+            class: "fas fa-check-square text-primary",
+            style: "font-size: 24px;"
+          })
+        : Icon.new("fas fa-spinner text-primary", "font-size: 24px;")
     );
-
-    const title = Span.new(null, "display-4", "font-size: 40px;");
-    title.append(
-      Icon.new("fas fa-dumbbell text-primary"),
-      ` ${this.program.title}`
-    );
-    container.append(title);
-    if (this.complete)
-      container.append(
-        Icon.new("fas fa-check-square text-primary", "font-size: 24px;")
-      );
-    else
-      container.append(
-        Icon.new("fas fa-spinner text-primary", "font-size: 24px;")
-      );
-
-    return container;
   }
 
   exercise(exercise, target) {

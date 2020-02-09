@@ -40,7 +40,7 @@ class Fetch {
 
   submit() {
     Render.spinner(main);
-    fetch(this.url, this.configObj)
+    return fetch(this.url, this.configObj)
       .then(this.parseJson)
       .then(json => {
         if (!json.errors) this.callback(json);

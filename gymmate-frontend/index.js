@@ -315,7 +315,6 @@ const setSession = (json = null) => {
 };
 
 const callback = json => {
-  console.log(json);
   Render.hideSpinner(main);
   if (json.userable_type === "Trainer") {
     new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {

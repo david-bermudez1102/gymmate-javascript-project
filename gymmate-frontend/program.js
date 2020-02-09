@@ -136,43 +136,35 @@ class Program {
   }
 
   program(target) {
-    const container = Section.new(
-      "",
-      "row mt-1 w-100 bg-dark text-white",
-      () => {
-        removeAll(target);
-        append(
-          new Grid().showProgramRow(this, target),
-          `program_${this.id}`,
-          target
-        );
-      }
+    return Elem.section(
+      {
+        class:
+          "text-left p-3 p-sm-5 rounded shadow row mt-1 w-100 bg-dark text-white"
+      },
+      () => render(new Grid().showProgramRow(this, target), target, true),
+      Elem.span(
+        {
+          class: "col-lg-9 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+          style: "font-size: 36px;"
+        },
+        null,
+        Elem.icon({ class: "fas fa-dumbbell text-primary" }),
+        `${this.title}`
+      ),
+      isOwner(this.trainer) ? this.trainer.options(this, target) : "",
+      isUser()
+        ? Elem.span(
+            { class: "col-lg-3 order-2 " },
+            null,
+            this.startProgramBtn()
+          )
+        : ""
     );
-
-    const title = Span.new(
-      null,
-      "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
-      "font-size: 36px;"
-    );
-    title.append(Icon.new("fas fa-dumbbell text-primary"), ` ${this.title}`);
-    container.append(title);
-    if (isOwner(this.trainer))
-      container.append(this.trainer.options(this, target));
-    if (isUser())
-      container.append(
-        Elem.span(
-          { class: "col-lg-2 order-2 " },
-          null,
-          this.startProgramBtn()
-        )
-      );
-    return container;
   }
 
   show() {
     const sectionClassName =
       "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
-    const mainContainer = d.querySelector("#main_container");
 
     return Elem.section(
       {
@@ -202,10 +194,8 @@ class Program {
       isOwner(this.trainer)
         ? Elem.button(
             { id: "add_new_exercise", class: "btn btn-primary" },
-            () => {
-              removeAll(mainContainer);
-              mainContainer.append(new Grid().newExerciseRow(this));
-            },
+            () =>
+              render(new Grid().newExerciseRow(this), "#main_container", true),
             "Add New Exercise"
           )
         : "",
@@ -278,26 +268,27 @@ class Program {
   }
 
   startProgramBtn() {
-    const form = Form.new("new_workout", WORKOUTS_URL, "POST", json => {
-      Render.hideSpinner(main);
-      const user = Object.assign(new User(), currentUser);
-      const workout = Workout.create(user, json);
-      user.workouts.push(workout);
-      currentUser = user;
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        currentUser.allWorkouts(mainContainer);
-      }
-    });
-    form.append(
-      Input.new({ type: "hidden", name: "workout[program_id]", id: this.id }),
-      Button.new(
-        `start_routine_button_${this.id}`,
-        `Add to workouts`,
-        "btn btn-primary shadow"
+    return Elem.form(
+      { id: `new_workout_${this.id}`, action: WORKOUTS_URL, method: "POST" },
+      json =>
+        new Promise(res => res(Workout.add(json)))
+          .then(user => (currentUser = user))
+          .then(user => Render.allWorkouts(user, "#main_container"))
+          .then(Render.hideSpinner(main)),
+      Elem.input({
+        type: "hidden",
+        name: "workout[program_id]",
+        value: this.id
+      }),
+      Elem.input(
+        {
+          type: "submit",
+          class: "btn btn-primary shadow",
+          id: `start_routine_button_${this.id}`,
+          value: `Add to workouts`
+        },
+        () => window.event.stopPropagation()
       )
     );
-    return form;
   }
 }

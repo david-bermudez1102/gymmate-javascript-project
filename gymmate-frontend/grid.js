@@ -128,7 +128,7 @@ class Grid {
 
   showProgramRow(program, target) {
     new Promise(res => {
-      res(this.row.append(Column.new(program.show(), "col-md pt-1")));
+      res(this.row.append(Column.new(program.show(target), "col-md pt-1")));
     }).then(() => {
       program.allExercises(target);
     });
