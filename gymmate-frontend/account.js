@@ -42,6 +42,8 @@ class Account {
     return this._email;
   }
 
+  edit() {}
+
   profilePic() {
     const div = Div.new(
       "w-100 mb-4 px-0 pb-2 text-dark text-center",
@@ -50,23 +52,23 @@ class Account {
     );
     div.append(H1.new(`${this.name} ${this.lastname}`, "text-primary"));
     div.append(
-      Element.form({ action: `${USERS_URL}/${this.id}` }, null, this.icon())
+      Elem.form({ action: `${USERS_URL}/${this.id}` }, null, this.icon())
     );
     return div;
   }
 
   icon() {
-    const file = Element.input({
+    const file = Elem.input({
       type: "file",
       class: "d-none",
       name: "account[profile_picture]"
     });
 
-    const label = Element.label(
+    const label = Elem.label(
       {},
       null,
       file,
-      Element.icon({ class: "fas fa-user-circle", style: "font-size:15vw" })
+      Elem.icon({ class: "fas fa-user-circle", style: "font-size:15vw" })
     );
 
     file.addEventListener("change", () => {
@@ -87,7 +89,7 @@ class Account {
   options(content, target) {
     const optionsClassName =
       "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between";
-    return Element.div(
+    return Elem.div(
       { class: optionsClassName },
       null,
       this.editBtn(content, target),
@@ -96,7 +98,7 @@ class Account {
   }
 
   deleteBtn(content, target) {
-    return Element.link(
+    return Elem.link(
       {
         class: "text-light",
         "data-toggle": "tooltip",
@@ -104,7 +106,8 @@ class Account {
         title: "Delete Routine"
       },
       () => {
-        const prompt = Element.prompt(
+        window.event.stopPropagation();
+        const prompt = Elem.prompt(
           `Delete "${content.title}"`,
           "Are you sure you want to delete this routine?",
           "Yes, Delete",
@@ -116,20 +119,23 @@ class Account {
         append(prompt, "myModal", main);
         $("#myModal").modal("toggle");
       },
-      Element.icon({ class: "fas fa-trash" })
+      Elem.icon({ class: "fas fa-trash" })
     );
   }
 
   editBtn(content, target) {
-    return Element.link(
+    return Elem.link(
       {
         class: "text-light",
         "data-toggle": "tooltip",
         "data-placement": "top",
         title: "Edit This Routine"
       },
-      () => render(content.edit(), target, true),
-      Element.icon({ class: "fas fa-pen" })
+      () => {
+        window.event.stopPropagation();
+        render(content.edit(), target, true);
+      },
+      Elem.icon({ class: "fas fa-pen" })
     );
   }
 

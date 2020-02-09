@@ -350,10 +350,14 @@ function append(element, id, target) {
   target.append(element);
 }
 
-const render = (element, target, remove=false) => {
-  if(remove) removeAll(target);
-  target.append(element)
-}
+const render = (element, target, remove = false) => {
+  
+  if (document.querySelector(target)){
+    if (remove) removeAll(document.querySelector(target));
+    document.querySelector(target).append(element);
+  }
+    
+};
 
 const isLoggedIn = () => {
   if (currentUser && sessionStorage.getItem("auth_token")) return true;
@@ -364,4 +368,3 @@ const isUser = () => currentUser instanceof User;
 const isTrainer = () => currentUser instanceof Trainer;
 
 const isOwner = account => currentUser === account;
-

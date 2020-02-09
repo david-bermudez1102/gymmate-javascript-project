@@ -1,23 +1,73 @@
 class Render {
-  static navbar = () => {
-    const navbar = d.createElement("nav");
-    const brand = H1.new(Icon.new("fas fa-bolt"), null);
-    brand.prepend("Gymmate ");
-    navbar.className = navbarClass;
-    const container = Div.new("container-fluid", null);
+  static navbar() {
+    const brand = Elem.h1({}, null, "Gymmate ", Icon.new("fas fa-bolt"));
 
-    container.append(
-      Link.new({ class: "navbar-brand" }, null, brand),
-      this.navbarToggler(),
-      Div.new(
-        "collapse navbar-collapse border-secondary",
-        "navbarSupportedContent",
-        this.navbarOptions()
+    return Elem.nav(
+      { class: navbarClass },
+      null,
+      Elem.div(
+        { class: "container-fluid" },
+        null,
+        Elem.link({ class: "navbar-brand" }, null, brand),
+        this.navbarToggler(),
+        Elem.div(
+          {
+            class: "collapse navbar-collapse border-secondary",
+            id: "navbarSupportedContent"
+          },
+          null,
+          this.navbarOptions()
+        )
       )
     );
-    navbar.append(container);
-    return navbar;
-  };
+  }
+
+  static navbarOptions() {
+    return Elem.ul(
+      {
+        class: "navbar-nav ml-auto nav-pills nav-fill nav-justify"
+      },
+      null,
+      sessionStorage.getItem("auth_token")
+        ? Elem.li({}, null, this.searchBar())
+        : "",
+      Elem.li({}, null, this.homeLink()),
+      Elem.li({}, null, this.loginLink()),
+      Elem.li({}, null, this.signUpLink()),
+      this.accountLink()
+    );
+  }
+
+  static homeLink() {
+    return Link.new(
+      { class: "nav-link active" },
+      () => {
+        if (isLoggedIn()) {
+          removeAll(main);
+          main.append(new Grid().homeRow());
+        } else {
+          Welcome.render();
+        }
+      },
+      `Home`
+    );
+  }
+
+  static navbarToggler() {
+    return Elem.button(
+      {
+        class: "navbar-toggler",
+        type: "button",
+        "data-toggle": "collapse",
+        "data-target": "#navbarSupportedContent",
+        "aria-controls": "navbarSupportedContent",
+        "aria-expanded": "false",
+        "aria-label": "Toggle navigation"
+      },
+      null,
+      Elem.span({ class: "navbar-toggler-icon" })
+    );
+  }
 
   static searchBar() {
     const handleSubmit = json => {
@@ -32,31 +82,92 @@ class Render {
       }
     };
 
-    const form = Form.new("new_search", SEARCH_URL, "GET", handleSubmit);
-    form.className = "mx-auto";
-
-    const div = Div.new("input-group");
-    const span = d.createElement("span");
-    span.className = "input-group-append";
-    span.append(
-      Div.new(
-        "input-group-text bg-white rounded-top-right-50 rounded-bottom-right-50 border-0",
-        "",
-        Icon.new("fa fa-search")
+    return Elem.form(
+      { class: "mx-auto", id: "new_search", action: SEARCH_URL, method: "GET" },
+      handleSubmit,
+      Elem.div(
+        { class: "input-group" },
+        null,
+        Input.new({
+          type: "search",
+          name: "query",
+          placeholder: "Search routines, trainers, etc...",
+          class:
+            "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
+        }),
+        Elem.span(
+          { class: "input-group-append" },
+          null,
+          Elem.div(
+            {
+              class:
+                "input-group-text bg-white rounded-top-right-50 rounded-bottom-right-50 border-0"
+            },
+            null,
+            Elem.icon({ class: "fa fa-search" })
+          )
+        )
       )
     );
-    div.append(
-      Input.new({
-        type: "search",
-        name: "query",
-        placeholder: "Search routines, trainers, etc...",
-        class:
-          "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
-      }),
-      span
+  }
+
+  static loginLink() {
+    return Elem.link(
+      { class: "nav-link" },
+      () => {
+        if (!isLoggedIn()) {
+          removeAll(main);
+          append(new Grid().loginRow(), null, main);
+        }
+      },
+      `Login`
     );
-    form.append(div);
-    return form;
+  }
+
+  static signUpLink() {
+    return Link.new(
+      { class: "nav-link" },
+      () => {
+        removeAll(main);
+        append(new Grid().loginRow(), null, main);
+      },
+      `Sign Up`
+    );
+  }
+
+  static accountLink() {
+    return Item.new(
+      Elem.link(
+        {
+          class: "nav-link dropdown-toggle",
+          id: "navbarDropdown",
+          role: "button",
+          "data-toggle": "dropdown",
+          "aria-haspopup": "true",
+          "aria-expanded": "false"
+        },
+        null,
+        "Account",
+        this.accountLinkOptions()
+      )
+    );
+  }
+
+  static accountLinkOptions() {
+    return Elem.div(
+      {
+        class: "dropdown-menu dropdown-menu-right",
+        "aria-labelledby": "navbarDropdown"
+      },
+      null,
+      Elem.link({ class: "dropdown-item" }, null, "Edit Account"),
+      Elem.div({ class: "dropdown-divider" }),
+      Elem.link(
+        { class: "dropdown-item" },
+        () => Account.logout(),
+        "Edit Account"
+      )
+    );
   }
 
   static listResults(json) {
@@ -90,118 +201,36 @@ class Render {
     }
   }
 
-  static navbarOptions() {
-    const navbarOptions = List.new(
-      "navbar-nav ml-auto nav-pills nav-fill nav-justify"
-    );
-
-    if (sessionStorage.getItem("auth_token"))
-      navbarOptions.append(Item.new(this.searchBar()));
-
-    navbarOptions.append(
-      Item.new(this.homeLink()),
-      Item.new(this.loginLink()),
-      Item.new(this.signUpLink()),
-      this.accountLink()
-    );
-    return navbarOptions;
-  }
-
-  static homeLink() {
-    return Link.new(
-      { class: "nav-link active" },
-      () => {
-        if (isLoggedIn()) {
-          removeAll(main);
-          main.append(new Grid().homeRow());
-        } else {
-          Welcome.render();
-        }
-      },
-      `Home`
-    );
-  }
-
-  static navbarToggler() {
-    return new DOMParser().parseFromString(
-      `
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    `,
-      "text/html"
-    ).body.firstChild;
-  }
-
-  static loginLink() {
-    return Link.new(
-      { class: "nav-link" },
-      () => {
-        if (!isLoggedIn()) {
-          removeAll(main);
-          append(new Grid().loginRow(), null, main);
-        }
-      },
-      `Login`
-    );
-  }
-
-  static signUpLink() {
-    return Link.new(
-      { class: "nav-link" },
-      () => {
-        removeAll(main);
-        append(new Grid().loginRow(), null, main);
-      },
-      `Sign Up`
-    );
-  }
-
-  static accountLink() {
-    const link = Item.new(
-      new DOMParser().parseFromString(
-        `
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Account
-      </a>
-      `,
-        "text/html"
-      ).body.firstChild
-    );
-    link.append(this.accountLinkOptions());
-    return link;
-  }
-
-  static accountLinkOptions() {
-    return new DOMParser().parseFromString(
-      `
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" onclick="Account.logout()">Logout</a>
-    </div>`,
-      "text/html"
-    ).body.firstChild;
-  }
-
   static footer = () => {
     const footer = d.createElement("footer");
     footer.className = "bg-dark text-muted";
     footer.innerHTML = `
-  <div class="container-fluid">
-    <p class="float-sm-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>Gymmate &copy; Bootstrap, but please download and customize it for yourself!</p>
-    <p class="float-sm-right lead">
-      <a href="#" class="footer-link text-light"><i class="fab fa-facebook-square"></i></a>
-      <a href="#" class="footer-link text-light"><i class="fab fa-twitter-square"></i></a>
-      <a href="#" class="footer-link text-light"><i class="fab fa-instagram"></i></a>
-    </p>
-    <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
-  </div>
-`;
+      <div class="container-fluid">
+        <p class="float-sm-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>
+          Gymmate &copy; Bootstrap, but please download and customize it for
+          yourself!
+        </p>
+        <p class="float-sm-right lead">
+          <a href="#" class="footer-link text-light">
+            <i class="fab fa-facebook-square"></i>
+          </a>
+          <a href="#" class="footer-link text-light">
+            <i class="fab fa-twitter-square"></i>
+          </a>
+          <a href="#" class="footer-link text-light">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </p>
+        <p>
+          New to Bootstrap? <a href="../../">Visit the homepage</a> or read our{" "}
+          <a href="../../getting-started/">getting started guide</a>.
+        </p>
+      </div>
+    `;
+
     return footer;
   };
 
@@ -217,25 +246,25 @@ class Render {
   }
 
   static menu() {
-    const menu = Div.new(
-      "nav flex-column w-100 flex-wrap nav-pills shadow p-4 rounded text-light",
-      "v-pills-tab"
-    );
-    menu.setAttribute("role", "tablist");
-    menu.setAttribute("aria-orientation", "vertical");
-    menu.append(
+    return Elem.div(
+      {
+        class:
+          "nav flex-column w-100 flex-wrap nav-pills shadow p-4 rounded text-light",
+        role: "tablist",
+        "aria-orientation": "vertical",
+        id: "v-pills-tab"
+      },
+      null,
       currentUser.profilePic(),
       this.mainMenuHomeLink(),
-      this.mainMenuMessagesLink()
+      this.mainMenuMessagesLink(),
+      isTrainer() ? this.mainMenuRoutinesLink() : "",
+      this.mainMenuProfileLink()
     );
-    if (isTrainer()) menu.append(this.mainMenuRoutinesLink());
-    if (isUser()) menu.append(this.mainMenuWorkoutsLink());
-    menu.append(this.mainMenuProfileLink());
-    return menu;
   }
 
   static mainMenuHomeLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link active", "data-toggle": "pill" },
       () => {
         removeAll(main);
@@ -246,7 +275,7 @@ class Render {
   }
 
   static mainMenuProfileLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       () => {
         if (d.querySelector("#main_container")) {
@@ -260,7 +289,7 @@ class Render {
   }
 
   static mainMenuMessagesLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       null,
       "Messages"
@@ -268,21 +297,20 @@ class Render {
   }
 
   static mainMenuRoutinesLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       () => {
-        if (d.querySelector("#main_container")) {
-          const mainContainer = d.querySelector("#main_container");
-          removeAll(mainContainer);
-          currentUser.allPrograms(mainContainer);
-        }
+        removeAll(d.querySelector("#main_container"));
+        currentUser
+          .allPrograms("#main_container")
+          .forEach(program => render(program, "#main_container"));
       },
       "My Routines"
     );
   }
 
   static mainMenuWorkoutsLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       () => {
         if (d.querySelector("#main_container")) {
@@ -297,14 +325,19 @@ class Render {
 
   static counter(start) {
     let count = start;
-    const countDownDiv = Div.new(
-      "d-flex position-absolute w-100 h-100 align-items-center justify-content-center"
-    );
-    countDownDiv.style = "top:0; left:0; background: rgba(0,0,0,.5);";
-    const counterDiv = Div.new(
-      "d-flex rounded-circle display-4 bg-dark justify-content-center align-items-center"
-    );
-    counterDiv.style = "width:80px; height:80px;";
+
+    const countDownDiv = Elem.div({
+      class:
+        "d-flex position-absolute w-100 h-100 align-items-center justify-content-center",
+      style: "top:0; left:0; background: rgba(0,0,0,.5);"
+    });
+
+    const counterDiv = Elem.div({
+      class:
+        "d-flex rounded-circle display-4 bg-dark justify-content-center align-items-center",
+      style: "width:80px; height:80px;"
+    });
+
     const counter = setInterval(() => {
       if (count >= 0) {
         counterDiv.innerHTML = count;
@@ -317,10 +350,6 @@ class Render {
     }, 1000);
     countDownDiv.append(counterDiv);
     return countDownDiv;
-  }
-
-  static logoutBtn() {
-    return Button.new("logout_button", "Log Out", null, Account.logout);
   }
 
   static spinner(node, target = container) {
@@ -352,19 +381,19 @@ class Render {
 
   static modal() {
     main.append(
-      Element.div(
-        { class: "modal d-flex", role:"dialog" },
+      Elem.div(
+        { class: "modal d-flex", role: "dialog" },
         null,
-        Element.div(
+        Elem.div(
           { class: "modal-dialog" },
           null,
-          Element.div(
+          Elem.div(
             { class: "modal-content" },
             null,
-            Element.div(
+            Elem.div(
               { class: "modal-header" },
               null,
-              Element.div({ class: "modal-title display-4" }, null, "Hello")
+              Elem.div({ class: "modal-title display-4" }, null, "Hello")
             )
           )
         )

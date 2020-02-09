@@ -69,7 +69,7 @@ class Program {
   }
 
   form(method, title, action, handleSubmit) {
-    return Element.form(
+    return Elem.form(
       {
         id: "new_program",
         method: method,
@@ -79,18 +79,18 @@ class Program {
       handleSubmit,
       title,
       FormGroup.new(
-        Element.input({
+        Elem.input({
           type: "text",
           name: "program[title]",
           placeholder: "Enter a title for your program...",
           class: "form-control pl-5 rounded-pill",
           value: this.title || ""
         }),
-        Element.icon({ class: "fas fa-heading" })
+        Elem.icon({ class: "fas fa-heading" })
       ),
       fileUploader("program[video]", this.video),
       FormGroup.new(
-        Element.textArea(
+        Elem.textArea(
           {
             class: "form-control pl-5",
             name: "program[description]",
@@ -99,7 +99,7 @@ class Program {
           null,
           this.description || ""
         ),
-        Element.icon({ class: "fas fa-quote-left" })
+        Elem.icon({ class: "fas fa-quote-left" })
       ),
       Button.new(
         "create_program",
@@ -160,7 +160,7 @@ class Program {
       container.append(this.trainer.options(this, target));
     if (isUser())
       container.append(
-        Element.span(
+        Elem.span(
           { class: "col-lg-2 order-2 " },
           null,
           this.startProgramBtn()
@@ -174,33 +174,33 @@ class Program {
       "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
     const mainContainer = d.querySelector("#main_container");
 
-    return Element.section(
+    return Elem.section(
       {
         class: sectionClassName,
         id: `program_${this.id}`
       },
       null,
-      Element.div(
+      Elem.div(
         { class: "row" },
         null,
-        Element.span(
+        Elem.span(
           {
             class:
               "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
             style: "font-size: 40px;"
           },
           null,
-          Element.icon({ class: "fas fa-dumbbell" }),
+          Elem.icon({ class: "fas fa-dumbbell" }),
           ` ${this.title}`
         ),
         isOwner(this.trainer) ? this.trainer.options(this, mainContainer) : ""
       ),
       Subtitle.new(`By ${this.fullName}`),
-      Element.div({ class: "display-4" }, null, this.description),
-      Element.video(this.video),
+      Elem.div({ class: "display-4" }, null, this.description),
+      Elem.video(this.video),
       this.exercisesCount(),
       isOwner(this.trainer)
-        ? Element.button(
+        ? Elem.button(
             { id: "add_new_exercise", class: "btn btn-primary" },
             () => {
               removeAll(mainContainer);
@@ -215,15 +215,15 @@ class Program {
 
   edit() {
     if (isTrainer && isOwner(currentUser))
-      return Element.section(
+      return Elem.section(
         { class: "text-left p-3 p-sm-5 rounded shadow " },
         null,
         this.form(
           "PATCH",
-          Element.h1(
+          Elem.h1(
             { class: "text-primary mb-4" },
             null,
-            Element.icon({ class: "fas fa-edit" }),
+            Elem.icon({ class: "fas fa-edit" }),
             " Edit Routine"
           ),
           "Update Routine",

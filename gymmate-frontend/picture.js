@@ -32,14 +32,14 @@ class Picture {
     const reader = new FileReader();
     reader.readAsDataURL(f);
     reader.onloadend = () => {
-      const img = Element.img({
+      const img = Elem.img({
         src: reader.result,
         style: "left: -50px;",
         width: "100%",
         draggable: false
       });
 
-      const imgWrapper = Element.div(
+      const imgWrapper = Elem.div(
         {
           class: "circular--landscape"
         },

@@ -96,10 +96,10 @@ class Trainer extends Account {
     };
     return new Program().form(
       "POST",
-      Element.h1(
+      Elem.h1(
         { class: "text-primary mb-4" },
         null,
-        Element.icon({ class: "fas fa-plus-square" }),
+        Elem.icon({ class: "fas fa-plus-square" }),
         " Create Routine"
       ),
       "Create Routine",
@@ -108,26 +108,48 @@ class Trainer extends Account {
   }
 
   allPrograms(target) {
-    this.programs.forEach(program => {
-      append(
-        new Grid().programRow(program, target),
-        `program_${program.id}`,
-        target
-      );
-    });
+    return this.programs.map(program => new Grid().programRow(program, target));
   }
 
   menu() {
-    return new DOMParser().parseFromString(
-      `<nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Programs</a>
-    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Pictures</a>
-    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Videos</a>
-  </div>
-</nav>
-`,
-      "text/html"
-    ).body.firstChild;
+    return Elem.html(`
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a
+            class="nav-item nav-link active"
+            id="nav-home-tab"
+            data-toggle="tab"
+            href="#nav-home"
+            role="tab"
+            aria-controls="nav-home"
+            aria-selected="true"
+          >
+            Programs
+          </a>
+          <a
+            class="nav-item nav-link"
+            id="nav-profile-tab"
+            data-toggle="tab"
+            href="#nav-profile"
+            role="tab"
+            aria-controls="nav-profile"
+            aria-selected="false"
+          >
+            Pictures
+          </a>
+          <a
+            class="nav-item nav-link"
+            id="nav-contact-tab"
+            data-toggle="tab"
+            href="#nav-contact"
+            role="tab"
+            aria-controls="nav-contact"
+            aria-selected="false"
+          >
+            Videos
+          </a>
+        </div>
+      </nav>
+    `);
   }
 }

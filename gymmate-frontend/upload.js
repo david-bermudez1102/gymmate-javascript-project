@@ -6,7 +6,7 @@ const fileUploader = (name, video) => {
     name: name,
     class: "d-none"
   });
-  const label = Element.label(
+  const label = Elem.label(
     {
       class: "drop-area d-flex justify-content-center align-items-center mb-3"
     },
