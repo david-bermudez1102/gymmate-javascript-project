@@ -26,6 +26,7 @@ class Trainer extends Account {
     this._trainerId = trainerId;
     this.programs = programs;
     this._view = TrainerView.create(this);
+    this._controller = TrainerController.create(this);
     this._render = TrainerRender.create(this);
   }
   get trainerId() {
@@ -38,6 +39,10 @@ class Trainer extends Account {
 
   get view() {
     return this._view;
+  }
+
+  get controller() {
+    return this._controller;
   }
 
   get render() {
@@ -67,7 +72,7 @@ class Trainer extends Account {
     removeAll(target);
     target.append(Section.new(this.name, null, () => this.show()));
   }
-  
+
   allPrograms(target) {
     return this.programs.map(program => new Grid().programRow(program, target));
   }
@@ -212,9 +217,8 @@ class TrainerRender {
   profile() {
     render(this.trainer.view.profile(), "main", true);
     this.programs("main", false);
-    window.history.pushState(
-      { load: `showTrainers("${pathName[1]}")` },
-      null,
+    createRoute(
+      `trainers("${pathName[1]}")`,
       `/trainers/${this.trainer.trainerId}`
     );
   }
@@ -238,11 +242,23 @@ class TrainerController {
     return new TrainerController(trainer);
   }
 
-  get program() {
+  get trainer() {
     return this._trainer;
   }
 
+  create(){
+
+  }
+
   show(){
+    return this.trainer.render.profile()
+  }
+
+  update(){
+
+  }
+
+  delete(){
 
   }
 }
