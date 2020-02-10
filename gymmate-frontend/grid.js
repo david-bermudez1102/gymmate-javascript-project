@@ -78,7 +78,12 @@ class Grid {
     loadNavbar();
     this.row.append(
       Column.new(Render.menu(), "col-sm-6 col-md-5 col-lg-3 d-flex"),
-      Column.new(Render.home(), "col-sm-6 col-md px-sm-1", "", "main_container")
+      Column.new(
+        null,
+        "col-sm-6 col-md px-sm-1",
+        "",
+        "main_container"
+      )
     );
     this.row.id = "home_row";
     return this.row;

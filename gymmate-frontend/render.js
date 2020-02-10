@@ -232,14 +232,12 @@ class Render {
   };
 
   static home() {
-    const div = d.createElement("div");
     if (isLoggedIn()) {
       if (currentUser instanceof Trainer) {
-        div.append(new Grid().newProgramRow());
+        new Program().render.newProgramRow()
       }
     }
     window.history.pushState({ load: "Render.home()" }, null, "/");
-    return div;
   }
 
   static menu() {
@@ -287,12 +285,7 @@ class Render {
   static mainMenuRoutinesLink() {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
-      () => {
-        removeAll(d.querySelector("#main_container"));
-        currentUser
-          .allPrograms("#main_container")
-          .forEach(program => render(program, "#main_container"));
-      },
+      () => currentUser.render.programs("#main_container"),
       "My Routines"
     );
   }

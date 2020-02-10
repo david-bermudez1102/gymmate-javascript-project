@@ -69,23 +69,6 @@ class User extends Account {
     removeAll(target);
     target.append(Section.new(this.name, null, () => this.show()));
   }
-
-  renderForm(target) {
-    removeAll(target);
-    const newUser = Welcome.newUserForm(USERS_URL);
-    newUser.prepend(H1.new("Sign Up"));
-    target.append(newUser);
-    newUser.append(
-      Link.new(
-        { class: "small" },
-        () => {
-          removeAll(target);
-          new Trainer().renderForm(target);
-        },
-        "Sign up as a Trainer instead."
-      )
-    );
-  }
 }
 
 class UserView {
@@ -191,7 +174,7 @@ class UserRender {
     return this._user;
   }
 
-  profile(){
+  profile() {
     render(this.user.view.profile(), "main", true);
     this.workouts("main", false);
     window.history.pushState(
@@ -202,7 +185,7 @@ class UserRender {
   }
 
   workouts(target, remove = true) {
-    if(remove) removeAll(d.querySelector(target));
+    if (remove) removeAll(d.querySelector(target));
     this.user.workouts.forEach(workout => {
       if (workout.program) render(workout.workout(target), target);
     });
@@ -223,24 +206,21 @@ class UserForm {
   }
 
   get user() {
-    return this._view.user
+    return this._view.user;
   }
 
   signup() {
     const form = this.user.accountView.form.signup();
-    form.action = USERS_URL
+    form.action = USERS_URL;
     form.prepend(Elem.h1({}, null, "Sign Up"));
     form.append(
       Elem.link(
         { class: "small" },
-        () => {
-          removeAll("target");
-          new Trainer().renderForm("target");
-        },
+        () => render(new Trainer().view.form.signup(), "#sign_up_menu", true),
         "Sign up as a Trainer instead."
       )
     );
-    return form
+    return form;
   }
 
   editUser() {}

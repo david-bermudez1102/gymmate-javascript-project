@@ -65,6 +65,8 @@ class Account {
   }
 }
 
+//================================================================//
+
 class AccountView {
   constructor(account) {
     this._account = account;
@@ -178,7 +180,7 @@ class AccountView {
         );
         prompt
           .querySelector("#confirmBtnValue")
-          .addEventListener("click", () => content.delete(target));
+          .addEventListener("click", () => content.controller.delete(target));
         append(prompt, "myModal", main);
         $("#myModal").modal("toggle");
       },
@@ -202,6 +204,8 @@ class AccountView {
     );
   }
 }
+
+//================================================================//
 
 class AccountForm {
   constructor(view) {
@@ -340,6 +344,8 @@ class AccountForm {
   }
 }
 
+//================================================================//
+
 class AccountRender {
   constructor(account) {
     this._account = account;
@@ -353,7 +359,4 @@ class AccountRender {
     return this._account;
   }
 
-  loginRow() {
-    render(this.account.view.form.login(), main);
-  }
 }

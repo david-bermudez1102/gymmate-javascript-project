@@ -6,12 +6,10 @@ class Welcome {
     menu.style = "min-height:300px";
     menu.append(
       H1.new("Sign Up As:", "text-primary mb-4 text-center"),
-      Button.new(
-        "new_trainer_btn",
-        "Trainer",
-        btnClass,
-        new Trainer().renderForm,
-        menu
+      Elem.button(
+        { id: "new_trainer_btn", class: btnClass },
+        () => render(new Trainer().view.form.signup(), "#sign_up_menu", true),
+        "Trainer"
       ),
       Elem.button(
         { id: "new_user_btn", class: btnClass },

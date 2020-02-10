@@ -9,11 +9,24 @@ class Trainer extends Account {
     username,
     email,
     trainerId,
-    programs
+    programs,
+    accountView
   ) {
-    super(id, name, lastname, bio, dateOfBirth, sex, username, email);
+    super(
+      id,
+      name,
+      lastname,
+      bio,
+      dateOfBirth,
+      sex,
+      username,
+      email,
+      accountView
+    );
     this._trainerId = trainerId;
     this.programs = programs;
+    this._view = TrainerView.create(this);
+    this._render = TrainerRender.create(this);
   }
   get trainerId() {
     return this._trainerId;
@@ -21,6 +34,14 @@ class Trainer extends Account {
 
   set trainerId(trainerId) {
     this._trainerId = trainerId;
+  }
+
+  get view() {
+    return this._view;
+  }
+
+  get render() {
+    return this._render;
   }
 
   static create(json) {
@@ -46,110 +67,182 @@ class Trainer extends Account {
     removeAll(target);
     target.append(Section.new(this.name, null, () => this.show()));
   }
+  
+  allPrograms(target) {
+    return this.programs.map(program => new Grid().programRow(program, target));
+  }
+}
 
-  show() {
-    removeAll(main);
-    main.append(new Grid().showProfileRow(this));
-    main.append(this.menu());
-    this.allPrograms(main);
-    window.history.pushState(
-      { load: `showTrainers("${pathName[1]}")` },
-      null,
-      `/trainers/${this.trainerId}`
-    );
+class TrainerView {
+  constructor(trainer) {
+    this._trainer = trainer;
+    this._form = TrainerForm.create(this);
   }
 
-  renderForm(target) {
-    removeAll(target);
-    const newTrainer = Welcome.newUserForm(TRAINERS_URL);
-    newTrainer.prepend(H1.new("Sign Up As a Trainer"));
-    target.append(newTrainer);
-    newTrainer.append(
-      Link.new(
-        { class: "small" },
-        () => {
-          removeAll(target);
-          new User().renderForm(target);
-        },
-        "Sign up as a Gym Goer instead."
+  static create(trainer) {
+    return new TrainerView(trainer);
+  }
+
+  get trainer() {
+    return this._trainer;
+  }
+
+  get form() {
+    return this._form;
+  }
+
+  menu() {
+    return Elem.nav(
+      {},
+      null,
+      Elem.div(
+        { class: "nav nav-tabs", id: "nav-tab", role: "tablist" },
+        null,
+        this.routinesTab(),
+        this.picturesTab(),
+        this.videosTab()
       )
     );
   }
 
-  renderNewProgramForm() {
-    const handleSubmit = json => {
-      const trainer = Object.assign(new Trainer(), currentUser);
-      const program = Program.create(trainer, json);
-      trainer.programs.push(program);
-      currentUser = trainer;
-      Render.hideSpinner(main);
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        append(
-          new Grid().showProgramRow(program),
-          `program_${program.id}`,
-          mainContainer
-        );
-        mainContainer.append(new Grid().newExerciseRow(program));
-      }
-    };
-    return new Program().form(
-      "POST",
-      Elem.h1(
-        { class: "text-primary mb-4" },
-        null,
-        Elem.icon({ class: "fas fa-plus-square" }),
-        " Create Routine"
-      ),
-      "Create Routine",
-      handleSubmit
+  profile() {
+    return Elem.div(
+      {},
+      null,
+      this.trainer.accountView.profileHeader(),
+      this.menu()
     );
   }
 
-  allPrograms(target) {
-    return this.programs.map(program => new Grid().programRow(program, target));
+  routinesTab() {
+    return Elem.link(
+      {
+        class: "nav-item nav-link active",
+        id: "nav-routines-tab",
+        "data-toggle": "tab",
+        href: "#nav-routines",
+        role: "tab",
+        "aria-controls": "nav-routines",
+        "aria-selected": "true"
+      },
+      null,
+      "Routines"
+    );
   }
 
-  menu() {
-    return Elem.html(`
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <a
-            class="nav-item nav-link active"
-            id="nav-home-tab"
-            data-toggle="tab"
-            href="#nav-home"
-            role="tab"
-            aria-controls="nav-home"
-            aria-selected="true"
-          >
-            Programs
-          </a>
-          <a
-            class="nav-item nav-link"
-            id="nav-profile-tab"
-            data-toggle="tab"
-            href="#nav-profile"
-            role="tab"
-            aria-controls="nav-profile"
-            aria-selected="false"
-          >
-            Pictures
-          </a>
-          <a
-            class="nav-item nav-link"
-            id="nav-contact-tab"
-            data-toggle="tab"
-            href="#nav-contact"
-            role="tab"
-            aria-controls="nav-contact"
-            aria-selected="false"
-          >
-            Videos
-          </a>
-        </div>
-      </nav>
-    `);
+  picturesTab() {
+    return Elem.link(
+      {
+        class: "nav-item nav-link",
+        id: "nav-pictures-tab",
+        "data-toggle": "tab",
+        href: "#nav-pictures",
+        role: "tab",
+        "aria-controls": "nav-pictures",
+        "aria-selected": "false"
+      },
+      null,
+      "Pictures"
+    );
+  }
+
+  videosTab() {
+    return Elem.link(
+      {
+        class: "nav-item nav-link",
+        id: "nav-video-tab",
+        "data-toggle": "tab",
+        href: "#nav-video",
+        role: "tab",
+        "aria-controls": "nav-video",
+        "aria-selected": "false"
+      },
+      null,
+      "Video"
+    );
+  }
+}
+
+class TrainerForm {
+  constructor(view) {
+    this._view = view;
+  }
+
+  static create(view) {
+    return new TrainerForm(view);
+  }
+
+  get view() {
+    return this._view;
+  }
+
+  get trainer() {
+    return this._view.trainer;
+  }
+
+  signup() {
+    const form = this.trainer.accountView.form.signup();
+    form.action = TRAINERS_URL;
+    form.prepend(Elem.h1({}, null, "Sign Up As a Trainer"));
+    form.append(
+      Elem.link(
+        { class: "small" },
+        () =>
+          render(new User().view.form.signup(), `#${form.parentNode.id}`, true),
+        "Sign up as a Gym Goer instead."
+      )
+    );
+    return form;
+  }
+}
+
+class TrainerRender {
+  constructor(trainer) {
+    this._trainer = trainer;
+  }
+
+  static create(trainer) {
+    return new TrainerRender(trainer);
+  }
+
+  get trainer() {
+    return this._trainer;
+  }
+
+  profile() {
+    render(this.trainer.view.profile(), "main", true);
+    this.programs("main", false);
+    window.history.pushState(
+      { load: `showTrainers("${pathName[1]}")` },
+      null,
+      `/trainers/${this.trainer.trainerId}`
+    );
+  }
+
+  programs(target, remove = true) {
+    if (remove) removeAll(d.querySelector(target));
+    this.trainer.programs.forEach(program => {
+      const __program = program.view.__program();
+      __program.addEventListener("click", () => program.render.show(target));
+      render(__program, target);
+    });
+  }
+}
+
+class TrainerController {
+  constructor(trainer) {
+    this._trainer = trainer;
+  }
+
+  static create(trainer) {
+    return new TrainerController(trainer);
+  }
+
+  get program() {
+    return this._trainer;
+  }
+
+  show(){
+
   }
 }
