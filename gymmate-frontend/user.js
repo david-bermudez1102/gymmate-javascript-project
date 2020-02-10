@@ -65,7 +65,7 @@ class User extends Account {
     return user;
   }
 }
- //=================================================================//
+//=================================================================//
 class UserView {
   constructor(user) {
     this._user = user;
@@ -85,7 +85,11 @@ class UserView {
   }
 
   __user() {
-    return Elem.section({}, () => this.user.render.profile(), this.name);
+    return Elem.section(
+      { class: "text-left p-3 p-sm-5 rounded shadow " },
+      () => this.user.render.profile(),
+      this.user.name
+    );
   }
 
   menu() {

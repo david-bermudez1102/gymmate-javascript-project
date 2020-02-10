@@ -54,7 +54,7 @@ class Fetch {
     const h = new Headers();
     h.append("Authorization", `Token token=${token}`);
     Render.spinner(main);
-    fetch(this.url, { headers: h })
+    return fetch(this.url, { headers: h })
       .then(this.parseJson)
       .then(this.callback)
       .catch(console.log);

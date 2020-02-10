@@ -68,11 +68,6 @@ class Trainer extends Account {
     return trainer;
   }
 
-  trainer(target) {
-    removeAll(target);
-    target.append(Section.new(this.name, null, () => this.show()));
-  }
-
   allPrograms(target) {
     return this.programs.map(program => new Grid().programRow(program, target));
   }
@@ -94,6 +89,14 @@ class TrainerView {
 
   get form() {
     return this._form;
+  }
+
+  __trainer() {
+    return Elem.section(
+      { class: "text-left p-3 p-sm-5 rounded shadow " },
+      () => this.trainer.render.profile(),
+      this.trainer.name
+    );
   }
 
   menu() {
@@ -246,19 +249,13 @@ class TrainerController {
     return this._trainer;
   }
 
-  create(){
+  create() {}
 
+  show() {
+    return this.trainer.render.profile();
   }
 
-  show(){
-    return this.trainer.render.profile()
-  }
+  update() {}
 
-  update(){
-
-  }
-
-  delete(){
-
-  }
+  delete() {}
 }

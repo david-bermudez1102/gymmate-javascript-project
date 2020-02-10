@@ -29,7 +29,7 @@ class Render {
       },
       null,
       sessionStorage.getItem("auth_token")
-        ? Elem.li({}, null, this.searchBar())
+        ? Elem.li({}, null, new Search().view.searchBar())
         : "",
       Elem.li({}, null, this.homeLink()),
       Elem.li({}, null, this.loginLink()),
@@ -65,47 +65,6 @@ class Render {
       },
       null,
       Elem.span({ class: "navbar-toggler-icon" })
-    );
-  }
-
-  static searchBar() {
-    const handleSubmit = json => {
-      this.hideSpinner(main);
-      if (!main.querySelector("#home_row")) {
-        new Promise(res =>
-          res(render(new Grid().homeRow(), "main", true))
-        ).then(() => this.listResults(json));
-      } else {
-        this.listResults(json);
-      }
-    };
-
-    return Elem.form(
-      { class: "mx-auto", id: "new_search", action: SEARCH_URL, method: "GET" },
-      handleSubmit,
-      Elem.div(
-        { class: "input-group" },
-        null,
-        Input.new({
-          type: "search",
-          name: "query",
-          placeholder: "Search routines, trainers, etc...",
-          class:
-            "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
-        }),
-        Elem.span(
-          { class: "input-group-append" },
-          null,
-          Elem.div(
-            {
-              class:
-                "input-group-text bg-white rounded-top-right-50 rounded-bottom-right-50 border-0"
-            },
-            null,
-            Elem.icon({ class: "fa fa-search" })
-          )
-        )
-      )
     );
   }
 
@@ -166,35 +125,6 @@ class Render {
         "Logout"
       )
     );
-  }
-
-  static listResults(json) {
-    if (d.querySelector("#main_container")) {
-      const mainContainer = d.querySelector("#main_container");
-      removeAll(mainContainer);
-
-      json.trainers.forEach(trainer =>
-        Trainer.create(trainer).trainer(mainContainer)
-      );
-
-      json.users.forEach(user => User.create(user).user(mainContainer));
-
-      json.programs.forEach(program =>
-        new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, json =>
-          new Promise(res => res(Trainer.create(json)))
-            .then(trainer =>
-              render(
-                new Grid().programRow(
-                  Program.create(trainer, program),
-                  "#main_container"
-                ),
-                "#main_container"
-              )
-            )
-            .then(this.hideSpinner(main))
-        ).request()
-      );
-    }
   }
 
   static footer = () => {

@@ -31,95 +31,51 @@ class SearchView {
     return this._search;
   }
 
-  show() {
-    return Elem.div(
-      { id: "search_row", class: "row" },
-      null,
-      this.menuCol(),
-      this.mainContainerCol()
+  searchBar() {
+    return Elem.form(
+      { class: "mx-auto", id: "new_search", action: SEARCH_URL, method: "GET" },
+      json => this.search.controller.createSearch(json),
+      Elem.div(
+        { class: "input-group" },
+        null,
+        Input.new({
+          type: "search",
+          name: "query",
+          placeholder: "Search routines, trainers, etc...",
+          class:
+            "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
+        }),
+        Elem.span(
+          { class: "input-group-append" },
+          null,
+          Elem.div(
+            {
+              class:
+                "input-group-text bg-white rounded-top-right-50 rounded-bottom-right-50 border-0"
+            },
+            null,
+            Elem.icon({ class: "fa fa-search" })
+          )
+        )
+      )
     );
   }
 
-  menuCol() {
-    return Elem.div(
-      { class: "col-sm-6 col-md-5 col-lg-3 d-flex" },
-      null,
-      this.menu()
+  trainers(json) {
+    return json.trainers.map(trainer =>
+      Trainer.create(trainer).view.__trainer()
     );
   }
 
-  mainContainerCol() {
-    return Elem.div(
-      { id: "main_container", class: "col-sm-6 col-md px-sm-1" },
-      null,
-      currentUser instanceof Trainer ? this.newProgramCol() : ""
-    );
+  users(json) {
+    return json.users.map(user => User.create(user).view.__user());
   }
 
-  newProgramCol() {
-    const program = new Program();
-    return program.view.programFormRow(program.view.form.newProgram());
-  }
-
-  menu() {
-    return Elem.div(
-      {
-        class:
-          "nav flex-column w-100 flex-wrap nav-pills shadow p-4 rounded text-light",
-        role: "tablist",
-        "aria-orientation": "vertical",
-        id: "v-pills-tab"
-      },
-      null,
-      currentUser.accountView.profilePic(),
-      this.searchLink(),
-      this.messagesLink(),
-      isTrainer() ? this.routinesLink() : this.workoutsLink(),
-      this.profileLink()
-    );
-  }
-
-  searchLink() {
-    return Elem.link(
-      { class: "nav-link active", "data-toggle": "pill" },
-      () => this.search.render.show(),
-      "Search"
-    );
-  }
-
-  profileLink() {
-    return Elem.link(
-      { class: "nav-link", "data-toggle": "pill" },
-      () => currentUser.render.profile(),
-      "Profile"
-    );
-  }
-
-  messagesLink() {
-    return Elem.link(
-      { class: "nav-link", "data-toggle": "pill" },
-      null,
-      "Messages"
-    );
-  }
-
-  routinesLink() {
-    return Elem.link(
-      { class: "nav-link", "data-toggle": "pill" },
-      () => currentUser.render.programs("#main_container"),
-      "My Routines"
-    );
-  }
-
-  workoutsLink() {
-    return Elem.link(
-      {
-        class: "nav-link",
-        "data-toggle": "pill",
-        id: "main_menu_workouts_link"
-      },
-      () => currentUser.render.workouts("#main_container"),
-      "My Workouts"
+  programs(json) {
+    return json.programs.map(program =>
+      new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, trainer =>
+        Program.create(Trainer.create(trainer), program).view.__program()
+      ).request()
     );
   }
 }
@@ -135,6 +91,17 @@ class SearchController {
 
   get search() {
     return this._search;
+  }
+
+  createSearch(json) {
+    if (!main.querySelector("#home_row")) {
+      new Promise(res =>
+        res(render(new Grid().homeRow(), "main", true))
+      ).then(() => this.search.render.index(json));
+    } else {
+      this.search.render.index(json);
+    }
+    Render.hideSpinner(main);
   }
 
   show() {
@@ -155,8 +122,31 @@ class SearchRender {
     return this._search;
   }
 
-  show() {
-    render(this.search.view.show(), "main", true);
+  index(json) {
+    removeAll(d.querySelector("#main_container"));
+    this.trainers(json);
+    this.users(json);
+    this.programs(json);
     createRoute("search()", "/search");
+  }
+
+  trainers(json) {
+    this.search.view
+      .trainers(json)
+      .forEach(trainer => render(trainer, "#main_container"));
+  }
+
+  users(json) {
+    this.search.view
+      .users(json)
+      .forEach(user => render(user, "#main_container"));
+  }
+
+  programs(json) {
+    this.search.view
+      .programs(json)
+      .forEach(result =>
+        result.then(program => render(program, "#main_container"))
+      );
   }
 }
