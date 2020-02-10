@@ -1,22 +1,22 @@
 class Welcome {
   static signUpMenu() {
+    const btnClass = "btn btn-block btn-dark border-0 shadow rounded-pill my-4";
     const menu = document.createElement("div");
+    menu.id = "sign_up_menu";
     menu.style = "min-height:300px";
     menu.append(
       H1.new("Sign Up As:", "text-primary mb-4 text-center"),
       Button.new(
         "new_trainer_btn",
         "Trainer",
-        "btn btn-block btn-dark border-0 shadow rounded-pill my-4",
+        btnClass,
         new Trainer().renderForm,
         menu
       ),
-      Button.new(
-        "new_user_btn",
-        "Gym Goer",
-        "btn btn-block btn-dark border-0 shadow rounded-pill my-4",
-        new UserForm().signup,
-        menu
+      Elem.button(
+        { id: "new_user_btn", class: btnClass },
+        () => render(new User().view.form.signup(), "#sign_up_menu", true),
+        "Gym Goer"
       ),
       FormGroup.new(
         Welcome.socialMediaOptions(),
@@ -29,7 +29,7 @@ class Welcome {
 
   static newUserForm(url) {
     const newUserForm = Form.new("new_user", url, "POST");
-    newUserForm.setAttribute("novalidate", true)
+    newUserForm.setAttribute("novalidate", true);
     newUserForm.append(
       FormGroup.new(
         Input.new({
@@ -102,43 +102,52 @@ class Welcome {
     return newUserForm;
   }
 
-  static loginForm() {
-    const loginForm = Form.new("new_session", SESSIONS_URL, "POST");
-    loginForm.append(
-      H1.new("Login"),
-      FormGroup.new(
-        Input.new({
-          type: "email",
-          name: "account[email]",
-          placeholder: "Your email...",
-          class: "form-control pl-5 rounded-pill"
-        }),
-        Icon.new("fas fa-envelope")
-      ),
-      FormGroup.new(
-        Input.new({
-          type: "password",
-          name: "account[password]",
-          placeholder: "Your Password...",
-          class: "form-control pl-5 rounded-pill"
-        }),
-        Icon.new("fas fa-lock")
-      ),
-      Button.new(
-        "create_session",
-        "Login",
-        "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
+  static loginRow() {
+    return Elem.div(
+      { id: "login_row", class: "row" },
+      null,
+      Elem.div(
+        { class: "col-md-4 mt-3 px-1" },
         null,
-        SESSIONS_URL
+        Elem.section(
+          { class: "text-left p-3 p-sm-5 rounded shadow" },
+          null,
+          new Account().accountView.form.login()
+        )
       ),
-      FormGroup.new(
-        Welcome.socialMediaOptions(),
+      Elem.div(
+        { class: "col-md mt-4 mt-md-3 pl-1 pl-md-4 pr-1" },
         null,
-        "form-group bg-light shadow-sm row border-0 py-5"
+        this.card(
+          "Login to retrieve your current workouts!",
+          "card-tooltip banner login-banner"
+        )
       )
     );
+  }
 
-    return loginForm;
+  static signupRow() {
+    return Elem.div(
+      { id: "signup_row", class: "row" },
+      null,
+      Elem.div(
+        { class: "col-md mt-4 mt-md-3 pr-1 pr-md-4 pl-1" },
+        null,
+        Welcome.card(
+          "It all starts here. Sign Up now",
+          "inverse-card-tooltip banner signup-banner"
+        )
+      ),
+      Elem.div(
+        { class: "col-md-4 mt-3 px-1" },
+        null,
+        Elem.section(
+          { class: "text-left p-3 p-sm-5 rounded shadow" },
+          null,
+          this.signUpMenu()
+        )
+      )
+    );
   }
 
   static socialMediaOptions() {
@@ -172,7 +181,6 @@ class Welcome {
     card.append(cardBody, cardFooter);
     return card;
   }
-  
 
   static render() {
     return new Promise(res => {
@@ -181,11 +189,9 @@ class Welcome {
         res(append(new Grid().headerRow(), "header_row", main));
       }, 10);
     })
+      .then(() => render(this.loginRow(), "main"))
       .then(() => {
-        append(new Grid().loginRow(), "login_row", main);
-      })
-      .then(() => {
-        append(new Grid().signupRow(), "signup_row", main);
+        render(this.signupRow(), "main");
       })
       .then(() => Render.hideSpinner(main));
   }

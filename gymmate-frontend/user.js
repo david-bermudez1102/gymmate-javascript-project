@@ -26,7 +26,7 @@ class User extends Account {
     this._userId = userId;
     this._workouts = workouts;
     this._view = UserView.create(this);
-    this._render = RenderUser.create(this);
+    this._render = UserRender.create(this);
   }
 
   get userId() {
@@ -91,6 +91,7 @@ class User extends Account {
 class UserView {
   constructor(user) {
     this._user = user;
+    this._form = UserForm.create(this);
   }
 
   static create(user) {
@@ -99,6 +100,10 @@ class UserView {
 
   get user() {
     return this._user;
+  }
+
+  get form() {
+    return this._form;
   }
 
   menu() {
@@ -173,13 +178,13 @@ class UserView {
   }
 }
 
-class RenderUser {
+class UserRender {
   constructor(user) {
     this._user = user;
   }
 
   static create(user) {
-    return new RenderUser(user);
+    return new UserRender(user);
   }
 
   get user() {
@@ -204,26 +209,38 @@ class RenderUser {
   }
 }
 
-class UserForm extends UserView {
-  constructor(user) {
-    super(user);
+class UserForm {
+  constructor(view) {
+    this._view = view;
   }
 
-  signup(target) {
-    removeAll(target);
-    const newUser = Welcome.newUserForm(USERS_URL);
-    newUser.prepend(H1.new("Sign Up"));
-    target.append(newUser);
-    newUser.append(
-      Link.new(
+  static create(view) {
+    return new UserForm(view);
+  }
+
+  get view() {
+    return this._view;
+  }
+
+  get user() {
+    return this._view.user
+  }
+
+  signup() {
+    const form = this.user.accountView.form.signup();
+    form.action = USERS_URL
+    form.prepend(Elem.h1({}, null, "Sign Up"));
+    form.append(
+      Elem.link(
         { class: "small" },
         () => {
-          removeAll(target);
-          new Trainer().renderForm(target);
+          removeAll("target");
+          new Trainer().renderForm("target");
         },
         "Sign up as a Trainer instead."
       )
     );
+    return form
   }
 
   editUser() {}

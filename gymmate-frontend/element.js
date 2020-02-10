@@ -26,9 +26,13 @@ class Elem {
     return elem.addEventListener(
       "submit",
       e => {
+        let action, target;
+
         e.preventDefault();
         e.stopPropagation();
-        let action;
+
+        !elem.dataset.target ? (target = elem) : (target = elem.dataset.target);
+
         if (!method === "GET") elem.classList.add("was-validated");
         const formData = new FormData(elem);
         if (elem.checkValidity() === true) {
@@ -37,9 +41,21 @@ class Elem {
                 elem.action + `/?${new URLSearchParams(formData).toString()}`)
             : (action = elem.action);
           if (method !== "GET") {
-            new Fetch(formData, method, action, handleOnsubmit).submit();
+            new Fetch(
+              formData,
+              method,
+              action,
+              handleOnsubmit,
+              target
+            ).submit();
           } else {
-            new Fetch(formData, method, action, handleOnsubmit).request();
+            new Fetch(
+              formData,
+              method,
+              action,
+              handleOnsubmit,
+              target
+            ).request();
           }
           e.target.reset();
         }

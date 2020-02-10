@@ -48,6 +48,10 @@ class Account {
     return this._accountView;
   }
 
+  get form() {
+    return this._form;
+  }
+
   get render() {
     return this._render;
   }
@@ -64,6 +68,7 @@ class Account {
 class AccountView {
   constructor(account) {
     this._account = account;
+    this._form = AccountForm.create(this);
   }
 
   static create(account) {
@@ -72,6 +77,10 @@ class AccountView {
 
   get account() {
     return this._account;
+  }
+
+  get form() {
+    return this._form;
   }
 
   profileHeader() {
@@ -194,55 +203,137 @@ class AccountView {
   }
 }
 
-class AccountForm extends AccountView {
-  constructor(account) {
-    super(account);
+class AccountForm {
+  constructor(view) {
+    this._view = view;
+  }
+
+  static create(view) {
+    return new AccountForm(view);
+  }
+
+  get view() {
+    return this._view;
   }
 
   login() {
-    return Elem.div(
-      { class: "col-md-4 mt-3 px-1" },
-      null,
-      Elem.section(
-        { class: "text-left p-3 p-sm-5 rounded shadow" },
+    return Elem.form(
+      {
+        class: "needs-validation",
+        id: "new_session",
+        action: SESSIONS_URL,
+        method: "POST"
+      },
+      json => setSession(json),
+      Elem.h1({ class: "text-primary mb-4" }, null, "Login"),
+      FormGroup.new(
+        Elem.input({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your email...",
+          class: "form-control pl-5 rounded-pill"
+        }),
+        Icon.new("fas fa-envelope")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill"
+        }),
+        Icon.new("fas fa-lock")
+      ),
+      Elem.input(
+        {
+          class:
+            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
+          type: "submit",
+          id: "create_session",
+          value: "Login"
+        },
+        () => window.event.stopPropagation()
+      ),
+      FormGroup.new(
+        Welcome.socialMediaOptions(),
         null,
-        Elem.form(
-          { class: "new_session", action: SESSIONS_URL, method: "POST" },
-          json => setSession(json),
-          Elem.h1({}, null, "Login"),
-          FormGroup.new(
-            Elem.input({
-              type: "email",
-              name: "account[email]",
-              placeholder: "Your email...",
-              class: "form-control pl-5 rounded-pill"
-            }),
-            Icon.new("fas fa-envelope")
-          ),
-          FormGroup.new(
-            Elem.input({
-              type: "password",
-              name: "account[password]",
-              placeholder: "Your Password...",
-              class: "form-control pl-5 rounded-pill"
-            }),
-            Icon.new("fas fa-lock")
-          ),
-          Elem.input(
-            {
-              class:
-                "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
-              type: "submit",
-              id: "create_session",
-              value: "Login"
-            },
-            () => window.event.stopPropagation()
-          ),
-          FormGroup.new(
-            Welcome.socialMediaOptions(),
-            null,
-            "form-group bg-light shadow-sm row border-0 py-5"
-          )
+        "form-group bg-light shadow-sm row border-0 py-5"
+      )
+    );
+  }
+
+  signup() {
+    return Elem.form(
+      { id: "new_user", method: "POST", novalidate: "true" },
+      json => setSession(json),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[name]",
+          placeholder: "Your Name...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your name requires minimum 3 characters."
+        }),
+        Icon.new("fas fa-user")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[lastname]",
+          placeholder: "Your Lastname...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your lastname requires minimum 3 characters."
+        }),
+        Icon.new("fas fa-user")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[username]",
+          placeholder: "Your Username...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your username requires at least 6 characters."
+        }),
+        Icon.new("fas fa-at")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your Email...",
+          class: "form-control pl-5 rounded-pill",
+          required: "required",
+          "data-alert": "Please provide a valid email."
+        }),
+        Icon.new("fas fa-envelope")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your password requires minimum 6 characters."
+        }),
+        Icon.new("fas fa-lock")
+      ),
+      FormGroup.new(
+        Elem.input(
+          {
+            type: "submit",
+            id: "create_user",
+            value: "Sign Up",
+            class: "btn btn-block btn-primary border-0 shadow rounded-pill"
+          },
+          () => stopPropagation()
         )
       )
     );
@@ -263,6 +354,6 @@ class AccountRender {
   }
 
   loginRow() {
-    render(this.account.view.form.login(), main)
+    render(this.account.view.form.login(), main);
   }
 }
