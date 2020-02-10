@@ -15,7 +15,7 @@ class Welcome {
         "new_user_btn",
         "Gym Goer",
         "btn btn-block btn-dark border-0 shadow rounded-pill my-4",
-        new User().renderForm,
+        new UserForm().signup,
         menu
       ),
       FormGroup.new(
@@ -172,6 +172,7 @@ class Welcome {
     card.append(cardBody, cardFooter);
     return card;
   }
+  
 
   static render() {
     return new Promise(res => {

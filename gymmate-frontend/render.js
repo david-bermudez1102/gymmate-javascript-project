@@ -164,7 +164,7 @@ class Render {
       Elem.link(
         { class: "dropdown-item" },
         () => Account.logout(),
-        "Edit Account"
+        "Logout"
       )
     );
   }
@@ -181,21 +181,18 @@ class Render {
       json.users.forEach(user => User.create(user).user(mainContainer));
 
       json.programs.forEach(program =>
-        new Fetch(
-          null,
-          "GET",
-          `${TRAINERS_URL}/${program.trainer_id}`,
-          json => {
-            this.hideSpinner(main);
-            const trainer = Trainer.create(json);
-            render(
-              new Grid().programRow(
-                Program.create(trainer, program),
+        new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, json =>
+          new Promise(res => res(Trainer.create(json)))
+            .then(trainer =>
+              render(
+                new Grid().programRow(
+                  Program.create(trainer, program),
+                  "#main_container"
+                ),
                 "#main_container"
-              ),
-              "#main_container"
-            );
-          }
+              )
+            )
+            .then(this.hideSpinner(main))
         ).request()
       );
     }
@@ -255,7 +252,7 @@ class Render {
         id: "v-pills-tab"
       },
       null,
-      currentUser.profilePic(),
+      currentUser.accountView.profilePic(),
       this.mainMenuHomeLink(),
       this.mainMenuMessagesLink(),
       isTrainer() ? this.mainMenuRoutinesLink() : this.mainMenuWorkoutsLink(),
@@ -274,7 +271,7 @@ class Render {
   static mainMenuProfileLink() {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
-      () => render(currentUser.show(), "#main_container", true),
+      () => currentUser.render.profile(),
       "Profile"
     );
   }
@@ -307,7 +304,7 @@ class Render {
         "data-toggle": "pill",
         id: "main_menu_workouts_link"
       },
-      () => this.allWorkouts(currentUser, "#main_container"),
+      () => currentUser.render.workouts("#main_container"),
       "My Workouts"
     );
   }

@@ -273,7 +273,7 @@ class Program {
       json =>
         new Promise(res => res(Workout.add(json)))
           .then(user => (currentUser = user))
-          .then(user => Render.allWorkouts(user, "#main_container"))
+          .then(user => user.render.workouts("#main_container"))
           .then(Render.hideSpinner(main)),
       Elem.input({
         type: "hidden",

@@ -8,6 +8,8 @@ class Account {
     this._sex = sex;
     this._username = username;
     this._email = email;
+    this._accountView = AccountView.create(this);
+    this._render = AccountRender.create(this);
   }
 
   get id() {
@@ -42,17 +44,68 @@ class Account {
     return this._email;
   }
 
-  edit() {}
+  get accountView() {
+    return this._accountView;
+  }
+
+  get render() {
+    return this._render;
+  }
+
+  static logout() {
+    const callback = json => {
+      sessionStorage.clear();
+      window.location.reload();
+    };
+    new Fetch(null, "DELETE", SESSION_URL, callback).submit();
+  }
+}
+
+class AccountView {
+  constructor(account) {
+    this._account = account;
+  }
+
+  static create(account) {
+    return new AccountView(account);
+  }
+
+  get account() {
+    return this._account;
+  }
+
+  profileHeader() {
+    return Elem.div(
+      { class: "row" },
+      null,
+      Elem.div(
+        { class: "col-md-3 d-flex justify-content-left" },
+        null,
+        this.profilePic()
+      ),
+      Elem.div(
+        { class: "col-md d-flex justify-content-left" },
+        null,
+        this.info()
+      )
+    );
+  }
 
   profilePic() {
     const div = Div.new(
       "w-100 mb-4 px-0 pb-2 text-dark text-center",
-      `account_${this.id}_avatar`,
+      `account_${this.account.id}_avatar`,
       null
     );
-    div.append(H1.new(`${this.name} ${this.lastname}`, "text-primary"));
     div.append(
-      Elem.form({ action: `${USERS_URL}/${this.id}` }, null, this.icon())
+      H1.new(`${this.account.name} ${this.account.lastname}`, "text-primary")
+    );
+    div.append(
+      Elem.form(
+        { action: `${USERS_URL}/${this.account.id}` },
+        null,
+        this.icon()
+      )
     );
     return div;
   }
@@ -77,12 +130,13 @@ class Account {
 
     return label;
   }
+
   info() {
-    const div = Div.new(null, `account_${this.id}_info`, null);
-    div.append(P.new(`Username: ${this.username}`));
-    div.append(P.new(`Bio: ${this.bio}`));
-    div.append(P.new(`Date of birth: ${this.dateOfBirth}`));
-    div.append(P.new(`Sex: ${this.sex}`));
+    const div = Div.new(null, `account_${this.account.id}_info`, null);
+    div.append(P.new(`Username: ${this.account.username}`));
+    div.append(P.new(`Bio: ${this.account.bio}`));
+    div.append(P.new(`Date of birth: ${this.account.dateOfBirth}`));
+    div.append(P.new(`Sex: ${this.account.sex}`));
     return div;
   }
 
@@ -138,12 +192,77 @@ class Account {
       Elem.icon({ class: "fas fa-pen" })
     );
   }
+}
 
-  static logout() {
-    const callback = json => {
-      sessionStorage.clear();
-      window.location.reload();
-    };
-    new Fetch(null, "DELETE", SESSION_URL, callback).submit();
+class AccountForm extends AccountView {
+  constructor(account) {
+    super(account);
+  }
+
+  login() {
+    return Elem.div(
+      { class: "col-md-4 mt-3 px-1" },
+      null,
+      Elem.section(
+        { class: "text-left p-3 p-sm-5 rounded shadow" },
+        null,
+        Elem.form(
+          { class: "new_session", action: SESSIONS_URL, method: "POST" },
+          json => setSession(json),
+          Elem.h1({}, null, "Login"),
+          FormGroup.new(
+            Elem.input({
+              type: "email",
+              name: "account[email]",
+              placeholder: "Your email...",
+              class: "form-control pl-5 rounded-pill"
+            }),
+            Icon.new("fas fa-envelope")
+          ),
+          FormGroup.new(
+            Elem.input({
+              type: "password",
+              name: "account[password]",
+              placeholder: "Your Password...",
+              class: "form-control pl-5 rounded-pill"
+            }),
+            Icon.new("fas fa-lock")
+          ),
+          Elem.input(
+            {
+              class:
+                "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
+              type: "submit",
+              id: "create_session",
+              value: "Login"
+            },
+            () => window.event.stopPropagation()
+          ),
+          FormGroup.new(
+            Welcome.socialMediaOptions(),
+            null,
+            "form-group bg-light shadow-sm row border-0 py-5"
+          )
+        )
+      )
+    );
+  }
+}
+
+class AccountRender {
+  constructor(account) {
+    this._account = account;
+  }
+
+  static create(account) {
+    return new AccountRender(account);
+  }
+
+  get account() {
+    return this._account;
+  }
+
+  loginRow() {
+    render(this.account.view.form.login(), main)
   }
 }
