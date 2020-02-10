@@ -302,13 +302,6 @@ class Render {
     );
   }
 
-  static allWorkouts(user, target) {
-    removeAll(d.querySelector(target));
-    user.workouts.forEach(workout => {
-      if (workout.program) render(workout.workout(target), target);
-    });
-  }
-
   static counter(start) {
     let count = start;
 
