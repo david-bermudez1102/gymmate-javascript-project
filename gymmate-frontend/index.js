@@ -320,15 +320,13 @@ const callback = json => {
     new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
       Render.hideSpinner(main);
       currentUser = Trainer.create(trainer);
-      removeAll(main);
-      main.append(new Grid().homeRow());
+      new Home().render.show()
     }).request();
   } else if (json.userable_type === "User") {
     new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
       Render.hideSpinner(main);
       currentUser = User.create(user);
-      removeAll(main);
-      main.append(new Grid().homeRow());
+      new Home().render.show();
     }).request();
   }
 };

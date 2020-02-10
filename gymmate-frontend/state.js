@@ -32,6 +32,10 @@ const search = () => {
   ).request();
 };
 
+function home() {
+  new Home().controller.show()
+}
+
 function trainers(path) {
   const handleSubmit = json => {
     const trainer = Trainer.create(json);
@@ -59,7 +63,8 @@ const pathName = [
 let routes = {
   search: "search()",
   trainers: `trainers("${pathName[1]}")`,
-  users: `users("${pathName[1]}")`
+  users: `users("${pathName[1]}")`,
+  home: `home()`
 };
 
 const loadUrl = () => {

@@ -137,7 +137,9 @@ class HomeController {
     return this._home;
   }
 
-  show() {}
+  show() {
+    this.home.render.show()
+  }
 }
 
 class HomeRender {
@@ -154,7 +156,7 @@ class HomeRender {
   }
 
   show() {
-    console.log(this.home.view.show());
-    return render(this.home.view.show(), "main", true);
+    render(this.home.view.show(), "main", true);
+    createRoute("home()", "/home")
   }
 }
