@@ -197,8 +197,8 @@ class AccountView {
         title: "Edit This Routine"
       },
       () => {
+        content.render.editProgramRow(target)
         window.event.stopPropagation();
-        render(content.edit(), target, true);
       },
       Elem.icon({ class: "fas fa-pen" })
     );

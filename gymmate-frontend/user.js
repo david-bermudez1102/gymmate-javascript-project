@@ -64,13 +64,8 @@ class User extends Account {
     );
     return user;
   }
-
-  user(target) {
-    removeAll(target);
-    target.append(Section.new(this.name, null, () => this.show()));
-  }
 }
-
+ //=================================================================//
 class UserView {
   constructor(user) {
     this._user = user;
@@ -87,6 +82,10 @@ class UserView {
 
   get form() {
     return this._form;
+  }
+
+  __user() {
+    return Elem.section({}, () => this.user.render.profile(), this.name);
   }
 
   menu() {

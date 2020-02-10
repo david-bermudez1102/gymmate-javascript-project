@@ -131,7 +131,7 @@ class ProgramView {
 
   options() {
     return isOwner(this.program.trainer)
-      ? this.program.trainer.accountView.options(this.program)
+      ? this.program.trainer.accountView.options(this.program, "#main_container")
       : "";
   }
 
@@ -363,10 +363,10 @@ class ProgramRender {
     );
   }
 
-  editProgramRow() {
+  editProgramRow(target) {
     render(
-      this.program.view.programFormRow(this.program.view.form.editProgram()),
-      "#main_container",
+      this.program.view.programFormRow(this.program.view.form.edit()),
+      target,
       true
     );
   }

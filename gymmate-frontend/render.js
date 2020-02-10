@@ -43,8 +43,7 @@ class Render {
       { class: "nav-link active" },
       () => {
         if (isLoggedIn()) {
-          removeAll(main);
-          main.append(new Grid().homeRow());
+          new Home().controller.show()
         } else {
           Welcome.render();
         }
