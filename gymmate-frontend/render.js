@@ -127,7 +127,7 @@ class Render {
     );
   }
 
-  static footer = () => {
+  static footer (){
     const footer = d.createElement("footer");
     footer.className = "bg-dark text-muted";
     footer.innerHTML = `

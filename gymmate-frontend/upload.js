@@ -1,33 +1,34 @@
 const fileUploader = (name, video) => {
   let preview = false;
   if (video) preview = Video.new(video);
-  const file = Input.new({
+  const file = Elem.input({
     type: "file",
+    id:"new_video",
     name: name,
-    class: "d-none"
+    class: "d-block"
   });
+
+  
+  file.accept = "video/mp4, video/ogg, video/webm";
+  file.addEventListener("change", () => handleFiles(file.files, label, file));
+
   const label = Elem.label(
     {
       class: "drop-area d-flex justify-content-center align-items-center mb-3"
     },
     null,
     preview ||
-      Icon.new(
-        "fas fa-cloud-upload-alt text-large text-primary",
-        "font-size:100pt; cursor:pointer"
-      ),
+      Elem.icon({
+        class: "fas fa-cloud-upload-alt text-large text-primary",
+        style: "font-size:100pt; cursor:pointer"
+      }),
     file
   );
 
-  file.accept = "video/mp4, video/ogg, video/webm";
-  file.addEventListener("change", () => {
-    handleFiles(file.files, label, file);
-  });
 
   let dropArea = label;
 
   const preventDefaults = e => {
-    e.preventDefault();
     e.stopPropagation();
   };
   // Prevent default drag behaviors
@@ -47,7 +48,7 @@ const fileUploader = (name, video) => {
   // Handle dropped files
   dropArea.addEventListener(
     "drop",
-    (e, label, file) => handleDrop(e, label, file),
+    e => handleDrop(e, label, file),
     false
   );
 

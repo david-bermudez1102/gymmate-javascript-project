@@ -71,10 +71,6 @@ class Trainer extends Account {
     );
     return trainer;
   }
-
-  allPrograms(target) {
-    return this.programs.map(program => new Grid().programRow(program, target));
-  }
 }
 
 //===============================================================================//

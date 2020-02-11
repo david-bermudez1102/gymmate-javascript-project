@@ -40,6 +40,7 @@ class Elem {
             ? (action =
                 elem.action + `/?${new URLSearchParams(formData).toString()}`)
             : (action = elem.action);
+
           if (method !== "GET") {
             new Fetch(
               formData,
@@ -48,6 +49,12 @@ class Elem {
               handleOnsubmit,
               target
             ).submit();
+            let jsonObject = {};
+
+            for (const [key, value] of formData.entries()) {
+              jsonObject[key] = value;
+            }
+            console.log(json)
           } else {
             new Fetch(
               formData,
@@ -90,7 +97,7 @@ class Elem {
 
   static div(attributes, handleOnclick, ...append) {
     const elem = this.create("div", attributes, ...append);
-    this.handleOnclick(elem, handleOnclick, true, false);
+    this.handleOnclick(elem, handleOnclick, false, false);
     return elem;
   }
 
@@ -120,7 +127,7 @@ class Elem {
 
   static button(attributes, handleOnclick, ...append) {
     const elem = this.create("button", attributes, ...append);
-    this.handleOnclick(elem, handleOnclick);
+    this.handleOnclick(elem, handleOnclick, false);
     return elem;
   }
 
@@ -144,7 +151,7 @@ class Elem {
 
   static form(attributes, handleOnsubmit, ...append) {
     const elem = this.create("form", attributes, ...append);
-    this.handleOnsubmit(elem, attributes["method"], handleOnsubmit);
+    this.handleOnsubmit(elem, attributes["method"], handleOnsubmit, false, false);
 
     return elem;
   }

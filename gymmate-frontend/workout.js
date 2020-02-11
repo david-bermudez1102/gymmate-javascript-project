@@ -191,7 +191,7 @@ class WorkoutView {
     return Elem.section(
       {
         class: sectionClassName,
-        id: `workout_${this.work.id}`
+        id: `workout_${this.workout.id}`
       },
       null,
       Elem.div({ class: "row" }, null, this.title(), this.options()),

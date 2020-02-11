@@ -80,10 +80,6 @@ class Program {
     return program;
   }
 
-  renderNewExerciseForm() {
-    return new Exercise(null, null, null, null, null, null, this).form();
-  }
-
   allExercises(target) {
     this.exercises.forEach(exercise => {
       append(
@@ -282,8 +278,8 @@ class ProgramForm {
   }
 
   newProgram() {
-    const form = this._form("new_program", "POST", PROGRAMS_URL, () =>
-      this.program.controller.create(json)
+    const form = this._form("new_program", "POST", PROGRAMS_URL, json =>
+      this.program.controller.createProgram(json)
     );
     form.prepend(
       Elem.h1(
@@ -302,17 +298,17 @@ class ProgramForm {
       `edit_program_${this.program.id}`,
       "PATCH",
       `${PROGRAMS_URL}/${this.program.id}`,
-      () => this.program.controller.update(json)
+      json => this.program.controller.update(json)
     );
     form.prepend(
       Elem.h1(
         { class: "text-primary mb-4" },
         null,
         Elem.icon({ class: "fas fa-edit" }),
-        " Update Routine"
+        " Edit Routine"
       )
     );
-    form.submit.value = "Create Routine";
+    form.submit.value = "Update Routine";
     return form;
   }
 
@@ -339,6 +335,18 @@ class ProgramForm {
         () => window.event.stopPropagation()
       )
     );
+  }
+
+  newExercise() {
+    return new Exercise(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      this
+    ).view.newExerciseForm();
   }
 }
 
@@ -399,21 +407,13 @@ class ProgramController {
     return this._program;
   }
 
-  create(json) {
+  createProgram(json) {
     const trainer = Object.assign(new Trainer(), currentUser);
     const program = Program.create(trainer, json);
     trainer.programs.push(program);
     currentUser = trainer;
-    if (d.querySelector("#main_container")) {
-      const mainContainer = d.querySelector("#main_container");
-      removeAll(mainContainer);
-      append(
-        new Grid().showProgramRow(program),
-        `program_${program.id}`,
-        mainContainer
-      );
-      mainContainer.append(new Grid().newExerciseRow(program));
-    }
+    this.program.render.__program("#main_container");
+    mainContainer.append(new Grid().newExerciseRow(program));
   }
 
   update(json) {
@@ -428,16 +428,7 @@ class ProgramController {
         program
       );
       currentUser = trainer;
-      if (d.querySelector("#main_container")) {
-        const mainContainer = d.querySelector("#main_container");
-        removeAll(mainContainer);
-        append(
-          new Grid().showProgramRow(program),
-          `program_${program.id}`,
-          mainContainer
-        );
-        mainContainer.append(new Grid().newExerciseRow(program));
-      }
+      this.program.render.__program("#main_container");
     }
   }
 
