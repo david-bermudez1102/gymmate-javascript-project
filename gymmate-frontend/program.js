@@ -131,7 +131,10 @@ class ProgramView {
 
   options() {
     return isOwner(this.program.trainer)
-      ? this.program.trainer.accountView.options(this.program, "#main_container")
+      ? this.program.trainer.accountView.options(
+          this.program,
+          "#main_container"
+        )
       : "";
   }
 
@@ -164,12 +167,7 @@ class ProgramView {
         id: `program_${this.program.id}`
       },
       null,
-      Elem.div(
-        { class: "row" },
-        null,
-        this.title(),
-        this.options()
-      ),
+      Elem.div({ class: "row" }, null, this.title(), this.options()),
       Subtitle.new(`By ${this.program.fullName}`),
       Elem.div({ class: "display-4" }, null, this.program.description),
       Elem.video(this.program.video),
@@ -372,8 +370,9 @@ class ProgramRender {
   }
 
   __program(target) {
-    this.program.view.__program().addEventListener("click", () => this.show(target))
-    render(this.program.view.__program(), target);
+    const program = this.program.view.__program();
+    program.addEventListener("click", () => this.show(target));
+    render(program, target);
   }
 
   show(target) {

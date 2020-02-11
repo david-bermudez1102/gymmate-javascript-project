@@ -43,7 +43,8 @@ class SearchView {
           name: "query",
           placeholder: "Search routines, trainers, etc...",
           class:
-            "form-control rounded-top-left-50 rounded-bottom-left-50 border-0"
+            "form-control rounded-top-left-50 rounded-bottom-left-50 border-0",
+          value: new URLSearchParams(location.search).get("query") || ""
         }),
         Elem.span(
           { class: "input-group-append" },
@@ -73,8 +74,8 @@ class SearchView {
 
   programs(json) {
     return json.programs.map(program =>
-      new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, trainer => 
-        Program.create(Trainer.create(trainer), program).view.__program()
+      new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, trainer =>
+        Program.create(Trainer.create(trainer), program)
       ).request()
     );
   }
@@ -97,14 +98,18 @@ class SearchController {
     if (!main.querySelector("#home_row")) {
       new Promise(res =>
         res(render(new Grid().homeRow(), "main", true))
-      ).then(() => this.search.render.index(json));
+      ).then(() =>
+        this.search.render.index(
+          json,
+          new FormData(d.querySelector("#new_search"))
+        )
+      );
     } else {
-      this.search.render.index(json);
+      this.search.render.index(
+        json,
+        new FormData(d.querySelector("#new_search"))
+      );
     }
-  }
-
-  show() {
-    this.search.render.show();
   }
 }
 
@@ -121,12 +126,15 @@ class SearchRender {
     return this._search;
   }
 
-  index(json) {
+  index(json, formData) {
     removeAll(d.querySelector("#main_container"));
     this.trainers(json);
     this.users(json);
     this.programs(json);
-    createRoute("search()", "/search");
+    createRoute(
+      "search()",
+      `/search/?${new URLSearchParams(formData).toString()}`
+    );
   }
 
   trainers(json) {
@@ -145,7 +153,7 @@ class SearchRender {
     this.search.view
       .programs(json)
       .forEach(result =>
-        result.then(program => render(program, "#main_container")).then(Render.hideSpinner(main))
+        result.then(program => program.render.__program("#main_container"))
       );
   }
 }

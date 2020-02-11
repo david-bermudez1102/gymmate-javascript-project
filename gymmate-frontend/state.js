@@ -17,12 +17,7 @@ window.onpopstate = function(event) {
 
 const search = () => {
   const handleSubmit = json => {
-    if (d.querySelector("#main_container"))
-      json.trainers.forEach(trainer =>
-        Trainer.create(trainer).trainer(d.querySelector("#main_container"))
-      );
-
-    console.log(json);
+    new Search().controller.createSearch(json)
   };
   new Fetch(
     null,
@@ -40,7 +35,6 @@ function trainers(path) {
   const handleSubmit = json => {
     const trainer = Trainer.create(json);
     trainer.controller.show();
-    Render.hideSpinner(main);
   };
   new Fetch(null, "GET", TRAINERS_URL + "/" + path, handleSubmit).request();
 }
@@ -48,8 +42,6 @@ function trainers(path) {
 function users(path) {
   const handleSubmit = json => {
     const user = User.create(json);
-    console.log(user);
-    Render.hideSpinner(main);
     user.show();
   };
   new Fetch(null, "GET", USERS_URL + "/" + path, handleSubmit).request();

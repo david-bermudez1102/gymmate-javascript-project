@@ -57,7 +57,7 @@ class Elem {
               target
             ).request();
           }
-          e.target.reset();
+          if(method!=="GET") e.target.reset();
         }
       },
       false

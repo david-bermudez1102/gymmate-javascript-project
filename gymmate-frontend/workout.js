@@ -65,7 +65,6 @@ class Workout {
       "GET",
       `${TRAINERS_URL}/${json.program.trainer_id}`,
       trainer => {
-        Render.hideSpinner(main);
         workout.program = Program.create(
           Trainer.create(trainer),
           json.program
@@ -222,7 +221,6 @@ class Workout {
     };
     Object.keys(data).forEach(key => formData.append(key, data[key]));
     new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
-      Render.hideSpinner(main);
       const user = Object.assign(new User(), currentUser);
       user.workouts.find(workout =>
         workout.completeExercises.push(CompleteExercise.create(json))
