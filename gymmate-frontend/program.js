@@ -149,7 +149,7 @@ class ProgramView {
         ? Elem.span(
             { class: "col-lg-3 order-2 " },
             null,
-            this.program.form.startProgramBtn()
+            this.program.user.view.startProgramBtn()
           )
         : ""
     );
@@ -182,7 +182,9 @@ class ProgramView {
             "Add New Exercise"
           )
         : "",
-      isUser() ? this.form.startProgramBtn() : ""
+      isUser() && isUser() && !owner(this.workout.user)
+        ? this.form.addWorkout()
+        : ""
     );
   }
 
@@ -314,23 +316,24 @@ class ProgramForm {
     return form;
   }
 
-  startProgramBtn() {
+  addWorkout() {
     return Elem.form(
-      { id: `new_workout_${this.id}`, action: WORKOUTS_URL, method: "POST" },
-      json =>
-        new Promise(res => res(Workout.add(json)))
-          .then(user => (currentUser = user))
-          .then(user => user.render.workouts("#main_container")),
+      {
+        id: `new_workout_${this.program.id}`,
+        action: WORKOUTS_URL,
+        method: "POST"
+      },
+      json => new workout().controller.add(json),
       Elem.input({
         type: "hidden",
         name: "workout[program_id]",
-        value: this.id
+        value: this.program.id
       }),
       Elem.input(
         {
           type: "submit",
           class: "btn btn-primary shadow",
-          id: `start_routine_button_${this.id}`,
+          id: `start_routine_button_${this.program.id}`,
           value: `Add to workouts`
         },
         () => window.event.stopPropagation()

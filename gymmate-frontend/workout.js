@@ -133,6 +133,12 @@ class WorkoutView {
       : Icon.new("fas fa-spinner text-primary", "font-size: 24px;");
   }
 
+  options() {
+    return isOwner(this.workout.user)
+      ? this.workout.user.accountView.options(this.workout, "#main_container")
+      : "";
+  }
+
   __workout(target) {
     return Elem.section(
       {
@@ -146,9 +152,8 @@ class WorkoutView {
   }
 
   exercise(exercise, target) {
-    const container = Section.new(
-      "",
-      "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white",
+    const container = Elem.section(
+     { class: "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white" },
       () => {
         removeAll(target);
         append(
@@ -194,7 +199,9 @@ class WorkoutView {
       Elem.div({ class: "display-4" }, null, this.workout.program.description),
       Elem.video(this.workout.program.video),
       this.workout.program.view.exercisesCount(),
-      isUser() ? this.form.startProgramBtn() : ""
+      isUser() && !owner(this.workout.user)
+        ? this.workout.program.form.startProgramBtn()
+        : ""
     );
   }
 
@@ -302,128 +309,7 @@ class WorkoutForm {
     return this._view;
   }
 
-  login() {
-    return Elem.form(
-      {
-        class: "needs-validation",
-        id: "new_session",
-        action: SESSIONS_URL,
-        method: "POST"
-      },
-      json => setSession(json),
-      Elem.h1({ class: "text-primary mb-4" }, null, "Login"),
-      FormGroup.new(
-        Elem.input({
-          type: "email",
-          name: "account[email]",
-          placeholder: "Your email...",
-          class: "form-control pl-5 rounded-pill"
-        }),
-        Icon.new("fas fa-envelope")
-      ),
-      FormGroup.new(
-        Elem.input({
-          type: "password",
-          name: "account[password]",
-          placeholder: "Your Password...",
-          class: "form-control pl-5 rounded-pill"
-        }),
-        Icon.new("fas fa-lock")
-      ),
-      Elem.input(
-        {
-          class:
-            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
-          type: "submit",
-          id: "create_session",
-          value: "Login"
-        },
-        () => window.event.stopPropagation()
-      ),
-      FormGroup.new(
-        Welcome.socialMediaOptions(),
-        null,
-        "form-group bg-light shadow-sm row border-0 py-5"
-      )
-    );
-  }
-
-  signup() {
-    return Elem.form(
-      { id: "new_user", method: "POST", novalidate: "true" },
-      json => setSession(json),
-      FormGroup.new(
-        Elem.input({
-          type: "text",
-          name: "account[name]",
-          placeholder: "Your Name...",
-          class: "form-control pl-5 rounded-pill",
-          minlength: 3,
-          required: "required",
-          "data-alert": "Your name requires minimum 3 characters."
-        }),
-        Icon.new("fas fa-user")
-      ),
-      FormGroup.new(
-        Elem.input({
-          type: "text",
-          name: "account[lastname]",
-          placeholder: "Your Lastname...",
-          class: "form-control pl-5 rounded-pill",
-          minlength: 3,
-          required: "required",
-          "data-alert": "Your lastname requires minimum 3 characters."
-        }),
-        Icon.new("fas fa-user")
-      ),
-      FormGroup.new(
-        Elem.input({
-          type: "text",
-          name: "account[username]",
-          placeholder: "Your Username...",
-          class: "form-control pl-5 rounded-pill",
-          minlength: 6,
-          required: "required",
-          "data-alert": "Your username requires at least 6 characters."
-        }),
-        Icon.new("fas fa-at")
-      ),
-      FormGroup.new(
-        Elem.input({
-          type: "email",
-          name: "account[email]",
-          placeholder: "Your Email...",
-          class: "form-control pl-5 rounded-pill",
-          required: "required",
-          "data-alert": "Please provide a valid email."
-        }),
-        Icon.new("fas fa-envelope")
-      ),
-      FormGroup.new(
-        Elem.input({
-          type: "password",
-          name: "account[password]",
-          placeholder: "Your Password...",
-          class: "form-control pl-5 rounded-pill",
-          minlength: 6,
-          required: "required",
-          "data-alert": "Your password requires minimum 6 characters."
-        }),
-        Icon.new("fas fa-lock")
-      ),
-      FormGroup.new(
-        Elem.input(
-          {
-            type: "submit",
-            id: "create_user",
-            value: "Sign Up",
-            class: "btn btn-block btn-primary border-0 shadow rounded-pill"
-          },
-          () => stopPropagation()
-        )
-      )
-    );
-  }
+ 
 }
 
 //===============================================================================//
@@ -439,6 +325,12 @@ class WorkoutController {
 
   get workout() {
     return this._workout;
+  }
+
+  add(json) {
+    new Promise(res => res(Workout.add(json)))
+      .then(user => (currentUser = user))
+      .then(user => user.render.workouts("#main_container"));
   }
 
   show() {
