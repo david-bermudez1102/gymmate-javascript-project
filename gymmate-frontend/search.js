@@ -73,7 +73,7 @@ class SearchView {
 
   programs(json) {
     return json.programs.map(program =>
-      new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, trainer =>
+      new Fetch(null, "GET", `${TRAINERS_URL}/${program.trainer_id}`, trainer => 
         Program.create(Trainer.create(trainer), program).view.__program()
       ).request()
     );
@@ -146,7 +146,7 @@ class SearchRender {
     this.search.view
       .programs(json)
       .forEach(result =>
-        result.then(program => render(program, "#main_container"))
+        result.then(program => render(program, "#main_container")).then(Render.hideSpinner(main))
       );
   }
 }
