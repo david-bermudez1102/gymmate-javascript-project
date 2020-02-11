@@ -71,7 +71,7 @@ class HomeView {
         id: "v-pills-tab"
       },
       null,
-      currentUser.accountView.profilePic(),
+      currentUser ? currentUser.accountView.profilePic() : "",
       this.homeLink(),
       this.messagesLink(),
       isTrainer() ? this.routinesLink() : this.workoutsLink(),

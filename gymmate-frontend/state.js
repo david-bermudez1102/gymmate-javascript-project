@@ -17,7 +17,7 @@ window.onpopstate = function(event) {
 
 const search = () => {
   const handleSubmit = json => {
-    new Search().controller.createSearch(json)
+    new Search().controller.createSearch(json);
   };
   new Fetch(
     null,
@@ -28,7 +28,7 @@ const search = () => {
 };
 
 function home() {
-  new Home().controller.show()
+  new Home().controller.show();
 }
 
 function trainers(path) {
@@ -37,6 +37,35 @@ function trainers(path) {
     trainer.controller.show();
   };
   new Fetch(null, "GET", TRAINERS_URL + "/" + path, handleSubmit).request();
+}
+
+function fetchTrainer(trainerId) {
+  return new Fetch(
+    null,
+    "GET",
+    `${TRAINERS_URL}/${trainerId}`,
+    trainer => Trainer.create(trainer)
+  ).request();
+}
+
+function exercises(path) {
+  const handleSubmit = json => {
+    fetchTrainer(json.program.trainer_id)
+      .then(trainer =>
+        trainer.programs.find(program => program.id === json.program.id)
+      )
+      .then(program =>
+        program.exercises.find(exercise => exercise.id === json.id)
+      )
+      .then(exercise => exercise.render.show("#main_container"))
+  };
+  new Fetch(
+    null,
+    "GET",
+    EXERCISES_URL + "/" + path,
+    handleSubmit,
+    d.querySelector("#main_container")
+  ).request();
 }
 
 function users(path) {
@@ -56,7 +85,8 @@ let routes = {
   search: "search()",
   trainers: `trainers("${pathName[1]}")`,
   users: `users("${pathName[1]}")`,
-  home: `home()`
+  home: `home()`,
+  exercises: `exercises("${pathName[1]}")`
 };
 
 const loadUrl = () => {

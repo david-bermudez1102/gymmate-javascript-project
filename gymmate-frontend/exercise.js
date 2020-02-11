@@ -244,7 +244,6 @@ class ExerciseForm {
       }),
       Elem.input(
         {
-          id: "create_exercise",
           name: "submit",
           type: "submit",
           class:
@@ -252,14 +251,11 @@ class ExerciseForm {
         },
         () => window.event.stopPropagation()
       ),
-      Elem.input(
+      Elem.button(
         {
-          id: "close_new_exercise_container",
           name: "cancel",
-          type: "submit",
           class:
-            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
-          value: "I am done creating exercises"
+            "btn btn-lg btn-block btn-dark border-0 shadow rounded-pill mb-3"
         },
         () => window.event.stopPropagation()
       )
@@ -279,6 +275,10 @@ class ExerciseForm {
       )
     );
     form.submit.value = "Create Exercise";
+    form.cancel.append("Add later");
+    form.cancel.addEventListener("click", () =>
+      this.exercise.program.render.show("#main_container")
+    );
     return form;
   }
 
@@ -298,6 +298,10 @@ class ExerciseForm {
       )
     );
     form.submit.value = "Update Exercise";
+    form.cancel.append("Cancel");
+    form.cancel.addEventListener("click", () =>
+      window.history.back()
+    );
     return form;
   }
 }
@@ -345,8 +349,8 @@ class ExerciseController {
         program.exercises.find(e => e.id === exercise.id),
         exercise
       );
-      currentUser = trainer;
       this.exercise.render.show("#main_container");
+      currentUser = trainer;
     }
   }
 }
@@ -390,6 +394,6 @@ class ExerciseRender {
 
   show(target) {
     render(this.exercise.view.show(), target, true);
-    createRoute("exercise()", "/exercise");
+    createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 }

@@ -17,6 +17,15 @@ class ExercisesController < ApplicationController
     end
   end
 
+  def show
+    exercise = Exercise.find_by(id: params[:id])
+    if exercise
+      render json: exercise
+    else
+      render json: {errors: ["Content could not be found"]}
+    end
+  end
+
   private
     def exercise_params
       params.require(:exercise).permit(:title,:description,:sets,:repetitions,:video,:program_id)
