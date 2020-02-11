@@ -239,6 +239,10 @@ class TrainerRender {
       __program.addEventListener("click", () => program.render.show(target));
       render(__program, target);
     });
+    createRoute(
+      `routines("${pathName[1]}")`,
+      `/routines`
+    );
   }
 }
 

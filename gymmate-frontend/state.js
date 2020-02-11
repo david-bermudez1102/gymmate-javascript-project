@@ -40,11 +40,8 @@ function trainers(path) {
 }
 
 function fetchTrainer(trainerId) {
-  return new Fetch(
-    null,
-    "GET",
-    `${TRAINERS_URL}/${trainerId}`,
-    trainer => Trainer.create(trainer)
+  return new Fetch(null, "GET", `${TRAINERS_URL}/${trainerId}`, trainer =>
+    Trainer.create(trainer)
   ).request();
 }
 
@@ -57,7 +54,7 @@ function exercises(path) {
       .then(program =>
         program.exercises.find(exercise => exercise.id === json.id)
       )
-      .then(exercise => exercise.render.show("#main_container"))
+      .then(exercise => exercise.render.show("#main_container"));
   };
   new Fetch(
     null,
@@ -66,6 +63,16 @@ function exercises(path) {
     handleSubmit,
     d.querySelector("#main_container")
   ).request();
+}
+
+function routines(path) {
+  if (path === "undefined") {
+    Render.spinner(d.querySelector("main"));
+    setTimeout(() => {
+      currentUser.render.programs("#main_container");
+      Render.hideSpinner(main);
+    }, 50);
+  }
 }
 
 function users(path) {
@@ -86,7 +93,8 @@ let routes = {
   trainers: `trainers("${pathName[1]}")`,
   users: `users("${pathName[1]}")`,
   home: `home()`,
-  exercises: `exercises("${pathName[1]}")`
+  exercises: `exercises("${pathName[1]}")`,
+  routines: `routines("${pathName[1]}")`
 };
 
 const loadUrl = () => {
