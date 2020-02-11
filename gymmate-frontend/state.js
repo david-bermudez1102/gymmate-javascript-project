@@ -69,9 +69,28 @@ function routines(path) {
   if (path === "undefined") {
     Render.spinner(d.querySelector("main"));
     setTimeout(() => {
+      new Home().render.show();
       currentUser.render.programs("#main_container");
       Render.hideSpinner(main);
     }, 50);
+  } else {
+    const handleSubmit = json => {
+      fetchTrainer(json.trainer_id)
+        .then(trainer =>
+          trainer.programs.find(program => program.id === json.id)
+        )
+        .then(program => {
+          new Home().render.show();
+          program.render.show("#main_container");
+        });
+    };
+    new Fetch(
+      null,
+      "GET",
+      PROGRAMS_URL + "/" + path,
+      handleSubmit,
+      d.querySelector("#main_container")
+    ).request();
   }
 }
 

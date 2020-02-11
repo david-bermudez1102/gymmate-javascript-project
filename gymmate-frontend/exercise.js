@@ -110,7 +110,8 @@ class ExerciseView {
     return Elem.section(
       {
         class:
-          "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
+          "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light",
+        style: "cursor:pointer;"
       },
       null,
       this.title(),

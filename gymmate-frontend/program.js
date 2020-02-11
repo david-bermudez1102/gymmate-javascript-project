@@ -126,7 +126,8 @@ class ProgramView {
     return Elem.section(
       {
         class:
-          "p-3 p-sm-5 rounded shadow row mt-1 mx-auto w-100 bg-dark text-white"
+          "p-3 p-sm-5 rounded shadow row mt-1 mx-auto w-100 bg-dark text-white",
+        style: "cursor:pointer;"
       },
       null,
       this.title(),
@@ -387,6 +388,7 @@ class ProgramRender {
     this.program.exercises.forEach(exercise =>
       exercise.render.__exercise(target)
     );
+    createRoute(`routines("${pathName[1]}")`, `/routines/${this.program.id}`);
   }
 }
 

@@ -1,4 +1,4 @@
-class Render {
+class Layout {
   static navbar() {
     const brand = Elem.h1({}, null, "Gymmate ", Icon.new("fas fa-bolt"));
 
@@ -132,8 +132,7 @@ class Render {
           <a href="#">Back to top</a>
         </p>
         <p>
-          Gymmate &copy; Bootstrap, but please download and customize it for
-          yourself!
+          Gymmate &copy; ${new Date().getFullYear()} 
         </p>
         <p class="float-sm-right lead">
           <a href="#" class="footer-link text-light">
@@ -147,8 +146,8 @@ class Render {
           </a>
         </p>
         <p>
-          New to Bootstrap? <a href="../../">Visit the homepage</a> or read our{" "}
-          <a href="../../getting-started/">getting started guide</a>.
+          New to Gymmate? <a href="../../">Visit the homepage</a> or read our
+          <a href="../../getting-started/">Read me</a>.
         </p>
       </div>
     `;

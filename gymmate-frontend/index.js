@@ -330,12 +330,12 @@ const callback = json => {
 
 const loadNavbar = () => {
   if (document.querySelector("nav")) document.querySelector("nav").remove();
-  body.prepend(Render.navbar());
+  body.prepend(Layout.navbar());
 };
 
 d.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
-  body.append(Render.footer());
+  body.append(Layout.footer());
   $("body").tooltip({ selector: "[data-toggle=tooltip]" });
 });
 
