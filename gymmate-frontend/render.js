@@ -29,11 +29,11 @@ class Render {
       },
       null,
       sessionStorage.getItem("auth_token")
-        ? Elem.li({}, null, new Search().view.searchBar())
+        ? Elem.li({class:"px-4"}, null, new Search().view.searchBar())
         : "",
       Elem.li({}, null, this.homeLink()),
-      Elem.li({}, null, this.loginLink()),
-      Elem.li({}, null, this.signUpLink()),
+      isLoggedIn() ? Elem.li({}, null, this.loginLink()) : "",
+      isLoggedIn() ? Elem.li({}, null, this.signUpLink()) : "",
       this.accountLink()
     );
   }
@@ -43,7 +43,7 @@ class Render {
       { class: "nav-link active" },
       () => {
         if (isLoggedIn()) {
-          new Home().controller.show()
+          new Home().controller.show();
         } else {
           Welcome.render();
         }
@@ -119,15 +119,11 @@ class Render {
       null,
       Elem.link({ class: "dropdown-item" }, null, "Edit Account"),
       Elem.div({ class: "dropdown-divider" }),
-      Elem.link(
-        { class: "dropdown-item" },
-        () => Account.logout(),
-        "Logout"
-      )
+      Elem.link({ class: "dropdown-item" }, () => Account.logout(), "Logout")
     );
   }
 
-  static footer (){
+  static footer() {
     const footer = d.createElement("footer");
     footer.className = "bg-dark text-muted";
     footer.innerHTML = `
@@ -158,7 +154,7 @@ class Render {
     `;
 
     return footer;
-  };
+  }
 
   static counter(start) {
     let count = start;

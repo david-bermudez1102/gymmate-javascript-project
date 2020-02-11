@@ -120,7 +120,7 @@ class ExerciseView {
 
   show() {
     const sectionClassName =
-      "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
+      "text-left p-3 p-sm-5 mt-1 rounded shadow bg-dark text-white";
     return Elem.section(
       {
         class: sectionClassName,
@@ -372,13 +372,12 @@ class ExerciseController {
           program => this.exercise.program === program
         );
         program.exercises = program.exercises.filter(e => e.id !== json.id);
+        currentUser = trainer;
         program.render.show(target);
         return trainer;
       },
       target
-    )
-      .submit()
-      .then(trainer => (currentUser = trainer));
+    ).submit();
   }
 }
 
@@ -397,7 +396,7 @@ class ExerciseRender {
     return this._exercise;
   }
 
-  newExerciseRow(target, remove=true) {
+  newExerciseRow(target, remove = true) {
     render(
       this.exercise.view.exerciseFormRow(this.exercise.view.form.newExercise()),
       target,
@@ -420,7 +419,8 @@ class ExerciseRender {
   }
 
   show(target) {
-    render(this.exercise.view.show(), target, true);
+    this.exercise.program.render.__program(target, true);
+    render(this.exercise.view.show(), target, false);
     createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 }

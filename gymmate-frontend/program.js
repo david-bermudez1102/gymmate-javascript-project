@@ -126,7 +126,7 @@ class ProgramView {
     return Elem.section(
       {
         class:
-          "text-left p-3 p-sm-5 rounded shadow row mt-1 w-100 bg-dark text-white"
+          "p-3 p-sm-5 rounded shadow row mt-1 mx-auto w-100 bg-dark text-white"
       },
       null,
       this.title(),
@@ -197,7 +197,10 @@ class ProgramView {
     return isOwner(this.program.trainer)
       ? Elem.button(
           { id: "add_new_exercise", class: "btn btn-primary" },
-          () => this.program.render.newExerciseRow("#main_container"),
+          () => {
+            this.program.render.__program("#main_container", true);
+            this.program.render.newExerciseRow("#main_container", false);
+          },
           "Add New Exercise"
         )
       : "";
@@ -344,8 +347,8 @@ class ProgramRender {
     return this._program;
   }
 
-  newExerciseRow(target, remove=true) {
-    return new Exercise(
+  newExerciseRow(target, remove = true) {
+    new Exercise(
       null,
       null,
       null,
@@ -360,7 +363,7 @@ class ProgramRender {
     render(
       this.program.view.programFormRow(this.program.view.form.newProgram()),
       "#main_container",
-      true
+      false
     );
   }
 
@@ -372,7 +375,7 @@ class ProgramRender {
     );
   }
 
-  __program(target, remove=false) {
+  __program(target, remove = false) {
     const program = this.program.view.__program();
     program.addEventListener("click", () => this.show(target));
     render(program, target, remove);
@@ -438,7 +441,7 @@ class ProgramController {
           program => program.id !== json.id
         );
         currentUser = trainer;
-        trainer.render.programs(target, true)
+        trainer.render.programs(target, true);
       },
       target
     ).submit();
