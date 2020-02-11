@@ -356,8 +356,8 @@ class ExerciseController {
         program.exercises.find(e => e.id === exercise.id),
         exercise
       );
-      currentUser = trainer;
       exercise.render.show("#main_container");
+      currentUser = trainer;
     }
   }
 
@@ -368,15 +368,17 @@ class ExerciseController {
       `${EXERCISES_URL}/${this.exercise.id}`,
       json => {
         const trainer = Object.assign(new Trainer(), currentUser);
-        const program = trainer.programs
-          .find(program => this.exercise.program === program)
+        const program = trainer.programs.find(
+          program => this.exercise.program === program
+        );
         program.exercises = program.exercises.filter(e => e.id !== json.id);
-        console.log(program);
-        program.render.show("#main_container");
-        currentUser = trainer;
+        program.render.show(target);
+        return trainer;
       },
       target
-    ).submit();
+    )
+      .submit()
+      .then(trainer => (currentUser = trainer));
   }
 }
 
@@ -395,11 +397,11 @@ class ExerciseRender {
     return this._exercise;
   }
 
-  newExerciseRow(target) {
+  newExerciseRow(target, remove=true) {
     render(
       this.exercise.view.exerciseFormRow(this.exercise.view.form.newExercise()),
       target,
-      true
+      remove
     );
   }
 

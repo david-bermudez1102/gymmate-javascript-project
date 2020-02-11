@@ -344,10 +344,16 @@ class ProgramRender {
     return this._program;
   }
 
-  newExerciseRow(target) {
-    return new Exercise(null,null,null,null,null,null,this.program).render.newExerciseRow(
-      target
-    );
+  newExerciseRow(target, remove=true) {
+    return new Exercise(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      this.program
+    ).render.newExerciseRow(target, remove);
   }
 
   newProgramRow() {
@@ -366,10 +372,10 @@ class ProgramRender {
     );
   }
 
-  __program(target) {
+  __program(target, remove=false) {
     const program = this.program.view.__program();
     program.addEventListener("click", () => this.show(target));
-    render(program, target);
+    render(program, target, remove);
   }
 
   show(target) {
@@ -401,8 +407,8 @@ class ProgramController {
     const program = Program.create(trainer, json);
     trainer.programs.push(program);
     currentUser = trainer;
-    this.program.render.__program("#main_container");
-    this.program.render.newExercise("#main_container");
+    program.render.__program("#main_container", true);
+    program.render.newExerciseRow("#main_container", false);
   }
 
   update(json) {
@@ -416,8 +422,8 @@ class ProgramController {
         trainer.programs.find(p => p.id === program.id),
         program
       );
+      program.render.__program("#main_container");
       currentUser = trainer;
-      this.program.render.__program("#main_container");
     }
   }
 
@@ -428,11 +434,11 @@ class ProgramController {
       `${PROGRAMS_URL}/${this.program.id}`,
       json => {
         const trainer = Object.assign(new Trainer(), currentUser);
-        trainer.programs = trainer.programs.filter(
+        currentUser.programs = currentUser.programs.filter(
           program => program.id !== json.id
         );
         currentUser = trainer;
-        currentUser.render.programs(target, true);
+        trainer.render.programs(target, true)
       },
       target
     ).submit();
