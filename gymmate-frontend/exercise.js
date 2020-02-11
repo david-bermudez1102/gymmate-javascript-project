@@ -87,7 +87,10 @@ class ExerciseView {
 
   title() {
     return Elem.span(
-      { class: "display-4", style: "font-size: 40px;" },
+      {
+        class: "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+        style: "font-size: 40px;"
+      },
       null,
       Elem.icon({ class: "fas fa-running text-primary" }),
       ` ${this.exercise.title}`
@@ -103,13 +106,13 @@ class ExerciseView {
       : "";
   }
 
-  __exercise(target) {
+  __exercise() {
     return Elem.section(
       {
         class:
           "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
       },
-      () => render(new Grid().showExerciseRow(this, target), target, true),
+      null,
       this.title(),
       this.options()
     );
@@ -126,13 +129,13 @@ class ExerciseView {
       null,
       Elem.div({ class: "row" }, null, this.title(), this.options()),
       Subtitle.new(
-        `From "${this.exercise.program.title}" By "${this.exercise.program.trainer.fullName}"`
+        `From "${this.exercise.program.title}" By ${this.exercise.program.trainer.fullName}`
       ),
       Elem.div({ class: "display-4" }, null, this.exercise.description),
       Elem.video(this.exercise.video),
       `Sets: ${this.exercise.sets}`,
       `Reps: ${this.exercise.repetitions}`,
-      isUser() && !owner(this.workout.user)
+      isUser() && !owner(this.exercise.user)
         ? this.workout.program.form.startProgramBtn()
         : ""
     );
@@ -234,10 +237,11 @@ class ExerciseForm {
       Elem.input(
         {
           id: "close_new_exercise_container",
-          name: "submit",
+          name: "cancel",
           type: "submit",
           class:
-            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3"
+            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
+          value: "I am done creating exercises"
         },
         () => window.event.stopPropagation()
       )
@@ -306,7 +310,7 @@ class ExerciseController {
       .find(program => program.id === json.program_id)
       .exercises.push(exercise);
     currentUser = trainer;
-    this.exercise.program.render.show("#main_container")
+    this.exercise.program.render.show("#main_container");
   }
 }
 
@@ -325,8 +329,14 @@ class ExerciseRender {
     return this._exercise;
   }
 
-  show() {
-    render(this.exercise.view.show(), "main", true);
+  __exercise(target) {
+    const exercise = this.exercise.view.__exercise();
+    exercise.addEventListener("click", () => this.show(target));
+    render(exercise, target);
+  }
+
+  show(target) {
+    render(this.exercise.view.show(), target, true);
     createRoute("exercise()", "/exercise");
   }
 }

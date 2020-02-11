@@ -79,16 +79,6 @@ class Program {
 
     return program;
   }
-
-  allExercises(target) {
-    this.exercises.forEach(exercise => {
-      append(
-        new Grid().showExerciseRow(exercise, target),
-        `exercise_${exercise.id}`,
-        target
-      );
-    });
-  }
 }
 
 //===============================================================================//
@@ -151,6 +141,21 @@ class ProgramView {
     );
   }
 
+  exercisesCount() {
+    return Elem.span(
+      {
+        class:
+          "d-flex display-4 text-primary my-2 p-4 bg-white shadow rounded text-center"
+      },
+      null,
+      this.program.exercises.length === 0
+        ? "This program has no exercises yet."
+        : `${this.program.exercises.length} ${
+            this.program.exercises.length === 1 ? " Exercise" : "Exercises"
+          }`
+    );
+  }
+
   show() {
     const sectionClassName =
       "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
@@ -165,35 +170,11 @@ class ProgramView {
       Subtitle.new(`By ${this.program.trainer.fullName}`),
       Elem.div({ class: "display-4" }, null, this.program.description),
       Elem.video(this.program.video),
-      this.exercisesCount(),
-      isOwner(this.program.trainer)
-        ? Elem.button(
-            { id: "add_new_exercise", class: "btn btn-primary" },
-            () =>
-              render(
-                new Grid().newExerciseRow(this.program),
-                "#main_container",
-                true
-              ),
-            "Add New Exercise"
-          )
-        : "",
+      this.addExerciseBtn(),
       isUser() && isUser() && !owner(this.workout.user)
         ? this.form.addWorkout()
         : ""
     );
-  }
-
-  exercisesCount() {
-    if (this.program.exercises.length === 0) {
-      return "This program has no exercises yet.";
-    } else {
-      return Link.new(
-        { href: "#" },
-        () => this.program.allExercises(),
-        `${this.program.exercises.length} Exercises.`
-      );
-    }
   }
 
   programFormRow(form) {
@@ -210,6 +191,16 @@ class ProgramView {
         )
       )
     );
+  }
+
+  addExerciseBtn() {
+    return isOwner(this.program.trainer)
+      ? Elem.button(
+          { id: "add_new_exercise", class: "btn btn-primary" },
+          () => this.program.render.newExerciseRow(),
+          "Add New Exercise"
+        )
+      : "";
   }
 }
 
@@ -345,7 +336,7 @@ class ProgramForm {
       null,
       null,
       null,
-      this
+      this.program
     ).view.form.newExercise();
   }
 }
@@ -389,6 +380,10 @@ class ProgramRender {
 
   show(target) {
     render(this.program.view.show(), target, true);
+    render(this.program.view.exercisesCount(), target);
+    this.program.exercises.forEach(exercise =>
+      exercise.render.__exercise(target)
+    );
   }
 
   newExerciseRow() {
