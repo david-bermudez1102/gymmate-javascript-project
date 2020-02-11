@@ -99,6 +99,8 @@ class Program {
   }
 }
 
+//===============================================================================//
+
 class ProgramView {
   constructor(program) {
     this._program = program;
@@ -217,6 +219,8 @@ class ProgramView {
   }
 }
 
+//===============================================================================//
+
 class ProgramForm {
   constructor(view) {
     this._view = view;
@@ -320,8 +324,7 @@ class ProgramForm {
       json =>
         new Promise(res => res(Workout.add(json)))
           .then(user => (currentUser = user))
-          .then(user => user.render.workouts("#main_container"))
-          .then(Render.hideSpinner(main)),
+          .then(user => user.render.workouts("#main_container")),
       Elem.input({
         type: "hidden",
         name: "workout[program_id]",
@@ -339,6 +342,8 @@ class ProgramForm {
     );
   }
 }
+
+//===============================================================================//
 
 class ProgramRender {
   constructor(program) {
@@ -380,6 +385,8 @@ class ProgramRender {
   }
 }
 
+//===============================================================================//
+
 class ProgramController {
   constructor(program) {
     this._program = program;
@@ -398,7 +405,6 @@ class ProgramController {
     const program = Program.create(trainer, json);
     trainer.programs.push(program);
     currentUser = trainer;
-    Render.hideSpinner(main);
     if (d.querySelector("#main_container")) {
       const mainContainer = d.querySelector("#main_container");
       removeAll(mainContainer);
@@ -423,7 +429,6 @@ class ProgramController {
         program
       );
       currentUser = trainer;
-      Render.hideSpinner(main);
       if (d.querySelector("#main_container")) {
         const mainContainer = d.querySelector("#main_container");
         removeAll(mainContainer);
@@ -443,7 +448,6 @@ class ProgramController {
       "DELETE",
       `${PROGRAMS_URL}/${this.id}`,
       json => {
-        Render.hideSpinner(main);
         const trainer = Object.assign(new Trainer(), currentUser);
         trainer.programs = trainer.programs.filter(
           program => program.id !== json.id

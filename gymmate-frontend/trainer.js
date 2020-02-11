@@ -73,6 +73,8 @@ class Trainer extends Account {
   }
 }
 
+//===============================================================================//
+
 class TrainerView {
   constructor(trainer) {
     this._trainer = trainer;
@@ -171,6 +173,8 @@ class TrainerView {
   }
 }
 
+//===============================================================================//
+
 class TrainerForm {
   constructor(view) {
     this._view = view;
@@ -204,6 +208,8 @@ class TrainerForm {
   }
 }
 
+//===============================================================================//
+
 class TrainerRender {
   constructor(trainer) {
     this._trainer = trainer;
@@ -235,6 +241,8 @@ class TrainerRender {
     });
   }
 }
+
+//===============================================================================//
 
 class TrainerController {
   constructor(trainer) {

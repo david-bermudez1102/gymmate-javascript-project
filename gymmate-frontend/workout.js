@@ -250,3 +250,62 @@ class Workout {
     );
   }
 }
+
+//===============================================================================//
+
+class WorkoutView {
+  constructor(workout) {
+    this._workout = workout;
+  }
+
+  static create(workout) {
+    return new WorkoutView(workout);
+  }
+
+  get workout() {
+    return this._workout;
+  }
+
+  
+}
+
+//===============================================================================//
+
+class WorkoutController {
+  constructor(workout) {
+    this._workout = workout;
+  }
+
+  static create(workout) {
+    return new WorkoutController(workout);
+  }
+
+  get workout() {
+    return this._workout;
+  }
+
+  show() {
+    this.workout.render.show();
+  }
+}
+
+//===============================================================================//
+
+class WorkoutRender {
+  constructor(workout) {
+    this._workout = workout;
+  }
+
+  static create(workout) {
+    return new WorkoutRender(workout);
+  }
+
+  get workout() {
+    return this._workout;
+  }
+
+  show() {
+    render(this.workout.view.show(), "main", true);
+    createRoute("workout()", "/workout");
+  }
+}
