@@ -159,6 +159,22 @@ class ExerciseView {
     calories.append(Icon.new("fas fa-fire"), ` 250`);
     return calories;
   }
+
+  exerciseFormRow(form) {
+    return Elem.div(
+      { class: "row" },
+      null,
+      Elem.div(
+        { class: "col-md" },
+        null,
+        Elem.section(
+          { class: "text-left p-3 p-sm-5 rounded shadow" },
+          null,
+          form
+        )
+      )
+    );
+  }
 }
 
 //===============================================================================//
@@ -206,7 +222,8 @@ class ExerciseForm {
           type: "number",
           name: "exercise[sets]",
           placeholder: "How many sets?...",
-          class: "form-control pl-5 rounded-pill"
+          class: "form-control pl-5 rounded-pill",
+          value: this.exercise.sets || ""
         }),
         Icon.new("fas fa-envelope")
       ),
@@ -215,7 +232,8 @@ class ExerciseForm {
           type: "number",
           name: "exercise[repetitions]",
           placeholder: "How many reps?...",
-          class: "form-control pl-5 rounded-pill"
+          class: "form-control pl-5 rounded-pill",
+          value: this.exercise.repetitions || ""
         }),
         Icon.new("fas fa-envelope")
       ),
@@ -269,7 +287,7 @@ class ExerciseForm {
       `edit_exercise_${this.exercise.id}`,
       "PATCH",
       `${EXERCISES_URL}/${this.exercise.id}`,
-      () => this.exercise.controller.update(json)
+      json => this.exercise.controller.update(json)
     );
     form.prepend(
       Elem.h1(
@@ -279,7 +297,7 @@ class ExerciseForm {
         " Update Exercise"
       )
     );
-    form.submit.value = "Create Exercise";
+    form.submit.value = "Update Exercise";
     return form;
   }
 }
@@ -312,6 +330,25 @@ class ExerciseController {
     currentUser = trainer;
     this.exercise.program.render.show("#main_container");
   }
+
+  update(json) {
+    if (isTrainer && isOwner(this.exercise.program.trainer)) {
+      const trainer = Object.assign(new Trainer(), currentUser);
+      const program = trainer.programs.find(
+        program => this.exercise.program === program
+      );
+      const exercise = Object.assign(
+        new Exercise(),
+        Exercise.create(this.exercise.program, json)
+      );
+      Object.assign(
+        program.exercises.find(e => e.id === exercise.id),
+        exercise
+      );
+      currentUser = trainer;
+      this.exercise.render.show("#main_container");
+    }
+  }
 }
 
 //===============================================================================//
@@ -327,6 +364,22 @@ class ExerciseRender {
 
   get exercise() {
     return this._exercise;
+  }
+
+  newExerciseRow(target) {
+    render(
+      this.exercise.view.exerciseFormRow(this.exercise.view.form.newExercise()),
+      target,
+      true
+    );
+  }
+
+  editRow(target) {
+    render(
+      this.exercise.view.exerciseFormRow(this.exercise.view.form.edit()),
+      target,
+      true
+    );
   }
 
   __exercise(target) {

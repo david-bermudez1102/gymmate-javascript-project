@@ -193,7 +193,7 @@ class AccountView {
         title: "Edit This Routine"
       },
       () => {
-        content.render.editProgramRow(target)
+        content.render.editRow(target)
         window.event.stopPropagation();
       },
       Elem.icon({ class: "fas fa-pen" })

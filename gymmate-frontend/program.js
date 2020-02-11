@@ -151,7 +151,7 @@ class ProgramView {
       this.program.exercises.length === 0
         ? "This program has no exercises yet."
         : `${this.program.exercises.length} ${
-            this.program.exercises.length === 1 ? " Exercise" : "Exercises"
+            this.program.exercises.length === 1 ? " Exercise" : " Exercises"
           }`
     );
   }
@@ -197,7 +197,7 @@ class ProgramView {
     return isOwner(this.program.trainer)
       ? Elem.button(
           { id: "add_new_exercise", class: "btn btn-primary" },
-          () => this.program.render.newExerciseRow(),
+          () => this.program.render.newExerciseRow("#main_container"),
           "Add New Exercise"
         )
       : "";
@@ -327,18 +327,6 @@ class ProgramForm {
       )
     );
   }
-
-  newExercise() {
-    return new Exercise(
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      this.program
-    ).view.form.newExercise();
-  }
 }
 
 //===============================================================================//
@@ -356,6 +344,12 @@ class ProgramRender {
     return this._program;
   }
 
+  newExerciseRow(target) {
+    return new Exercise(null,null,null,null,null,null,this.program).render.newExerciseRow(
+      target
+    );
+  }
+
   newProgramRow() {
     render(
       this.program.view.programFormRow(this.program.view.form.newProgram()),
@@ -364,7 +358,7 @@ class ProgramRender {
     );
   }
 
-  editProgramRow(target) {
+  editRow(target) {
     render(
       this.program.view.programFormRow(this.program.view.form.edit()),
       target,
@@ -383,14 +377,6 @@ class ProgramRender {
     render(this.program.view.exercisesCount(), target);
     this.program.exercises.forEach(exercise =>
       exercise.render.__exercise(target)
-    );
-  }
-
-  newExerciseRow() {
-    render(
-      this.program.view.programFormRow(this.program.view.form.newExercise()),
-      "#main_container",
-      true
     );
   }
 }
@@ -416,7 +402,7 @@ class ProgramController {
     trainer.programs.push(program);
     currentUser = trainer;
     this.program.render.__program("#main_container");
-    this.program.render.newExerciseRow();
+    this.program.render.newExercise("#main_container");
   }
 
   update(json) {
