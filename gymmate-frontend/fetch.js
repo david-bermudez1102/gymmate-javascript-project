@@ -46,6 +46,7 @@ class Fetch {
         if (!json.errors) this.callback(json);
         else Render.error(json, this.target);
       })
+      .then(Render.hideSpinner(main))
       .catch(console.log);
   }
 
@@ -57,6 +58,7 @@ class Fetch {
     return fetch(this.url, { headers: h })
       .then(this.parseJson)
       .then(this.callback)
+      .then(Render.hideSpinner(main))
       .catch(console.log);
   }
 

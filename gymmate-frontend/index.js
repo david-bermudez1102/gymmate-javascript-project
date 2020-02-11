@@ -315,16 +315,13 @@ const setSession = (json = null) => {
 };
 
 const callback = json => {
-  Render.hideSpinner(main);
   if (json.userable_type === "Trainer") {
     new Fetch(null, "GET", TRAINERS_URL + `/${json.userable_id}`, trainer => {
-      Render.hideSpinner(main);
       currentUser = Trainer.create(trainer);
-      new Home().render.show()
+      new Home().render.show();
     }).request();
   } else if (json.userable_type === "User") {
     new Fetch(null, "GET", USERS_URL + `/${json.userable_id}`, user => {
-      Render.hideSpinner(main);
       currentUser = User.create(user);
       new Home().render.show();
     }).request();
@@ -348,12 +345,10 @@ function append(element, id, target) {
 }
 
 const render = (element, target, remove = false) => {
-  
-  if (document.querySelector(target)){
+  if (document.querySelector(target)) {
     if (remove) removeAll(document.querySelector(target));
     document.querySelector(target).append(element);
   }
-    
 };
 
 const isLoggedIn = () => {

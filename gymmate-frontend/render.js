@@ -204,7 +204,6 @@ class Render {
 
   static error(json, target) {
     console.log(json);
-    Render.hideSpinner(main);
     const errorsList = List.new();
     json.errors.forEach(error => errorsList.append(Item.new(error)));
     if (d.querySelector(".alert")) d.querySelector(".alert").remove();

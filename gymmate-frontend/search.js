@@ -101,7 +101,6 @@ class SearchController {
     } else {
       this.search.render.index(json);
     }
-    Render.hideSpinner(main);
   }
 
   show() {
