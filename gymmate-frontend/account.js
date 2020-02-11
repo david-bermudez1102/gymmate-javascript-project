@@ -48,10 +48,6 @@ class Account {
     return this._accountView;
   }
 
-  get form() {
-    return this._form;
-  }
-
   get render() {
     return this._render;
   }

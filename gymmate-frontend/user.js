@@ -45,6 +45,10 @@ class User extends Account {
     return this._render;
   }
 
+  get fullName() {
+    return `${this.name} ${this.lastname}`;
+  }
+
   static create(json) {
     const user = new User(
       json.account.id,

@@ -15,6 +15,9 @@ class Workout {
     this._completeExercises = completeExercises;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
+    this._view = WorkoutView.create(this);
+    this._controller = WorkoutController.create(this);
+    this._render = WorkoutRender.create(this);
   }
 
   get id() {
@@ -49,6 +52,18 @@ class Workout {
     return this._updatedAt;
   }
 
+  get view() {
+    return this._view;
+  }
+
+  get render() {
+    return this._render;
+  }
+
+  get controller() {
+    return this._controller;
+  }
+
   static create(user, json) {
     const workout = new Workout(
       json.id,
@@ -65,42 +80,68 @@ class Workout {
       "GET",
       `${TRAINERS_URL}/${json.program.trainer_id}`,
       trainer => {
-        workout.program = Program.create(
-          Trainer.create(trainer),
-          json.program
-        );
+        workout.program = Program.create(Trainer.create(trainer), json.program);
         return workout;
       }
-    ).request()
-    return workout
+    ).request();
+    return workout;
   }
 
-  static add(json){
+  static add(json) {
     const user = Object.assign(new User(), currentUser);
     const workout = Workout.create(user, json);
     user.workouts.push(workout);
     return user;
   }
+}
 
-  workout(target) {
+//===============================================================================//
+
+class WorkoutView {
+  constructor(workout) {
+    this._workout = workout;
+    this._form = WorkoutForm.create(this);
+  }
+
+  static create(workout) {
+    return new WorkoutView(workout);
+  }
+
+  get workout() {
+    return this._workout;
+  }
+
+  get form() {
+    return this._form;
+  }
+
+  title() {
+    return Elem.span(
+      { class: "display-4", style: "font-size: 40px;" },
+      null,
+      Elem.icon({ class: "fas fa-dumbbell text-primary" }),
+      ` ${this.program.title}`
+    );
+  }
+
+  status() {
+    this.complete
+      ? Elem.icon({
+          class: "fas fa-check-square text-primary",
+          style: "font-size: 24px;"
+        })
+      : Icon.new("fas fa-spinner text-primary", "font-size: 24px;");
+  }
+
+  __workout(target) {
     return Elem.section(
       {
         class:
           "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
       },
       () => render(new Grid().showWorkoutRow(this, target), target, true),
-      Elem.span(
-        { class: "display-4", style: "font-size: 40px;" },
-        null,
-        Elem.icon({ class: "fas fa-dumbbell text-primary" }),
-        ` ${this.program.title}`
-      ),
-      this.complete
-        ? Elem.icon({
-            class: "fas fa-check-square text-primary",
-            style: "font-size: 24px;"
-          })
-        : Icon.new("fas fa-spinner text-primary", "font-size: 24px;")
+      this.title(),
+      this.status()
     );
   }
 
@@ -139,27 +180,22 @@ class Workout {
     );
   }
 
-  show(target) {
-    removeAll(target);
-
-    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
-
-    title.append(
-      Icon.new("fas fa-running text-primary"),
-      ` ${this.program.title}`
+  show() {
+    const sectionClassName =
+      "text-left p-3 p-sm-5 rounded shadow bg-dark text-white";
+    return Elem.section(
+      {
+        class: sectionClassName,
+        id: `workout_${this.work.id}`
+      },
+      null,
+      Elem.div({ class: "row" }, null, this.title(), this.options()),
+      Subtitle.new(`By ${this.workout.program.trainer.fullName}`),
+      Elem.div({ class: "display-4" }, null, this.workout.program.description),
+      Elem.video(this.workout.program.video),
+      this.workout.program.view.exercisesCount(),
+      isUser() ? this.form.startProgramBtn() : ""
     );
-
-    const section = Section.new(title, "bg-dark text-white");
-    section.id = `workout_${this.id}`;
-    section.append(
-      Subtitle.new(
-        `By ${this.program.trainer.name} ${this.program.trainer.lastname}`
-      ),
-      Div.new(null, null, this.program.description),
-      Video.new(this.program.video),
-      this.program.exercisesCount()
-    );
-    return section;
   }
 
   allExercises(target) {
@@ -253,20 +289,141 @@ class Workout {
 
 //===============================================================================//
 
-class WorkoutView {
-  constructor(workout) {
-    this._workout = workout;
+class WorkoutForm {
+  constructor(view) {
+    this._view = view;
   }
 
-  static create(workout) {
-    return new WorkoutView(workout);
+  static create(view) {
+    return new WorkoutForm(view);
   }
 
-  get workout() {
-    return this._workout;
+  get view() {
+    return this._view;
   }
 
-  
+  login() {
+    return Elem.form(
+      {
+        class: "needs-validation",
+        id: "new_session",
+        action: SESSIONS_URL,
+        method: "POST"
+      },
+      json => setSession(json),
+      Elem.h1({ class: "text-primary mb-4" }, null, "Login"),
+      FormGroup.new(
+        Elem.input({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your email...",
+          class: "form-control pl-5 rounded-pill"
+        }),
+        Icon.new("fas fa-envelope")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill"
+        }),
+        Icon.new("fas fa-lock")
+      ),
+      Elem.input(
+        {
+          class:
+            "btn btn-lg btn-block btn-primary border-0 shadow rounded-pill mb-3",
+          type: "submit",
+          id: "create_session",
+          value: "Login"
+        },
+        () => window.event.stopPropagation()
+      ),
+      FormGroup.new(
+        Welcome.socialMediaOptions(),
+        null,
+        "form-group bg-light shadow-sm row border-0 py-5"
+      )
+    );
+  }
+
+  signup() {
+    return Elem.form(
+      { id: "new_user", method: "POST", novalidate: "true" },
+      json => setSession(json),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[name]",
+          placeholder: "Your Name...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your name requires minimum 3 characters."
+        }),
+        Icon.new("fas fa-user")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[lastname]",
+          placeholder: "Your Lastname...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 3,
+          required: "required",
+          "data-alert": "Your lastname requires minimum 3 characters."
+        }),
+        Icon.new("fas fa-user")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "account[username]",
+          placeholder: "Your Username...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your username requires at least 6 characters."
+        }),
+        Icon.new("fas fa-at")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "email",
+          name: "account[email]",
+          placeholder: "Your Email...",
+          class: "form-control pl-5 rounded-pill",
+          required: "required",
+          "data-alert": "Please provide a valid email."
+        }),
+        Icon.new("fas fa-envelope")
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "password",
+          name: "account[password]",
+          placeholder: "Your Password...",
+          class: "form-control pl-5 rounded-pill",
+          minlength: 6,
+          required: "required",
+          "data-alert": "Your password requires minimum 6 characters."
+        }),
+        Icon.new("fas fa-lock")
+      ),
+      FormGroup.new(
+        Elem.input(
+          {
+            type: "submit",
+            id: "create_user",
+            value: "Sign Up",
+            class: "btn btn-block btn-primary border-0 shadow rounded-pill"
+          },
+          () => stopPropagation()
+        )
+      )
+    );
+  }
 }
 
 //===============================================================================//

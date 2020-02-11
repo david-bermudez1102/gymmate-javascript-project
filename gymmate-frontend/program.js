@@ -50,10 +50,6 @@ class Program {
     return this._updatedAt;
   }
 
-  get fullName() {
-    return `${this.trainer.name} ${this.trainer.lastname}`;
-  }
-
   get controller() {
     return this._controller;
   }
@@ -170,7 +166,7 @@ class ProgramView {
       },
       null,
       Elem.div({ class: "row" }, null, this.title(), this.options()),
-      Subtitle.new(`By ${this.program.fullName}`),
+      Subtitle.new(`By ${this.program.trainer.fullName}`),
       Elem.div({ class: "display-4" }, null, this.program.description),
       Elem.video(this.program.video),
       this.exercisesCount(),

@@ -33,6 +33,10 @@ class Trainer extends Account {
     return this._trainerId;
   }
 
+  get fullName() {
+    return `${this.name} ${this.lastname}`;
+  }
+
   set trainerId(trainerId) {
     this._trainerId = trainerId;
   }
