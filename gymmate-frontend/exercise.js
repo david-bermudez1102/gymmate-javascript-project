@@ -7,9 +7,9 @@ class Exercise {
     this._repetitions = repetitions;
     this._video = video;
     this._program = program;
-    this._view = ExerciseoutView.create(this);
-    this._controller = ExerciseoutController.create(this);
-    this._render = ExerciseoutRender.create(this);
+    this._view = ExerciseView.create(this);
+    this._controller = ExerciseController.create(this);
+    this._render = ExerciseRender.create(this);
   }
 
   get id() {
@@ -171,6 +171,10 @@ class ExerciseForm {
 
   get view() {
     return this._view;
+  }
+
+  get exercise() {
+    return this._view.exercise;
   }
 
   _form(id, method, action, handleSubmit) {

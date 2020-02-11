@@ -49,12 +49,6 @@ class Elem {
               handleOnsubmit,
               target
             ).submit();
-            let jsonObject = {};
-
-            for (const [key, value] of formData.entries()) {
-              jsonObject[key] = value;
-            }
-            console.log(json)
           } else {
             new Fetch(
               formData,
@@ -64,7 +58,7 @@ class Elem {
               target
             ).request();
           }
-          if(method!=="GET") e.target.reset();
+          if (method !== "GET") e.target.reset();
         }
       },
       false
@@ -151,7 +145,13 @@ class Elem {
 
   static form(attributes, handleOnsubmit, ...append) {
     const elem = this.create("form", attributes, ...append);
-    this.handleOnsubmit(elem, attributes["method"], handleOnsubmit, false, false);
+    this.handleOnsubmit(
+      elem,
+      attributes["method"],
+      handleOnsubmit,
+      false,
+      false
+    );
 
     return elem;
   }

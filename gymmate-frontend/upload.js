@@ -5,7 +5,7 @@ const fileUploader = (name, video) => {
     type: "file",
     id:"new_video",
     name: name,
-    class: "d-block"
+    class: "d-none"
   });
 
   
@@ -29,6 +29,7 @@ const fileUploader = (name, video) => {
   let dropArea = label;
 
   const preventDefaults = e => {
+    e.preventDefault();
     e.stopPropagation();
   };
   // Prevent default drag behaviors

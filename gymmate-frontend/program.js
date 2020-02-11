@@ -346,7 +346,7 @@ class ProgramForm {
       null,
       null,
       this
-    ).view.newExerciseForm();
+    ).view.form.newExercise();
   }
 }
 
@@ -390,6 +390,14 @@ class ProgramRender {
   show(target) {
     render(this.program.view.show(), target, true);
   }
+
+  newExerciseRow() {
+    render(
+      this.program.view.programFormRow(this.program.view.form.newExercise()),
+      "#main_container",
+      true
+    );
+  }
 }
 
 //===============================================================================//
@@ -413,7 +421,7 @@ class ProgramController {
     trainer.programs.push(program);
     currentUser = trainer;
     this.program.render.__program("#main_container");
-    mainContainer.append(new Grid().newExerciseRow(program));
+    this.program.render.newExerciseRow();
   }
 
   update(json) {
@@ -436,15 +444,14 @@ class ProgramController {
     new Fetch(
       null,
       "DELETE",
-      `${PROGRAMS_URL}/${this.id}`,
+      `${PROGRAMS_URL}/${this.program.id}`,
       json => {
         const trainer = Object.assign(new Trainer(), currentUser);
         trainer.programs = trainer.programs.filter(
           program => program.id !== json.id
         );
         currentUser = trainer;
-        removeAll(target);
-        currentUser.allPrograms(target);
+        currentUser.render.programs(target, true);
       },
       target
     ).submit();
