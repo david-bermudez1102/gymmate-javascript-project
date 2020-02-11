@@ -170,7 +170,7 @@ class AccountView {
         window.event.stopPropagation();
         const prompt = Elem.prompt(
           `Delete "${content.title}"`,
-          "Are you sure you want to delete this routine?",
+          "Are you sure you want to delete this content?",
           "Yes, Delete",
           "No"
         );

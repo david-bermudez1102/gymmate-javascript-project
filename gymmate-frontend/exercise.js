@@ -215,8 +215,17 @@ class ExerciseForm {
         }),
         Elem.icon({ class: "fas fa-heading" })
       ),
+      FormGroup.new(
+        Elem.input({
+          type: "text",
+          name: "exercise[description]",
+          placeholder: "Enter a title for this exercise...",
+          class: "form-control pl-5 rounded-pill",
+          value: this.exercise.description || ""
+        }),
+        Elem.icon({ class: "fas fa-heading" })
+      ),
       fileUploader("exercise[video]", this.exercise.video),
-
       FormGroup.new(
         Elem.input({
           type: "number",
@@ -299,9 +308,7 @@ class ExerciseForm {
     );
     form.submit.value = "Update Exercise";
     form.cancel.append("Cancel");
-    form.cancel.addEventListener("click", () =>
-      window.history.back()
-    );
+    form.cancel.addEventListener("click", () => window.history.back());
     return form;
   }
 }
@@ -327,12 +334,12 @@ class ExerciseController {
 
   createExercise(json) {
     const trainer = Object.assign(new Trainer(), currentUser);
-    const exercise = Exercise.create(this.program, json);
+    const exercise = Exercise.create(this.exercise.program, json);
     trainer.programs
-      .find(program => program.id === json.program_id)
+      .find(program => program.id === json.program.id)
       .exercises.push(exercise);
+    exercise.render.show("#main_container");
     currentUser = trainer;
-    this.exercise.program.render.show("#main_container");
   }
 
   update(json) {
@@ -349,9 +356,27 @@ class ExerciseController {
         program.exercises.find(e => e.id === exercise.id),
         exercise
       );
-      this.exercise.render.show("#main_container");
       currentUser = trainer;
+      exercise.render.show("#main_container");
     }
+  }
+
+  delete(target) {
+    new Fetch(
+      null,
+      "DELETE",
+      `${EXERCISES_URL}/${this.exercise.id}`,
+      json => {
+        const trainer = Object.assign(new Trainer(), currentUser);
+        const program = trainer.programs
+          .find(program => this.exercise.program === program)
+        program.exercises = program.exercises.filter(e => e.id !== json.id);
+        console.log(program);
+        program.render.show("#main_container");
+        currentUser = trainer;
+      },
+      target
+    ).submit();
   }
 }
 
