@@ -182,7 +182,7 @@ class Welcome {
 
   static render() {
     return new Promise(res => {
-      Render.spinner(main);
+      Layout.spinner(main);
       setTimeout(() => {
         res(append(new Grid().headerRow(), "header_row", main));
       }, 10);
@@ -191,7 +191,7 @@ class Welcome {
       .then(() => {
         render(this.signupRow(), "main");
       })
-      .then(() => Render.hideSpinner(main));
+      .then(() => Layout.hideSpinner(main));
   }
 }
 

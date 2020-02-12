@@ -22,10 +22,13 @@ class FormGroup {
     const div = d.createElement("div");
     div.className = className;
     if (icon) {
-      const btn = Button.new(
+      const btn = Elem.button(
+        {
+          class:
+            "btn h-100 text-primary text-right border-0 mr-n5 ml-2 rounded-pill"
+        },
         null,
-        icon,
-        "btn h-100 text-primary text-right border-0 mr-n5 ml-2 rounded-pill"
+        icon
       );
       div.append(Column.new(btn, "col-auto", "z-index:2;"));
     }

@@ -83,6 +83,18 @@ class Elem {
     return elem;
   }
 
+  static h2(attributes, handleOnclick, ...append) {
+    const elem = this.create("h2", attributes, ...append);
+    this.handleOnclick(elem, handleOnclick, false, false);
+    return elem;
+  }
+
+  static h3(attributes, handleOnclick, ...append) {
+    const elem = this.create("h3", attributes, ...append);
+    this.handleOnclick(elem, handleOnclick, false, false);
+    return elem;
+  }
+
   static textArea(attributes, handleOnclick, ...append) {
     const elem = this.create("textarea", attributes, ...append);
     this.handleOnclick(elem, handleOnclick);

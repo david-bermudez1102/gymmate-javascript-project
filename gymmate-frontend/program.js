@@ -104,7 +104,7 @@ class ProgramView {
   title() {
     return Elem.span(
       {
-        class: "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+        class: "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
         style: "font-size: 40px;"
       },
       null,

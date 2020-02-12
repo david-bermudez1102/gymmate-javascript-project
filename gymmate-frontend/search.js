@@ -38,7 +38,7 @@ class SearchView {
       Elem.div(
         { class: "input-group" },
         null,
-        Input.new({
+        Elem.input({
           type: "search",
           name: "query",
           placeholder: "Search routines, trainers, etc...",

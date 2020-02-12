@@ -63,6 +63,10 @@ class Exercise {
       program
     );
   }
+
+  duration() {
+    return Math.round((this.repetitions * 7 + this.sets * 30) / 60);
+  }
 }
 
 //===============================================================================//
@@ -119,6 +123,65 @@ class ExerciseView {
     );
   }
 
+  sets() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-cog" }),
+      ` ${this.exercise.sets}`
+    );
+  }
+
+  reps() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-repeat" }),
+      ` ${this.exercise.repetitions}`
+    );
+  }
+
+  duration() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-clock" }),
+      ` ${this.exercise.duration()} mins`
+    );
+  }
+
+  calories() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-fire" }),
+      ` ${this.exercise.repetitions}`
+    );
+  }
+
+  description() {
+    return Elem.p(
+      { class: "display-4 mt-2", style: "font-size:32px;" },
+      null,
+      this.exercise.description
+    );
+  }
+
+  info() {
+    return Elem.p(
+      { class: "d-flex w-100 justify-content-between my-4" },
+      null,
+      this.sets(),
+      this.reps(),
+      this.duration(),
+      this.calories()
+    );
+  }
+
+  video() {
+    return Elem.video(this.exercise.video);
+  }
+
   show() {
     const sectionClassName =
       "text-left p-3 p-sm-5 mt-1 rounded shadow bg-dark text-white";
@@ -132,10 +195,9 @@ class ExerciseView {
       Subtitle.new(
         `From "${this.exercise.program.title}" By ${this.exercise.program.trainer.fullName}`
       ),
-      Elem.div({ class: "display-4" }, null, this.exercise.description),
-      Elem.video(this.exercise.video),
-      `Sets: ${this.exercise.sets}`,
-      `Reps: ${this.exercise.repetitions}`,
+      this.info(),
+      this.video(),
+      this.description(),
       isUser() && !owner(this.exercise.user)
         ? this.workout.program.form.startProgramBtn()
         : ""

@@ -39,7 +39,7 @@ class Layout {
   }
 
   static homeLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link active" },
       () => {
         if (isLoggedIn()) {
@@ -82,7 +82,7 @@ class Layout {
   }
 
   static signUpLink() {
-    return Link.new(
+    return Elem.link(
       { class: "nav-link" },
       () => {
         removeAll(main);
@@ -93,7 +93,7 @@ class Layout {
   }
 
   static accountLink() {
-    return Item.new(
+    return Elem.li({}, null,
       Elem.link(
         {
           class: "nav-link dropdown-toggle",
@@ -200,7 +200,7 @@ class Layout {
   static error(json, target) {
     console.log(json);
     const errorsList = List.new();
-    json.errors.forEach(error => errorsList.append(Item.new(error)));
+    json.errors.forEach(error => errorsList.append(Elem.li({}, null,error)));
     if (d.querySelector(".alert")) d.querySelector(".alert").remove();
     target.prepend(Div.new("alert alert-danger", undefined, errorsList));
     target

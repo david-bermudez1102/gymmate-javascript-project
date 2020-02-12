@@ -96,22 +96,23 @@ class AccountView {
   }
 
   profilePic() {
-    const div = Div.new(
-      "w-100 mb-4 px-0 pb-2 text-dark text-center",
-      `account_${this.account.id}_avatar`,
-      null
-    );
-    div.append(
-      H1.new(`${this.account.name} ${this.account.lastname}`, "text-primary")
-    );
-    div.append(
+    return Elem.div(
+      {
+        class: "w-100 mb-4 px-0 pb-2 text-dark text-center",
+        id: `account_${this.account.id}_avatar`
+      },
+      null,
+      Elem.h1(
+        { class: "text-primary" },
+        null,
+        `${this.account.name} ${this.account.lastname}`
+      ),
       Elem.form(
         { action: `${USERS_URL}/${this.account.id}` },
         null,
         this.icon()
       )
     );
-    return div;
   }
 
   icon() {
@@ -371,6 +372,4 @@ class AccountController {
     };
     new Fetch(null, "DELETE", SESSION_URL, callback).submit();
   }
-
 }
- 
