@@ -114,65 +114,6 @@ class Subtitle {
   }
 }
 
-class Link {
-  static new(attributes, handleOnclick, ...append) {
-    const link = d.createElement("a");
-
-    Object.keys(attributes).forEach(attribute =>
-      link.setAttribute(attribute, attributes[attribute])
-    );
-
-    if (!Object.keys(attributes).some(attribute => attribute === "href"))
-      link.href = "#";
-
-    link.addEventListener("click", e => {
-      if (handleOnclick) handleOnclick();
-      e.preventDefault();
-    });
-
-    append.forEach(a => link.append(a));
-    return link;
-  }
-}
-
-class List {
-  static new(className, callback = null) {
-    const ul = d.createElement("ul");
-    ul.className = className;
-    ul.addEventListener("click", e => {
-      if (callback) callback();
-    });
-    return ul;
-  }
-}
-
-class Item {
-  static new(child, className, callback = null) {
-    const li = d.createElement("li");
-    li.className = className;
-    li.append(child);
-    li.addEventListener("click", e => {
-      if (callback) callback();
-    });
-    return li;
-  }
-}
-
-class Div {
-  static new(className = null, id = null, innerHTML = null, callback = null) {
-    const div = d.createElement("div");
-    if (className) div.className = className;
-    if (id) div.id = id;
-    if (innerHTML) div.append(innerHTML);
-    if (callback)
-      div.addEventListener("click", e => {
-        if (callback) callback();
-        e.preventDefault();
-      });
-    return div;
-  }
-}
-
 class Video {
   static new(url, className = "embed-responsive embed-responsive-16by9") {
     const video = d.createElement("video");
@@ -183,25 +124,6 @@ class Video {
     video.controls = true;
     video.append(source);
     return video;
-  }
-}
-
-class P {
-  static new(innerHTML, className = null) {
-    const p = d.createElement("p");
-    p.append(innerHTML);
-    if (className) p.className = className;
-    return p;
-  }
-}
-
-class Span {
-  static new(innerHTML = null, className = null, style = null) {
-    const span = d.createElement("span");
-    if (innerHTML) span.append(innerHTML);
-    if (className) span.className = className;
-    if (style) span.style = style;
-    return span;
   }
 }
 
