@@ -163,7 +163,7 @@ class SearchRender {
     this.programsFound(json);
     this.programs(json);
     createRoute(
-      "search()",
+      `search("${pathName[1]}")`,
       `/search/?${new URLSearchParams(formData).toString()}`
     );
   }

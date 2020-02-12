@@ -213,7 +213,7 @@ const render = (element, target, remove = false) => {
 
 const isLoggedIn = () => {
   if (currentUser && sessionStorage.getItem("auth_token")) return true;
-  return false;
+  else return false;
 };
 
 const isUser = () => currentUser instanceof User;

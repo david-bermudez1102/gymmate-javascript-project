@@ -21,7 +21,7 @@ const search = () => {
     "GET",
     BASE_URL + location.pathname + location.search,
     json => {
-      new Search().controller.createSearch(json);
+      new Search().render.index(json);
     }
   ).request();
 };
@@ -66,11 +66,11 @@ function exercises(path) {
 
 function routines(path) {
   if (path === "undefined") {
-    Render.spinner(d.querySelector("main"));
+    Layout.spinner(d.querySelector("main"));
     setTimeout(() => {
       new Home().render.show();
       currentUser.render.programs("#main_container");
-      Render.hideSpinner(main);
+      Layout.hideSpinner(main);
     }, 50);
   } else {
     const handleSubmit = json => {
@@ -107,7 +107,7 @@ const pathName = [
 ];
 
 let routes = {
-  search: "search()",
+  search: `search("${pathName[1]}")`,
   trainers: `trainers("${pathName[1]}")`,
   users: `users("${pathName[1]}")`,
   home: `home()`,

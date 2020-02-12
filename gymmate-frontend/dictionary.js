@@ -14,7 +14,7 @@ if (sessionStorage.getItem("auth_token")) {
   SESSION_URL = `${SESSIONS_URL}/${sessionStorage.getItem("auth_token")}`;
 }
 
-let currentUser = null;
+let currentUser = false;
 
 const navbarClass =
   "navbar shadow sticky-top navbar-expand-lg navbar-dark bg-primary solid ";

@@ -29,11 +29,11 @@ class Layout {
       },
       null,
       sessionStorage.getItem("auth_token")
-        ? Elem.li({class:"px-4"}, null, new Search().view.searchBar())
+        ? Elem.li({ class: "px-4" }, null, new Search().view.searchBar())
         : "",
       Elem.li({}, null, this.homeLink()),
-      isLoggedIn() ? Elem.li({}, null, this.loginLink()) : "",
-      isLoggedIn() ? Elem.li({}, null, this.signUpLink()) : "",
+      isLoggedIn() ? "" : Elem.li({}, null, this.loginLink()),
+      isLoggedIn() ? "" : Elem.li({}, null, this.signUpLink()),
       this.accountLink()
     );
   }

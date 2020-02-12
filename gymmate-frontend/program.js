@@ -104,7 +104,7 @@ class ProgramView {
   title() {
     return Elem.span(
       {
-        class: "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
+        class: "col-xl-9 col-lg-12 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
         style: "font-size: 40px;"
       },
       null,
@@ -134,9 +134,9 @@ class ProgramView {
       this.options(),
       isUser()
         ? Elem.span(
-            { class: "col-lg-3 order-2 " },
+            { class: "col-xl-3 order-2 " },
             null,
-            this.program.user.view.startProgramBtn()
+            isUser() ? this.form.addWorkout() : ""
           )
         : ""
     );
@@ -172,7 +172,7 @@ class ProgramView {
       Elem.div({ class: "display-4" }, null, this.program.description),
       Elem.video(this.program.video),
       this.addExerciseBtn(),
-      isUser() && isUser() && !owner(this.workout.user)
+      isUser() && !owner(this.workout.user)
         ? this.form.addWorkout()
         : ""
     );

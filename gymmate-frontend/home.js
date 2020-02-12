@@ -165,6 +165,7 @@ class HomeRender {
   }
 
   show() {
+    loadNavbar();
     render(this.home.view.show(), "main", true);
     createRoute("home()", "/home");
   }
