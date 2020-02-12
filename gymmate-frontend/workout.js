@@ -124,6 +124,12 @@ class WorkoutView {
     );
   }
 
+  subtitle(exercise) {
+    return Subtitle.new(
+      `From "${exercise.program.title}" By ${exercise.program.trainer.fullName}`
+    );
+  }
+
   status() {
     return this.workout.complete
       ? Elem.icon({
@@ -173,19 +179,34 @@ class WorkoutView {
     );
   }
 
-  sets(exercise) {
-    const completeExercise = this.workout.completeExercises.find(
+  completeExercise(exercise) {
+    return this.workout.completeExercises.find(
       complete => complete.exerciseId === exercise.id
-    )
+    );
+  }
+
+  reps(exercise) {
     return Elem.h2(
       {},
       null,
       Elem.icon({ class: "fas fa-cog" }),
-      completeExercise
-        ? ` ${completeExercise.sets} / ${exercise.sets}`
+      this.completeExercise()
+        ? ` ${this.completeExercise(exercise).sets} / ${
+            this.completeExercise(exercise).sets
+          }`
         : ` 0 / ${exercise.sets}`
     );
-      
+  }
+
+  sets(exercise) {
+    return Elem.h2(
+      {id:`exercise_sets_${exercise.id}`},
+      null,
+      Elem.icon({ class: "fas fa-cog" }),
+      this.completeExercise(exercise)
+        ? ` ${this.completeExercise(exercise).sets} / ${exercise.sets}`
+        : ` 0 / ${exercise.sets}`
+    );
   }
 
   exerciseInfo(exercise) {
@@ -212,7 +233,7 @@ class WorkoutView {
   progress(exercise) {
     return isUser()
       ? Elem.span(
-          { class: " col order-2" },
+          { class: "text-right p-0 m-0 col order-2" },
           null,
           ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
         )
@@ -223,7 +244,7 @@ class WorkoutView {
     const __exercise = this.__exercise(exercise);
     __exercise.append(this.form.startExercise(exercise));
     __exercise.className =
-      "text-left w-100 d-flex align-items-center justify-content-between";
+      "position-relative text-left w-100 d-flex align-items-center justify-content-between py-2";
     const sectionClassName =
       "text-left p-3 p-sm-5 mt-1 rounded shadow bg-dark text-white";
     return Elem.section(
@@ -233,53 +254,23 @@ class WorkoutView {
       },
       null,
       __exercise,
-      Subtitle.new(
-        `From "${exercise.program.title}" By ${exercise.program.trainer.fullName}`
-      ),
+      this.subtitle(exercise),
       this.exerciseInfo(exercise),
       exercise.view.video(),
       exercise.view.description()
     );
+  }
 
-    return __exercise;
-    const header = Div.new(
-      "w-100 d-flex justify-content-between align-items-center flex-wrap"
-    );
+  stopExercise(exercise) {
+    const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
+    const video = exerciseContainer.querySelector("video");
+    exerciseContainer.firstChild.lastChild.remove();
 
-    const title = Span.new(null, "display-4 my-4", "font-size: 40px;");
-    const footer = Div.new(
-      "w-100 d-flex justify-content-between align-items-center"
-    );
-
-    title.append(Icon.new("fas fa-running text-primary"), ` ${exercise.title}`);
-
-    header.append(
-      title,
-      this.startExerciseBtn(exercise),
-      ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
-    );
-
-    footer.append(
-      Span.new(`Sets: ${exercise.sets}`, "display-4", "font-size: 40px;"),
-      Span.new(
-        `Reps: ${exercise.repetitions}`,
-        "display-4",
-        "font-size: 40px;"
-      ),
-      exercise.caloriesBurnt()
-    );
-
-    const section = Section.new(header, "position-relative bg-dark text-white");
-    section.id = `exercise_${exercise.id}`;
-
-    const video = Video.new(exercise.video);
-
-    section.append(
-      video,
-      Div.new(null, null, P.new(exercise.description)),
-      footer
-    );
-    return section;
+    video.removeEventListener("timeupdate", () => {
+      if (video.currentTime === video.duration)
+        this.workout.controller.createComplete(exercise);
+    });
+    video.pause();
   }
 }
 
@@ -298,6 +289,10 @@ class WorkoutForm {
     return this._view;
   }
 
+  get workout() {
+    return this._view.workout;
+  }
+
   startExercise(exercise) {
     return Elem.button(
       {
@@ -305,22 +300,34 @@ class WorkoutForm {
         id: `start_exercise_${exercise.id}`
       },
       () => {
-        const exerciseContainer = document.querySelector(
-          `#exercise_${exercise.id}`
-        );
-        const video = exerciseContainer.querySelector("video");
-
-        exerciseContainer.append(Layout.counter(5));
-        video.addEventListener("timeupdate", () => {
-          if (video.currentTime == video.duration)
-            this.completeExercise(exercise);
-        });
+        this.workout.render.startExercise(exercise);
+        this.workout.render.mutedMenu(exercise);
       },
       Elem.icon({
         class: "far fa-play-circle display-4",
         style: "font-size: 40px;"
       })
     );
+  }
+
+  stopExercise(exercise) {
+    const mutedContainer = Layout.mutedContainer();
+    mutedContainer.append(
+      Elem.button(
+        {
+          class:
+            "btn btn-primary btn-sm rounded-circle p-0 shadow d-flex align-items-center justify-content-center",
+          style: `width:60px; height:60px;`,
+          id: `stop_exercise_${exercise.id}`
+        },
+        () => this.workout.view.stopExercise(exercise),
+        Elem.icon({
+          class: "fas fa-stop-circle",
+          style: "font-size: 30px;"
+        })
+      )
+    );
+    return mutedContainer;
   }
 }
 
@@ -339,10 +346,19 @@ class WorkoutController {
     return this._workout;
   }
 
-  add(json) {
+  __create(json) {
     new Promise(res => res(Workout.add(json)))
       .then(user => (currentUser = user))
       .then(user => user.render.workouts("#main_container"));
+  }
+
+  createComplete(exercise) {
+    return new CompleteExercise(
+      null,
+      this.workout.id,
+      exercise.id,
+      "0"
+    ).controller.__create();
   }
 
   show() {
@@ -373,11 +389,6 @@ class WorkoutRender {
     render(__exercise, target);
   }
 
-  showExercise(exercise, target) {
-    render(this.workout.program.view.__program(), target, true);
-    render(this.workout.view.showExercise(exercise), target);
-  }
-
   show(target) {
     render(this.workout.view.show(), target, true);
     render(this.workout.program.view.exercisesCount(), target);
@@ -385,5 +396,31 @@ class WorkoutRender {
       this.__exercise(exercise, target)
     );
     createRoute(`workouts("${pathName[1]}")`, `/workouts/${this.workout.id}`);
+  }
+
+  showExercise(exercise, target) {
+    render(this.workout.program.view.__program(), target, true);
+    render(this.workout.view.showExercise(exercise), target);
+  }
+
+  mutedMenu(exercise) {
+    const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
+    exerciseContainer.firstChild.append(
+      this.workout.view.form.stopExercise(exercise)
+    );
+  }
+
+  startExercise(exercise) {
+    const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
+    const video = exerciseContainer.querySelector("video");
+
+    exerciseContainer.append(Layout.counter(5));
+    video.addEventListener("timeupdate", () => {
+      if (video.currentTime === video.duration) {
+        this.workout.view.completeExercise(exercise)
+          ? this.workout.view.completeExercise(exercise).controller.update()
+          : this.workout.controller.createComplete(exercise);
+      }
+    });
   }
 }

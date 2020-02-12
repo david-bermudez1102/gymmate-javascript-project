@@ -155,14 +155,18 @@ class Layout {
     return footer;
   }
 
-  static counter(start) {
-    let count = start;
-
-    const countDownDiv = Elem.div({
+  static mutedContainer(){
+    return Elem.div({
       class:
         "d-flex position-absolute w-100 h-100 align-items-center justify-content-center",
       style: "top:0; left:0; background: rgba(0,0,0,.5);"
     });
+  }
+
+  static counter(start) {
+    let count = start;
+
+    const countDownDiv = this.mutedContainer()
 
     const counterDiv = Elem.div({
       class:

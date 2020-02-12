@@ -4,9 +4,12 @@ class CompleteExercise {
     this._workoutId = workoutId;
     this._exerciseId = exerciseId;
     this._sets = sets;
-    this._view = ExerciseView.create(this);
-    this._controller = ExerciseController.create(this);
-    this._render = ExerciseRender.create(this);
+    this._view = CompleteView.create(this);
+    this._controller = CompleteController.create(this);
+    this._render = CompleteRender.create(this);
+  }
+  get id() {
+    return this._id;
   }
 
   get workoutId() {
@@ -18,7 +21,7 @@ class CompleteExercise {
   }
 
   get sets() {
-    return this._exerciseId;
+    return this._sets;
   }
 
   get view() {
@@ -37,7 +40,8 @@ class CompleteExercise {
     return new CompleteExercise(
       completeExercise.id,
       completeExercise.workout_id,
-      completeExercise.exercise_id
+      completeExercise.exercise_id,
+      completeExercise.sets
     );
   }
 }
@@ -61,15 +65,6 @@ class CompleteView {
   get form() {
     return this._form;
   }
-
-  sets() {
-    return Elem.h2(
-      {},
-      null,
-      Elem.icon({ class: "fas fa-cog" }),
-      ` ${this.complete.sets}`
-    );
-  }
 }
 
 //===============================================================================//
@@ -87,7 +82,20 @@ class CompleteForm {
     return this._view;
   }
 
- 
+  get complete() {
+    return this._view.complete;
+  }
+
+  _form() {
+    const formData = new FormData();
+    const data = {
+      workout_id: this.complete.workoutId,
+      exercise_id: this.complete.exerciseId,
+      sets: this.complete.sets + 1
+    };
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    return formData;
+  }
 }
 
 //===============================================================================//
@@ -106,20 +114,46 @@ class CompleteController {
   }
 
   __create() {
-    const formData = new FormData();
-    const data = {
-      workout_id: this.complete.workoutId,
-      exercise_id: this.complete.exerciseId
-    };
-    Object.keys(data).forEach(key => formData.append(key, data[key]));
-    new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
-      const user = Object.assign(new User(), currentUser);
-      user.workouts.find(workout =>
-        workout.completeExercises.push(CompleteExercise.create(json))
-      );
-      currentUser = user;
-      console.log(json);
-    }).submit();
+    new Fetch(
+      this.complete.view.form._form(),
+      "POST",
+      `${BASE_URL}/completes`,
+      json => {
+        const user = Object.assign(new User(), currentUser);
+        const workout = user.workouts.find(
+          workout => workout.id === this.complete.workoutId
+        );
+        workout.completeExercises.push(CompleteExercise.create(json));
+
+        currentUser = user;
+        console.log(json);
+      }
+    ).submit();
+  }
+
+  update() {
+    new Fetch(
+      this.complete.view.form._form(),
+      "PATCH",
+      `${BASE_URL}/completes/${this.complete.id}`,
+      json => {
+        const user = Object.assign(new User(), currentUser);
+        const workout = user.workouts.find(
+          workout => workout.id === this.complete.workoutId
+        );
+        const exercise = workout.program.exercises.find(
+          exercise => exercise.id === this.complete.exerciseId
+        );
+        
+        Object.assign(
+          workout.completeExercises.find(
+            complete => complete.id === this.complete.id
+          ),
+          CompleteExercise.create(json)
+        );
+        this.complete.render.sets(workout, exercise);
+      }
+    ).submit();
   }
 }
 
@@ -138,4 +172,10 @@ class CompleteRender {
     return this._complete;
   }
 
+  sets(workout, exercise) {
+    const __exercise = d.querySelector(`#exercise_${exercise.id}`);
+    __exercise
+      .querySelector(`#exercise_sets_${exercise.id}`)
+      .replaceWith(workout.view.sets(exercise));
+  }
 }

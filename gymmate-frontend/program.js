@@ -134,7 +134,7 @@ class ProgramView {
       this.options(),
       isUser()
         ? Elem.span(
-            { class: "col-xl-3 order-2 " },
+            { class: "text-right col-xl-3 order-2 p-0 m-0" },
             null,
             isUser() ? this.form.addWorkout() : ""
           )
@@ -312,7 +312,7 @@ class ProgramForm {
         action: WORKOUTS_URL,
         method: "POST"
       },
-      json => new Workout().controller.add(json),
+      json => new Workout().controller.create(json),
       Elem.input({
         type: "hidden",
         name: "workout[program_id]",
