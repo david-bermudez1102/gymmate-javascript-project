@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_08_172908) do
+ActiveRecord::Schema.define(version: 2020_02_12_162905) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2020_02_08_172908) do
     t.string "video_content_type"
     t.integer "video_file_size"
     t.datetime "video_updated_at"
+    t.string "calories"
     t.index ["program_id"], name: "index_exercises_on_program_id"
   end
 
