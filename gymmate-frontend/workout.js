@@ -173,11 +173,26 @@ class WorkoutView {
     );
   }
 
+  sets(exercise) {
+    const completeExercise = this.workout.completeExercises.find(
+      complete => complete.exerciseId === exercise.id
+    )
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-cog" }),
+      completeExercise
+        ? ` ${completeExercise.sets} / ${exercise.sets}`
+        : ` 0 / ${exercise.sets}`
+    );
+      
+  }
+
   exerciseInfo(exercise) {
     return Elem.p(
       { class: "d-flex w-100 justify-content-between my-4" },
       null,
-      "setsCompleted"
+      this.sets(exercise)
     );
   }
 
@@ -221,7 +236,7 @@ class WorkoutView {
       Subtitle.new(
         `From "${exercise.program.title}" By ${exercise.program.trainer.fullName}`
       ),
-      this.exerciseInfo(),
+      this.exerciseInfo(exercise),
       exercise.view.video(),
       exercise.view.description()
     );
@@ -328,23 +343,6 @@ class WorkoutController {
     new Promise(res => res(Workout.add(json)))
       .then(user => (currentUser = user))
       .then(user => user.render.workouts("#main_container"));
-  }
-
-  completeExercise(exercise) {
-    const formData = new FormData();
-    const data = {
-      workout_id: this.id,
-      exercise_id: exercise.id
-    };
-    Object.keys(data).forEach(key => formData.append(key, data[key]));
-    new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
-      const user = Object.assign(new User(), currentUser);
-      user.workouts.find(workout =>
-        workout.completeExercises.push(CompleteExercise.create(json))
-      );
-      currentUser = user;
-      console.log(json);
-    }).submit();
   }
 
   show() {
