@@ -119,7 +119,7 @@ class Layout {
       null,
       Elem.link({ class: "dropdown-item" }, null, "Edit Account"),
       Elem.div({ class: "dropdown-divider" }),
-      Elem.link({ class: "dropdown-item" }, () => Account.logout(), "Logout")
+      Elem.link({ class: "dropdown-item" }, () => new Account().controller.logout(), "Logout")
     );
   }
 

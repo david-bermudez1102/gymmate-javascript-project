@@ -39,14 +39,14 @@ class Fetch {
   }
 
   submit() {
-    Render.spinner(main);
+    Layout.spinner(main);
     return fetch(this.url, this.configObj)
       .then(this.parseJson)
       .then(json => {
         if (!json.errors) this.callback(json);
-        else Render.error(json, this.target);
+        else Layout.error(json, this.target);
       })
-      .then(Render.hideSpinner(main))
+      .then(Layout.hideSpinner(main))
       .catch(console.log);
   }
 
@@ -54,11 +54,11 @@ class Fetch {
     const token = sessionStorage.getItem("auth_token");
     const h = new Headers();
     h.append("Authorization", `Token token=${token}`);
-    Render.spinner(main);
+    Layout.spinner(main);
     return fetch(this.url, { headers: h })
       .then(this.parseJson)
       .then(this.callback)
-      .then(Render.hideSpinner(main))
+      .then(Layout.hideSpinner(main))
       .catch(console.log);
   }
 

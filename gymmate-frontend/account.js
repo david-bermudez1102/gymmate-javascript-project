@@ -10,6 +10,7 @@ class Account {
     this._email = email;
     this._accountView = AccountView.create(this);
     this._render = AccountRender.create(this);
+    this._controller = AccountController.create(this);
   }
 
   get id() {
@@ -52,12 +53,8 @@ class Account {
     return this._render;
   }
 
-  static logout() {
-    const callback = json => {
-      sessionStorage.clear();
-      window.location.reload();
-    };
-    new Fetch(null, "DELETE", SESSION_URL, callback).submit();
+  get controller() {
+    return this._controller;
   }
 }
 
@@ -139,12 +136,14 @@ class AccountView {
   }
 
   info() {
-    const div = Div.new(null, `account_${this.account.id}_info`, null);
-    div.append(P.new(`Username: ${this.account.username}`));
-    div.append(P.new(`Bio: ${this.account.bio}`));
-    div.append(P.new(`Date of birth: ${this.account.dateOfBirth}`));
-    div.append(P.new(`Sex: ${this.account.sex}`));
-    return div;
+    return Elem.div(
+      { id: `account_${this.account.id}_info` },
+      null,
+      Elem.p({}, null, `Username: ${this.account.username}`),
+      Elem.p({}, null, `Bio: ${this.account.bio}`),
+      Elem.p({}, null, `Date of birth: ${this.account.dateOfBirth}`),
+      Elem.p({}, null, `Sex: ${this.account.sex}`)
+    );
   }
 
   options(content, target) {
@@ -193,7 +192,7 @@ class AccountView {
         title: "Edit This Routine"
       },
       () => {
-        content.render.editRow(target)
+        content.render.editRow(target);
         window.event.stopPropagation();
       },
       Elem.icon({ class: "fas fa-pen" })
@@ -233,7 +232,7 @@ class AccountForm {
           placeholder: "Your email...",
           class: "form-control pl-5 rounded-pill"
         }),
-        Icon.new("fas fa-envelope")
+        Elem.icon({ class: "fas fa-envelope" })
       ),
       FormGroup.new(
         Elem.input({
@@ -242,7 +241,7 @@ class AccountForm {
           placeholder: "Your Password...",
           class: "form-control pl-5 rounded-pill"
         }),
-        Icon.new("fas fa-lock")
+        Elem.icon({ class: "fas fa-lock" })
       ),
       Elem.input(
         {
@@ -354,5 +353,24 @@ class AccountRender {
   get account() {
     return this._account;
   }
+}
+
+class AccountController {
+  constructor(account) {
+    this._account = account;
+  }
+
+  static create(account) {
+    return new AccountController(account);
+  }
+
+  logout() {
+    const callback = json => {
+      sessionStorage.clear();
+      window.location.reload();
+    };
+    new Fetch(null, "DELETE", SESSION_URL, callback).submit();
+  }
 
 }
+ 

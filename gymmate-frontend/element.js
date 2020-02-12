@@ -143,6 +143,12 @@ class Elem {
     return elem;
   }
 
+  static p(attributes, handleOnclick, ...append) {
+    const elem = this.create("p", attributes, ...append);
+    this.handleOnclick(elem, handleOnclick, false, false);
+    return elem;
+  }
+
   static form(attributes, handleOnsubmit, ...append) {
     const elem = this.create("form", attributes, ...append);
     this.handleOnsubmit(
