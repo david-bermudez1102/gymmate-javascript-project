@@ -49,6 +49,12 @@ class User extends Account {
     return `${this.name} ${this.lastname}`;
   }
 
+  hasWorkout(program) {
+    return this.workouts.some(
+      workout => workout.program.id === program.id
+    );
+  }
+
   static create(json) {
     const user = new User(
       json.account.id,

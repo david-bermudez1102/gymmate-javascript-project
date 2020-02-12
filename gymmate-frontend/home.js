@@ -73,7 +73,6 @@ class HomeView {
       null,
       currentUser ? currentUser.accountView.profilePic() : "",
       this.homeLink(),
-      this.messagesLink(),
       isTrainer() ? this.routinesLink() : this.workoutsLink(),
       this.profileLink()
     );
@@ -101,14 +100,6 @@ class HomeView {
     );
   }
 
-  messagesLink() {
-    return Elem.link(
-      { class: "nav-link", "data-toggle": "pill" },
-      null,
-      "Messages"
-    );
-  }
-
   routinesLink() {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
@@ -128,7 +119,8 @@ class HomeView {
         id: "main_menu_workouts_link"
       },
       () => currentUser.render.workouts("#main_container"),
-      "My Workouts"
+      Elem.icon({class:"fad fa-dumbbell"}), 
+      " My Workouts"
     );
   }
 }

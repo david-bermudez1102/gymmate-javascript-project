@@ -108,7 +108,8 @@ class ProgramView {
   title() {
     return Elem.span(
       {
-        class: "col-xl-9 col-lg-12 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
+        class:
+          "col-xl-9 col-lg-12 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
         style: "font-size: 40px;"
       },
       null,
@@ -140,7 +141,9 @@ class ProgramView {
         ? Elem.span(
             { class: "text-right col-xl-3 order-2 p-0 m-0" },
             null,
-            isUser() ? this.form.addWorkout() : ""
+            isUser() && !currentUser.hasWorkout(this.program)
+              ? this.form.addWorkout()
+              : ""
           )
         : ""
     );
