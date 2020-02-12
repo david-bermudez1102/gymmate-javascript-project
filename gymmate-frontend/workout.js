@@ -200,7 +200,7 @@ class WorkoutView {
 
   sets(exercise) {
     return Elem.h2(
-      {id:`exercise_sets_${exercise.id}`},
+      { id: `exercise_sets_${exercise.id}` },
       null,
       Elem.icon({ class: "fas fa-cog" }),
       this.completeExercise(exercise)
@@ -224,16 +224,18 @@ class WorkoutView {
   }
 
   percentageComplete(exercise) {
-    return (
-      (this.workout.completeExercises.length * 100) /
-      this.workout.program.exercises.length
+    return Math.round(
+      (this.completeExercise(exercise).sets * 100) / exercise.sets
     );
   }
 
   progress(exercise) {
     return isUser()
       ? Elem.span(
-          { class: "text-right p-0 m-0 col order-2" },
+          {
+            id: `exercise_progress_${exercise.id}`,
+            class: "text-right p-0 m-0 col order-2"
+          },
           null,
           ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
         )

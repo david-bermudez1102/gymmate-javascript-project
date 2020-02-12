@@ -144,14 +144,14 @@ class CompleteController {
         const exercise = workout.program.exercises.find(
           exercise => exercise.id === this.complete.exerciseId
         );
-        
         Object.assign(
           workout.completeExercises.find(
             complete => complete.id === this.complete.id
           ),
           CompleteExercise.create(json)
         );
-        this.complete.render.sets(workout, exercise);
+        this.complete.render.sets(workout, exercise)
+        this.complete.render.progress(workout, exercise);
       }
     ).submit();
   }
@@ -177,5 +177,12 @@ class CompleteRender {
     __exercise
       .querySelector(`#exercise_sets_${exercise.id}`)
       .replaceWith(workout.view.sets(exercise));
+  }
+
+  progress(workout, exercise) {
+    const __exercise = d.querySelector(`#exercise_${exercise.id}`);
+    __exercise
+      .querySelector(`#exercise_progress_${exercise.id}`)
+      .replaceWith(workout.view.progress(exercise));
   }
 }
