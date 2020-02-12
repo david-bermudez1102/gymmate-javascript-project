@@ -120,7 +120,7 @@ class ExerciseView {
     return isUser()
       ? Elem.span(
           {
-            id: `exercise_progress_${exercise.id}`,
+            id: `exercise_progress_${this.exercise.id}`,
             class: "text-right p-0 m-0 col order-2"
           },
           null,

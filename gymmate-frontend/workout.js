@@ -86,13 +86,6 @@ class Workout {
     ).request();
     return workout;
   }
-
-  static add(json) {
-    const user = Object.assign(new User(), currentUser);
-    const workout = Workout.create(user, json);
-    user.workouts.push(workout);
-    return user;
-  }
 }
 
 //===============================================================================//
@@ -117,7 +110,11 @@ class WorkoutView {
 
   title() {
     return Elem.span(
-      { class: "display-4", style: "font-size: 40px;" },
+      {
+        class:
+          "col-xl-9 col-lg-12 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
+        style: "font-size: 40px;"
+      },
       null,
       Elem.icon({ class: "fas fa-dumbbell text-primary" }),
       ` ${this.workout.program.title}`
@@ -132,13 +129,12 @@ class WorkoutView {
 
   percentageComplete() {
     const percentages = this.workout.program.exercises.map(exercise =>
-        exercise.view.percentageComplete(this.completeExercise(exercise))
+      exercise.view.percentageComplete(this.completeExercise(exercise))
     );
-    return percentages.reduce((memo,val) => memo + val)
+    return percentages.reduce((memo, val) => memo + val);
   }
 
   progress() {
-    console.log(this.percentageComplete())
     return isUser()
       ? Elem.span(
           {
@@ -162,7 +158,17 @@ class WorkoutView {
 
   options() {
     return isOwner(this.workout.user)
-      ? this.workout.user.accountView.options(this.workout, "#main_container")
+      ? Elem.div(
+          {
+            class:
+              "col-xl-3 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-end"
+          },
+          null,
+          this.workout.user.accountView.deleteBtn(
+            this.workout,
+            "#main_container"
+          )
+        )
       : "";
   }
 
@@ -365,9 +371,12 @@ class WorkoutController {
   }
 
   __create(json) {
-    new Promise(res => res(Workout.add(json)))
-      .then(user => (currentUser = user))
-      .then(user => user.render.workouts("#main_container"));
+    const user = Object.assign(new User(), currentUser);
+    const workout = Workout.create(user, json);
+    user.workouts.push(workout);
+    currentUser = user;
+    currentUser.render.workouts("#main_container");
+    return user;
   }
 
   createComplete(exercise) {
@@ -381,6 +390,23 @@ class WorkoutController {
 
   show() {
     this.workout.render.show();
+  }
+
+  delete(target) {
+    new Fetch(
+      null,
+      "DELETE",
+      `${WORKOUTS_URL}/${this.workout.id}`,
+      json => {
+        const user = Object.assign(new User(), currentUser);
+        currentUser._workouts = currentUser._workouts.filter(
+          workout => workout.id !== json.id
+        );
+        currentUser = user;
+        currentUser.render.workouts(target, true);
+      },
+      target
+    ).submit();
   }
 }
 
