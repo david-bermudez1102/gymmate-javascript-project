@@ -184,6 +184,14 @@ class Layout {
         clearInterval(counter);
       }
     }, 1000);
+
+    d.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        countDownDiv.remove();
+        clearInterval(counter);
+      }
+    });
+
     countDownDiv.append(counterDiv);
     return countDownDiv;
   }

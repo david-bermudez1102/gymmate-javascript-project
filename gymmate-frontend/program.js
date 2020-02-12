@@ -13,7 +13,7 @@ class Program {
     this._title = title;
     this._description = description;
     this._video = video;
-    this.exercises = exercises;
+    this._exercises = exercises;
     this._trainer = trainer;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
@@ -40,6 +40,10 @@ class Program {
 
   get trainer() {
     return this._trainer;
+  }
+
+  get exercises() {
+    return this._exercises;
   }
 
   get createdAt() {
@@ -73,7 +77,7 @@ class Program {
       json.created_at,
       json.updated_at
     );
-    program.exercises = json.exercises.map(exercise =>
+    program._exercises = json.exercises.map(exercise =>
       Exercise.create(program, exercise)
     );
 

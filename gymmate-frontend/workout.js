@@ -224,9 +224,9 @@ class WorkoutView {
   }
 
   percentageComplete(exercise) {
-    return Math.round(
-      (this.completeExercise(exercise).sets * 100) / exercise.sets
-    );
+    return this.completeExercise(exercise)
+      ? Math.round((this.completeExercise(exercise).sets * 100) / exercise.sets)
+      : 0;
   }
 
   progress(exercise) {
@@ -263,15 +263,24 @@ class WorkoutView {
     );
   }
 
+  startExercise(exercise, video) {
+    if (video.currentTime === video.duration) {
+      this.completeExercise(exercise)
+        ? this.completeExercise(exercise).controller.update()
+        : this.workout.controller.createComplete(exercise);
+      this.workout.render.rest(exercise);
+    }
+  }
+
   stopExercise(exercise) {
     const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
     const video = exerciseContainer.querySelector("video");
     exerciseContainer.firstChild.lastChild.remove();
 
-    video.removeEventListener("timeupdate", () => {
-      if (video.currentTime === video.duration)
-        this.workout.controller.createComplete(exercise);
-    });
+    video.removeEventListener("timeupdate", () =>
+      this.startExercise(exercise, video)
+    );
+    video.controls = true;
     video.pause();
   }
 }
@@ -303,6 +312,7 @@ class WorkoutForm {
       },
       () => {
         this.workout.render.startExercise(exercise);
+
         this.workout.render.mutedMenu(exercise);
       },
       Elem.icon({
@@ -314,6 +324,13 @@ class WorkoutForm {
 
   stopExercise(exercise) {
     const mutedContainer = Layout.mutedContainer();
+
+    d.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        this.workout.view.stopExercise(exercise);
+      }
+    });
+
     mutedContainer.append(
       Elem.button(
         {
@@ -359,7 +376,7 @@ class WorkoutController {
       null,
       this.workout.id,
       exercise.id,
-      "0"
+      0
     ).controller.__create();
   }
 
@@ -394,9 +411,9 @@ class WorkoutRender {
   show(target) {
     render(this.workout.view.show(), target, true);
     render(this.workout.program.view.exercisesCount(), target);
-    this.workout.program.exercises.forEach(exercise =>
-      this.__exercise(exercise, target)
-    );
+    this.workout.program.exercises.forEach(exercise => {
+      this.__exercise(exercise, target);
+    });
     createRoute(`workouts("${pathName[1]}")`, `/workouts/${this.workout.id}`);
   }
 
@@ -412,17 +429,22 @@ class WorkoutRender {
     );
   }
 
+  rest(exercise) {
+    const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
+    if (this.workout.view.completeExercise(exercise).sets < exercise.sets) {
+      console.log(this.workout.view.completeExercise(exercise).sets);
+      exerciseContainer.append(Layout.counter(30));
+    } else this.workout.view.stopExercise(exercise);
+  }
+
   startExercise(exercise) {
     const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
     const video = exerciseContainer.querySelector("video");
 
     exerciseContainer.append(Layout.counter(5));
-    video.addEventListener("timeupdate", () => {
-      if (video.currentTime === video.duration) {
-        this.workout.view.completeExercise(exercise)
-          ? this.workout.view.completeExercise(exercise).controller.update()
-          : this.workout.controller.createComplete(exercise);
-      }
-    });
+    video.addEventListener("timeupdate", () =>
+      this.workout.view.startExercise(exercise, video)
+    );
+    video.controls = true;
   }
 }
