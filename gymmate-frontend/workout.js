@@ -120,12 +120,12 @@ class WorkoutView {
       { class: "display-4", style: "font-size: 40px;" },
       null,
       Elem.icon({ class: "fas fa-dumbbell text-primary" }),
-      ` ${this.program.title}`
+      ` ${this.workout.program.title}`
     );
   }
 
   status() {
-    this.complete
+    return this.workout.complete
       ? Elem.icon({
           class: "fas fa-check-square text-primary",
           style: "font-size: 24px;"
@@ -274,10 +274,11 @@ class WorkoutView {
   }
 
   startExerciseBtn(exercise) {
-    return Button.new(
-      `start_exercise_${exercise.id}`,
-      Icon.new("far fa-play-circle display-4", "font-size: 40px;"),
-      "btn btn-primary btn-sm rounded-circle shadow",
+    return Elem.button(
+      {
+        class: "btn btn-primary btn-sm rounded-circle shadow",
+        id: `start_exercise_${this.workout.exercise.id}`
+      },
       () => {
         const exerciseContainer = document.querySelector(
           `#exercise_${exercise.id}`
@@ -289,7 +290,11 @@ class WorkoutView {
           if (video.currentTime == video.duration)
             this.completeExercise(exercise);
         });
-      }
+      },
+      Elem.icon({
+        class: "far fa-play-circle display-4",
+        style: "font-size: 40px;"
+      })
     );
   }
 }

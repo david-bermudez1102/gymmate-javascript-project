@@ -172,9 +172,7 @@ class ProgramView {
       Elem.div({ class: "display-4" }, null, this.program.description),
       Elem.video(this.program.video),
       this.addExerciseBtn(),
-      isUser() && !owner(this.workout.user)
-        ? this.form.addWorkout()
-        : ""
+      isUser() ? this.form.addWorkout() : ""
     );
   }
 
@@ -314,7 +312,7 @@ class ProgramForm {
         action: WORKOUTS_URL,
         method: "POST"
       },
-      json => new workout().controller.add(json),
+      json => new Workout().controller.add(json),
       Elem.input({
         type: "hidden",
         name: "workout[program_id]",

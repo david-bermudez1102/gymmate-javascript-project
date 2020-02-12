@@ -238,7 +238,7 @@ class UserRender {
   workouts(target, remove = true) {
     if (remove) removeAll(d.querySelector(target));
     this.user.workouts.forEach(workout => {
-      if (workout.program) render(workout.workout(target), target);
+      if (workout.program) render(workout.view.__workout(target), target);
     });
   }
 }
