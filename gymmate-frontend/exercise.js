@@ -197,10 +197,7 @@ class ExerciseView {
       ),
       this.info(),
       this.video(),
-      this.description(),
-      isUser() && !owner(this.exercise.user)
-        ? this.workout.program.form.startProgramBtn()
-        : ""
+      this.description()
     );
   }
 
@@ -393,6 +390,7 @@ class ExerciseController {
 
   show() {
     this.exercise.render.show();
+    createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 
   createExercise(json) {
@@ -484,6 +482,5 @@ class ExerciseRender {
   show(target) {
     this.exercise.program.render.__program(target, true);
     render(this.exercise.view.show(), target, false);
-    createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 }

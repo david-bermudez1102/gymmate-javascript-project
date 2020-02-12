@@ -236,10 +236,13 @@ class UserRender {
   }
 
   workouts(target, remove = true) {
-    if (remove) removeAll(d.querySelector(target));
-    this.user.workouts.forEach(workout => {
-      if (workout.program) render(workout.view.__workout(target), target);
-    });
+     if (remove) removeAll(d.querySelector(target));
+     this.user.workouts.forEach(workout => {
+       const __workout = workout.view.__workout();
+       __workout.addEventListener("click", () => workout.render.show(target));
+       render(__workout, target);
+     });
+     createRoute(`workous("${pathName[1]}")`, `/workouts`);
   }
 }
 

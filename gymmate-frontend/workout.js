@@ -130,7 +130,10 @@ class WorkoutView {
           class: "fas fa-check-square text-primary",
           style: "font-size: 24px;"
         })
-      : Icon.new("fas fa-spinner text-primary", "font-size: 24px;");
+      : Elem.icon({
+          class: "fas fa-spinner text-primary",
+          style: "font-size: 24px;"
+        });
   }
 
   options() {
@@ -145,43 +148,9 @@ class WorkoutView {
         class:
           "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
       },
-      () => render(new Grid().showWorkoutRow(this, target), target, true),
+      null,
       this.title(),
       this.status()
-    );
-  }
-
-  exercise(exercise, target) {
-    const container = Elem.section(
-     { class: "mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-white" },
-      () => {
-        removeAll(target);
-        append(
-          new Grid().showWorkoutExerciseHeaderRow(exercise),
-          `exercise_header_${exercise.id}`,
-          target
-        );
-        append(
-          new Grid().showWorkoutExerciseRow(this, exercise, target),
-          `exercise_${exercise.id}`,
-          target
-        );
-      }
-    );
-
-    const title = Span.new(null, "display-4", "font-size: 40px;");
-    title.append(Icon.new("fas fa-running text-primary"), ` ${exercise.title}`);
-    container.append(title);
-    container.append(
-      ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
-    );
-
-    return container;
-  }
-
-  percentageComplete(exercise) {
-    return (
-      (this.completeExercises.length * 100) / this.program.exercises.length
     );
   }
 
@@ -198,24 +167,66 @@ class WorkoutView {
       Subtitle.new(`By ${this.workout.program.trainer.fullName}`),
       Elem.div({ class: "display-4" }, null, this.workout.program.description),
       Elem.video(this.workout.program.video),
-      this.workout.program.view.exercisesCount(),
-      isUser() && !owner(this.workout.user)
+      isUser() && !isOwner(this.workout.user)
         ? this.workout.program.form.startProgramBtn()
         : ""
     );
   }
 
-  allExercises(target) {
-    this.program.exercises.forEach(exercise => {
-      append(
-        new Grid().workoutExerciseRow(this, exercise, target),
-        `exercise_${exercise.id}`,
-        target
-      );
-    });
+  exerciseInfo(exercise) {
+    return Elem.p(
+      { class: "d-flex w-100 justify-content-between my-4" },
+      null,
+      "setsCompleted"
+    );
   }
 
-  showExercise(exercise, target) {
+  __exercise(exercise) {
+    const __exercise = exercise.view.__exercise();
+    __exercise.append(this.progress(exercise));
+    return __exercise;
+  }
+
+  percentageComplete(exercise) {
+    return (
+      (this.workout.completeExercises.length * 100) /
+      this.workout.program.exercises.length
+    );
+  }
+
+  progress(exercise) {
+    return isUser()
+      ? Elem.span(
+          { class: " col order-2" },
+          null,
+          ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
+        )
+      : "";
+  }
+
+  showExercise(exercise) {
+    const __exercise = this.__exercise(exercise);
+    __exercise.append(this.form.startExercise(exercise));
+    __exercise.className =
+      "text-left w-100 d-flex align-items-center justify-content-between";
+    const sectionClassName =
+      "text-left p-3 p-sm-5 mt-1 rounded shadow bg-dark text-white";
+    return Elem.section(
+      {
+        class: sectionClassName,
+        id: `exercise_${exercise.id}`
+      },
+      null,
+      __exercise,
+      Subtitle.new(
+        `From "${exercise.program.title}" By ${exercise.program.trainer.fullName}`
+      ),
+      this.exerciseInfo(),
+      exercise.view.video(),
+      exercise.view.description()
+    );
+
+    return __exercise;
     const header = Div.new(
       "w-100 d-flex justify-content-between align-items-center flex-wrap"
     );
@@ -255,48 +266,6 @@ class WorkoutView {
     );
     return section;
   }
-
-  completeExercise(exercise) {
-    const formData = new FormData();
-    const data = {
-      workout_id: this.id,
-      exercise_id: exercise.id
-    };
-    Object.keys(data).forEach(key => formData.append(key, data[key]));
-    new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
-      const user = Object.assign(new User(), currentUser);
-      user.workouts.find(workout =>
-        workout.completeExercises.push(CompleteExercise.create(json))
-      );
-      currentUser = user;
-      console.log(json);
-    }).submit();
-  }
-
-  startExerciseBtn(exercise) {
-    return Elem.button(
-      {
-        class: "btn btn-primary btn-sm rounded-circle shadow",
-        id: `start_exercise_${this.workout.exercise.id}`
-      },
-      () => {
-        const exerciseContainer = document.querySelector(
-          `#exercise_${exercise.id}`
-        );
-        const video = exerciseContainer.querySelector("video");
-
-        exerciseContainer.append(Render.counter(5));
-        video.addEventListener("timeupdate", () => {
-          if (video.currentTime == video.duration)
-            this.completeExercise(exercise);
-        });
-      },
-      Elem.icon({
-        class: "far fa-play-circle display-4",
-        style: "font-size: 40px;"
-      })
-    );
-  }
 }
 
 //===============================================================================//
@@ -314,7 +283,30 @@ class WorkoutForm {
     return this._view;
   }
 
- 
+  startExercise(exercise) {
+    return Elem.button(
+      {
+        class: "btn btn-primary btn-sm rounded-circle shadow",
+        id: `start_exercise_${exercise.id}`
+      },
+      () => {
+        const exerciseContainer = document.querySelector(
+          `#exercise_${exercise.id}`
+        );
+        const video = exerciseContainer.querySelector("video");
+
+        exerciseContainer.append(Layout.counter(5));
+        video.addEventListener("timeupdate", () => {
+          if (video.currentTime == video.duration)
+            this.completeExercise(exercise);
+        });
+      },
+      Elem.icon({
+        class: "far fa-play-circle display-4",
+        style: "font-size: 40px;"
+      })
+    );
+  }
 }
 
 //===============================================================================//
@@ -338,6 +330,23 @@ class WorkoutController {
       .then(user => user.render.workouts("#main_container"));
   }
 
+  completeExercise(exercise) {
+    const formData = new FormData();
+    const data = {
+      workout_id: this.id,
+      exercise_id: exercise.id
+    };
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    new Fetch(formData, "POST", `${BASE_URL}/completes`, json => {
+      const user = Object.assign(new User(), currentUser);
+      user.workouts.find(workout =>
+        workout.completeExercises.push(CompleteExercise.create(json))
+      );
+      currentUser = user;
+      console.log(json);
+    }).submit();
+  }
+
   show() {
     this.workout.render.show();
   }
@@ -358,8 +367,25 @@ class WorkoutRender {
     return this._workout;
   }
 
-  show() {
-    render(this.workout.view.show(), "main", true);
-    createRoute("workout()", "/workout");
+  __exercise(exercise, target) {
+    const __exercise = this.workout.view.__exercise(exercise);
+    __exercise.addEventListener("click", () =>
+      this.showExercise(exercise, target)
+    );
+    render(__exercise, target);
+  }
+
+  showExercise(exercise, target) {
+    render(this.workout.program.view.__program(), target, true);
+    render(this.workout.view.showExercise(exercise), target);
+  }
+
+  show(target) {
+    render(this.workout.view.show(), target, true);
+    render(this.workout.program.view.exercisesCount(), target);
+    this.workout.program.exercises.forEach(exercise =>
+      this.__exercise(exercise, target)
+    );
+    createRoute(`workouts("${pathName[1]}")`, `/workouts/${this.workout.id}`);
   }
 }
