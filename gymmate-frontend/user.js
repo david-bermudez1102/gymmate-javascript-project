@@ -185,35 +185,19 @@ class UserView {
     );
   }
 
-  picturesTab() {
+  completeTab() {
     return Elem.link(
       {
         class: "nav-item nav-link",
-        id: "nav-pictures-tab",
+        id: "nav-complete-tab",
         "data-toggle": "tab",
-        href: "#nav-pictures",
+        href: "#nav-complete",
         role: "tab",
-        "aria-controls": "nav-pictures",
+        "aria-controls": "nav-complete",
         "aria-selected": "false"
       },
       null,
-      "Pictures"
-    );
-  }
-
-  videosTab() {
-    return Elem.link(
-      {
-        class: "nav-item nav-link",
-        id: "nav-video-tab",
-        "data-toggle": "tab",
-        href: "#nav-video",
-        role: "tab",
-        "aria-controls": "nav-video",
-        "aria-selected": "false"
-      },
-      null,
-      "Video"
+      "Complete Workouts"
     );
   }
 }
