@@ -88,11 +88,55 @@ class UserView {
     return this._form;
   }
 
+  profilePic() {
+    return Elem.icon({
+      class: "fas fa-user-circle text-shadow",
+      style: "font-size:50px;"
+    });
+  }
+
+  name() {
+    return Elem.h2(
+      { class: "pl-2 py-0 pr-0 m-0" },
+      null,
+      `${this.user.fullName}`
+    );
+  }
+
+  workouts() {
+    return Elem.h2(
+      { class: "p-0 m-0" },
+      null,
+      Elem.icon({
+        class: "fad fa-dumbbell text-primary"
+      }),
+      ` ${this.user.workouts.length}`
+    );
+  }
+
+  info() {
+    return Elem.span(
+      { class: "d-flex align-items-center justify-content-between w-100" },
+      null,
+      Elem.span(
+        { class: "d-flex align-items-center" },
+        null,
+        this.profilePic(),
+        this.name()
+      ),
+      Elem.span({}, null, this.workouts())
+    );
+  }
+
   __user() {
     return Elem.section(
-      { class: "text-left p-3 p-sm-5 rounded shadow " },
+      {
+        class:
+          "p-3 p-sm-5 rounded shadow row mt-1 mx-auto w-100 bg-dark text-white",
+        style: "cursor:pointer;"
+      },
       () => this.user.render.profile(),
-      this.user.name
+      this.info()
     );
   }
 

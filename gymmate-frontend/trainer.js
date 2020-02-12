@@ -93,11 +93,51 @@ class TrainerView {
     return this._form;
   }
 
+  profilePic() {
+    return Elem.icon({
+      class: "fas fa-user-circle text-shadow",
+      style: "font-size:50px;"
+    });
+  }
+
+  name() {
+    return Elem.h2({ class: "pl-2 py-0 pr-0 m-0" }, null, `${this.trainer.fullName}`);
+  }
+
+  routines() {
+    return Elem.h2(
+      { class: "p-0 m-0" },
+      null,
+      Elem.icon({
+        class: "fas fa-dumbbell text-primary"
+      }),
+      ` ${this.trainer.programs.length}`
+    );
+  }
+
+  info() {
+    return Elem.span(
+      { class: "d-flex align-items-center justify-content-between w-100" },
+      null,
+      Elem.span(
+        { class: "d-flex align-items-center" },
+        null,
+        this.profilePic(),
+        this.name()
+      ),
+      Elem.span({}, null, this.routines())
+    );
+  }
+
   __trainer() {
     return Elem.section(
-      { class: "text-left p-3 p-sm-5 rounded shadow " },
+      {
+        class:
+          "d-flex p-3 p-sm-5 rounded shadow row mt-1 mx-auto w-100 bg-dark text-white align-items-center",
+        style: "cursor:pointer;"
+      },
       () => this.trainer.render.profile(),
-      this.trainer.name
+      this.info()
     );
   }
 
@@ -136,7 +176,10 @@ class TrainerView {
         "aria-selected": "true"
       },
       null,
-      "Routines"
+      Elem.icon({
+        class: "fas fa-dumbbell"
+      }),
+      " Routines"
     );
   }
 
@@ -239,10 +282,7 @@ class TrainerRender {
       __program.addEventListener("click", () => program.render.show(target));
       render(__program, target);
     });
-    createRoute(
-      `routines("${pathName[1]}")`,
-      `/routines`
-    );
+    createRoute(`routines("${pathName[1]}")`, `/routines`);
   }
 }
 

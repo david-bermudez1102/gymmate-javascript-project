@@ -83,7 +83,10 @@ class HomeView {
     return Elem.link(
       { class: "nav-link active", "data-toggle": "pill" },
       () => this.home.render.show(),
-      "Home"
+      Elem.icon({
+        class: "fas fa-th-list"
+      }),
+      " Home"
     );
   }
 
@@ -91,7 +94,10 @@ class HomeView {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       () => currentUser.render.profile(),
-      "Profile"
+      Elem.icon({
+        class: "fas fa-user-circle"
+      }),
+      " Profile"
     );
   }
 
@@ -107,7 +113,10 @@ class HomeView {
     return Elem.link(
       { class: "nav-link", "data-toggle": "pill" },
       () => currentUser.render.programs("#main_container"),
-      "My Routines"
+      Elem.icon({
+        class: "fas fa-dumbbell"
+      }),
+      " My Routines"
     );
   }
 
@@ -138,7 +147,7 @@ class HomeController {
   }
 
   show() {
-    this.home.render.show()
+    this.home.render.show();
   }
 }
 
@@ -157,6 +166,6 @@ class HomeRender {
 
   show() {
     render(this.home.view.show(), "main", true);
-    createRoute("home()", "/home")
+    createRoute("home()", "/home");
   }
 }

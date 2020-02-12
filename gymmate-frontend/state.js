@@ -16,14 +16,13 @@ window.onpopstate = function(event) {
 };
 
 const search = () => {
-  const handleSubmit = json => {
-    new Search().controller.createSearch(json);
-  };
   new Fetch(
     null,
     "GET",
     BASE_URL + location.pathname + location.search,
-    handleSubmit
+    json => {
+      new Search().controller.createSearch(json);
+    }
   ).request();
 };
 

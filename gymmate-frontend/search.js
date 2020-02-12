@@ -62,6 +62,34 @@ class SearchView {
     );
   }
 
+  trainersFound(total) {
+    return Elem.span(
+      { class: "d-flex my-3 text-primary display-4", style:"font-size:30px;" },
+      null,
+      `Trainers - ${total} ${total === 1 ? " match" : "match"}`
+    );
+  }
+
+  usersFound(total) {
+    return Elem.span(
+      { class: "d-flex my-3 text-primary display-4", style: "font-size:30px;" },
+      null,
+      `Users - ${total} ${total === 1 ? " match" : "match"}`
+    );
+  }
+
+  programsFound(total) {
+    return Elem.h2(
+      { class: "d-flex my-3 text-primary display-4", style: "font-size:30px;" },
+      null,
+      `Routines - ${total} ${total === 1 ? " match" : "match"}`
+    );
+  }
+
+  totalMatches(content) {
+    return content.length;
+  }
+
   trainers(json) {
     return json.trainers.map(trainer =>
       Trainer.create(trainer).view.__trainer()
@@ -128,13 +156,41 @@ class SearchRender {
 
   index(json, formData) {
     removeAll(d.querySelector("#main_container"));
+    this.trainersFound(json);
     this.trainers(json);
+    this.usersFound(json);
     this.users(json);
+    this.programsFound(json);
     this.programs(json);
     createRoute(
       "search()",
       `/search/?${new URLSearchParams(formData).toString()}`
     );
+  }
+
+  trainersFound(json) {
+    const total = this.search.view.totalMatches(
+      this.search.view.trainers(json)
+    );
+    total > 0
+      ? render(this.search.view.trainersFound(total), "#main_container")
+      : "";
+  }
+
+  usersFound(json) {
+    const total = this.search.view.totalMatches(this.search.view.users(json));
+    total > 0
+      ? render(this.search.view.usersFound(total), "#main_container")
+      : "";
+  }
+
+  programsFound(json) {
+    const total = this.search.view.totalMatches(
+      this.search.view.programs(json)
+    );
+    total > 0
+      ? render(this.search.view.programsFound(total), "#main_container")
+      : "";
   }
 
   trainers(json) {
