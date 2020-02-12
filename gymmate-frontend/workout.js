@@ -130,16 +130,34 @@ class WorkoutView {
     );
   }
 
+  percentageComplete() {
+    const percentages = this.workout.program.exercises.map(exercise =>
+        exercise.view.percentageComplete(this.completeExercise(exercise))
+    );
+    return percentages.reduce((memo,val) => memo + val)
+  }
+
+  progress() {
+    console.log(this.percentageComplete())
+    return isUser()
+      ? Elem.span(
+          {
+            id: `workout_progress_${this.workout.id}`,
+            class: "text-right p-0 m-0 col order-2"
+          },
+          null,
+          ProgressBar.new(this.percentageComplete(), "#FF304F")
+        )
+      : "";
+  }
+
   status() {
     return this.workout.complete
       ? Elem.icon({
           class: "fas fa-check-square text-primary",
           style: "font-size: 24px;"
         })
-      : Elem.icon({
-          class: "fas fa-spinner text-primary",
-          style: "font-size: 24px;"
-        });
+      : this.progress();
   }
 
   options() {
@@ -219,27 +237,8 @@ class WorkoutView {
 
   __exercise(exercise) {
     const __exercise = exercise.view.__exercise();
-    __exercise.append(this.progress(exercise));
+    __exercise.append(exercise.view.progress(this.completeExercise(exercise)));
     return __exercise;
-  }
-
-  percentageComplete(exercise) {
-    return this.completeExercise(exercise)
-      ? Math.round((this.completeExercise(exercise).sets * 100) / exercise.sets)
-      : 0;
-  }
-
-  progress(exercise) {
-    return isUser()
-      ? Elem.span(
-          {
-            id: `exercise_progress_${exercise.id}`,
-            class: "text-right p-0 m-0 col order-2"
-          },
-          null,
-          ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
-        )
-      : "";
   }
 
   showExercise(exercise) {
@@ -325,7 +324,7 @@ class WorkoutForm {
   stopExercise(exercise) {
     const mutedContainer = Layout.mutedContainer();
 
-    d.addEventListener("keydown", (e) => {
+    d.addEventListener("keydown", e => {
       if (e.key === "Escape") {
         this.workout.view.stopExercise(exercise);
       }

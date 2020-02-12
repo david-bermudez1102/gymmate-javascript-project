@@ -110,6 +110,25 @@ class ExerciseView {
       : "";
   }
 
+  percentageComplete(exercise) {
+    return exercise
+      ? Math.round((exercise.sets * 100) / this.exercise.sets)
+      : 0;
+  }
+
+  progress(exercise) {
+    return isUser()
+      ? Elem.span(
+          {
+            id: `exercise_progress_${exercise.id}`,
+            class: "text-right p-0 m-0 col order-2"
+          },
+          null,
+          ProgressBar.new(this.percentageComplete(exercise), "#FF304F")
+        )
+      : "";
+  }
+
   __exercise() {
     return Elem.section(
       {
