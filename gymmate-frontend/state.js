@@ -96,7 +96,7 @@ function routines(path) {
 function users(path) {
   const handleSubmit = json => {
     const user = User.create(json);
-    user.show();
+    user.controller.show();
   };
   new Fetch(null, "GET", USERS_URL + "/" + path, handleSubmit).request();
 }

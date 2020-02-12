@@ -27,6 +27,7 @@ class User extends Account {
     this._workouts = workouts;
     this._view = UserView.create(this);
     this._render = UserRender.create(this);
+    this._controller = UserController.create(this);
   }
 
   get userId() {
@@ -43,6 +44,10 @@ class User extends Account {
 
   get render() {
     return this._render;
+  }
+
+  get controller() {
+    return this._controller;
   }
 
   get fullName() {
