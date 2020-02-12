@@ -2,34 +2,6 @@ const body = d.querySelector("body");
 const main = d.querySelector("main");
 const container = d.querySelector(".container-fluid.min-vh-100.p-0");
 
-class Button {
-  static new(id, innerText, className, callback = null, url = null) {
-    const button = d.createElement("button");
-    if (id) button.id = id;
-    if (name) button.name = id;
-    button.append(innerText);
-    button.className = className;
-    button.addEventListener("click", function() {
-      if (callback && url) {
-        callback(url);
-      } else if (callback && !url) {
-        callback();
-      }
-    });
-    return button;
-  }
-}
-
-class Input {
-  static new(attributes) {
-    const input = d.createElement("input");
-    Object.keys(attributes).forEach(attribute =>
-      input.setAttribute(attribute, attributes[attribute])
-    );
-    return input;
-  }
-}
-
 class TextArea {
   static new(name, placeholder, className = "form-control pl-5 rounded-pill") {
     const textArea = d.createElement("textarea");
@@ -40,43 +12,6 @@ class TextArea {
   }
 }
 
-class Form {
-  static new(
-    id,
-    action,
-    method,
-    handleSubmit = json => setSession(json),
-    target = null
-  ) {
-    const f = d.createElement("form");
-    f.id = id;
-    f.action = action;
-    f.method = method;
-    f.className = "needs-validation";
-    if (!target) target = f;
-    f.addEventListener(
-      "submit",
-      function(e) {
-        if (!f.method === "GET") f.classList.add("was-validated");
-        e.preventDefault();
-        e.stopPropagation();
-        if (f.checkValidity() === true) {
-          const formData = new FormData(this);
-          if (method == "GET")
-            action = action + `/?${new URLSearchParams(formData).toString()}`;
-          if (method !== "GET") {
-            new Fetch(formData, method, action, handleSubmit, target).submit();
-          } else {
-            new Fetch(formData, method, action, handleSubmit, target).request();
-          }
-          e.target.reset();
-        }
-      },
-      false
-    );
-    return f;
-  }
-}
 
 class FormGroup {
   static new(
