@@ -269,3 +269,27 @@ class UserForm {
 
   editUser() {}
 }
+
+class UserController {
+  constructor(user) {
+    this._trainer = user;
+  }
+
+  static create(user) {
+    return new UserController(user);
+  }
+
+  get user() {
+    return this._trainer;
+  }
+
+  create() {}
+
+  show() {
+    return this.user.render.profile();
+  }
+
+  update() {}
+
+  delete() {}
+}
