@@ -50,9 +50,7 @@ class User extends Account {
   }
 
   hasWorkout(program) {
-    return this.workouts.some(
-      workout => workout.program.id === program.id
-    );
+    return this.workouts.some(workout => workout.program.id === program.id);
   }
 
   static create(json) {
@@ -154,8 +152,7 @@ class UserView {
         { class: "nav nav-tabs", id: "nav-tab", role: "tablist" },
         null,
         this.workoutsTab(),
-        this.picturesTab(),
-        this.videosTab()
+        this.completeTab()
       )
     );
   }
@@ -181,7 +178,8 @@ class UserView {
         "aria-selected": "true"
       },
       null,
-      "Workouts"
+      Elem.icon({ class: "fad fa-dumbbell" }),
+      " Workouts"
     );
   }
 
@@ -197,7 +195,8 @@ class UserView {
         "aria-selected": "false"
       },
       null,
-      "Complete Workouts"
+      Elem.icon({ class: "fas fa-flag-checkered" }),
+      " Complete"
     );
   }
 }
@@ -218,21 +217,17 @@ class UserRender {
   profile() {
     render(this.user.view.profile(), "main", true);
     this.workouts("main", false);
-    window.history.pushState(
-      { load: `users("${pathName[1]}")` },
-      null,
-      `/users/${this.userId}`
-    );
+    createRoute(`users("${pathName[1]}")`, `/users/${this.user.id}`);
   }
 
   workouts(target, remove = true) {
-     if (remove) removeAll(d.querySelector(target));
-     this.user.workouts.forEach(workout => {
-       const __workout = workout.view.__workout();
-       __workout.addEventListener("click", () => workout.render.show(target));
-       render(__workout, target);
-     });
-     createRoute(`workous("${pathName[1]}")`, `/workouts`);
+    if (remove) removeAll(d.querySelector(target));
+    this.user.workouts.forEach(workout => {
+      const __workout = workout.view.__workout();
+      __workout.addEventListener("click", () => workout.render.show(target));
+      render(__workout, target);
+    });
+    createRoute(`workouts("${pathName[1]}")`, `/workouts`);
   }
 }
 

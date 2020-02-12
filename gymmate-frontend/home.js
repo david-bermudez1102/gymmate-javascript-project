@@ -74,6 +74,7 @@ class HomeView {
       currentUser ? currentUser.accountView.profilePic() : "",
       this.homeLink(),
       isTrainer() ? this.routinesLink() : this.workoutsLink(),
+      isUser() ? this.completeLink() : "",
       this.profileLink()
     );
   }
@@ -119,8 +120,21 @@ class HomeView {
         id: "main_menu_workouts_link"
       },
       () => currentUser.render.workouts("#main_container"),
-      Elem.icon({class:"fad fa-dumbbell"}), 
+      Elem.icon({ class: "fad fa-dumbbell" }),
       " My Workouts"
+    );
+  }
+
+   completeLink() {
+    return Elem.link(
+      {
+        class: "nav-link",
+        "data-toggle": "pill",
+        id: "main_menu_complete_link"
+      },
+      () => currentUser.render.workouts("#main_container"),
+      Elem.icon({ class: "fas fa-flag-checkered" }),
+      " Complete"
     );
   }
 }
