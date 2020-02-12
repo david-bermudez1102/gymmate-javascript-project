@@ -21,3 +21,77 @@ class CompleteExercise {
     );
   }
 }
+
+//===============================================================================//
+
+class CompleteView {
+  constructor(complete) {
+    this._workout = complete;
+    this._form = CompleteForm.create(this);
+  }
+
+  static create(complete) {
+    return new CompleteView(complete);
+  }
+
+  get complete() {
+    return this._workout;
+  }
+
+  get form() {
+    return this._form;
+  }
+}
+
+//===============================================================================//
+
+class CompleteForm {
+  constructor(view) {
+    this._view = view;
+  }
+
+  static create(view) {
+    return new CompleteForm(view);
+  }
+
+  get view() {
+    return this._view;
+  }
+
+ 
+}
+
+//===============================================================================//
+
+class CompleteController {
+  constructor(complete) {
+    this._workout = complete;
+  }
+
+  static create(complete) {
+    return new CompleteController(complete);
+  }
+
+  get complete() {
+    return this._workout;
+  }
+
+ 
+}
+
+//===============================================================================//
+
+class CompleteRender {
+  constructor(complete) {
+    this._workout = complete;
+  }
+
+  static create(complete) {
+    return new CompleteRender(complete);
+  }
+
+  get complete() {
+    return this._workout;
+  }
+
+}
