@@ -45,11 +45,21 @@ class Workout {
   }
 
   get createdAt() {
-    return this._createdAt;
+    return new Date(this._createdAt).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
   }
 
   get updatedAt() {
-    return this._updatedAt;
+    return new Date(this._updatedAt).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
   }
 
   get view() {
@@ -131,7 +141,9 @@ class WorkoutView {
     const percentages = this.workout.program.exercises.map(exercise =>
       exercise.view.percentageComplete(this.completeExercise(exercise))
     );
-    return percentages.reduce((memo, val) => memo + val, 0) / percentages.length;
+    return (
+      percentages.reduce((memo, val) => memo + val, 0) / percentages.length
+    );
   }
 
   progress() {
@@ -209,6 +221,18 @@ class WorkoutView {
     );
   }
 
+  timestamps() {
+    return Elem.p(
+      {
+        class: "d-flex justify-content-between w-100",
+        style: "font-size: 14px;"
+      },
+      null,
+      Elem.span({}, null, `Created on ${this.program.createdAt}`),
+      Elem.span({}, null, `Updated on ${this.program.updatedAt}`)
+    );
+  }
+
   __workout() {
     return Elem.section(
       {
@@ -216,6 +240,7 @@ class WorkoutView {
           "order-1 text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light flex-wrap"
       },
       null,
+      this.timestamps(),
       this.title(),
       this.status(),
       this.info()
@@ -234,6 +259,7 @@ class WorkoutView {
       Elem.div(
         { class: "row" },
         null,
+        this.timestamps(),
         this.title(),
         this.options(),
         this.info()
