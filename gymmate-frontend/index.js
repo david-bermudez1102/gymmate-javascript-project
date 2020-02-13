@@ -67,11 +67,6 @@ class Article {
           <p class="text-light text-justify">
             “${content}”
           </p>
-          <footer class="blockquote-footer py-0">
-            <cite class="text-light">
-              ${citation}
-            </cite>
-          </footer>
         </blockquote>`;
     return article;
   }

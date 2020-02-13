@@ -10,33 +10,39 @@ class Grid {
   headerRow() {
     this.row.append(
       Column.new(
-        Section.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-1"
+          },
+          null,
           Article.new(
             "Create Routines",
-            "All the world's a stage, and all the men and women merely players.",
-            "William Shakespeare, As You Like It"
-          ),
-          "banner header-banner-1"
+            "All the world's a stage, and all the men and women merely players."
+          )
         )
       ),
       Column.new(
-        Section.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-2"
+          },
+          null,
           Article.new(
             "Article",
-            "All the world's a stage, and all the men and women merely players.",
-            "William Shakespeare, As You Like It"
-          ),
-          "banner header-banner-2"
+            "All the world's a stage, and all the men and women merely players."
+          )
         )
       ),
       Column.new(
-        Section.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-3"
+          },
+          null,
           Article.new(
             "Article",
-            "All the world's a stage, and all the men and women merely players.",
-            "William Shakespeare, As You Like It"
-          ),
-          "banner header-banner-3"
+            "All the world's a stage, and all the men and women merely players."
+          )
         )
       )
     );
@@ -46,7 +52,16 @@ class Grid {
 
   loginRow() {
     this.row.append(
-      Column.new(Section.new(Welcome.loginForm()), "col-md-4 mt-3 px-1"),
+      Column.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow "
+          },
+          null,
+          Welcome.loginForm()
+        ),
+        "col-md-4 mt-3 px-1"
+      ),
       Column.new(
         Welcome.card(
           "Login to retrieve your current workouts!",
@@ -68,7 +83,16 @@ class Grid {
         ),
         "col-md mt-4 mt-md-3 pr-1 pr-md-4 pl-1"
       ),
-      Column.new(Section.new(Welcome.signUpMenu()), "col-md-4 mt-3 px-1")
+      Column.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow "
+          },
+          null,
+          Welcome.signUpMenu()
+        ),
+        "col-md-4 mt-3 px-1"
+      )
     );
     this.row.id = "signup_row";
     return this.row;
@@ -78,12 +102,7 @@ class Grid {
     loadNavbar();
     this.row.append(
       Column.new(Layout.menu(), "col-sm-6 col-md-5 col-lg-3 d-flex"),
-      Column.new(
-        null,
-        "col-sm-6 col-md px-sm-1",
-        "",
-        "main_container"
-      )
+      Column.new(null, "col-sm-6 col-md px-sm-1", "", "main_container")
     );
     this.row.id = "home_row";
     return this.row;
@@ -126,7 +145,16 @@ class Grid {
 
   newProgramRow() {
     this.row.append(
-      Column.new(Section.new(currentUser.renderNewProgramForm()), "col-md")
+      Column.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow "
+          },
+          null,
+          currentUser.renderNewProgramForm()
+        ),
+        "col-md"
+      )
     );
     return this.row;
   }
@@ -157,9 +185,7 @@ class Grid {
   }
 
   showWorkoutExerciseHeaderRow(exercise) {
-    this.row.append(
-      Column.new(exercise.headerMenu(), "col-md pt-1")
-    );
+    this.row.append(Column.new(exercise.headerMenu(), "col-md pt-1"));
     this.row.id = `exercise_header_${exercise.id}`;
     return this.row;
   }
@@ -171,7 +197,16 @@ class Grid {
 
   newExerciseRow(program) {
     this.row.append(
-      Column.new(Section.new(program.renderNewExerciseForm()), "col-md")
+      Column.new(
+        Elem.section(
+          {
+            class: "text-left p-3 p-sm-5 rounded shadow "
+          },
+          null,
+          program.renderNewExerciseForm()
+        ),
+        "col-md"
+      )
     );
     return this.row;
   }

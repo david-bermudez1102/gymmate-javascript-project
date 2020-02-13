@@ -136,14 +136,52 @@ class AccountView {
     return label;
   }
 
+  username() {
+    return Elem.p(
+      { class: "display-4 text-primary", style:"font-size:32px" },
+      null,
+      Elem.icon({
+        class: "fas fa-user"
+      }),
+      ` @${this.account.username}`
+    );
+  }
+
+  bio() {
+    return Elem.h4(
+      {},
+      null,
+      Elem.span({ class: "text-primary bold" }, null, "Bio:"),
+      ` ${this.account.bio || "No information yet."}`
+    );
+  }
+
+  dateOfBirth() {
+    return Elem.h4(
+      {},
+      null,
+      Elem.span({ class: "text-primary bold" }, null, "Date of birth:"),
+      ` ${this.account.dateOfBirth || "No information yet."}`
+    );
+  }
+
+  sex() {
+    return Elem.h4(
+      {},
+      null,
+      Elem.span({ class: "text-primary bold" }, null, "Sex:"),
+      ` ${this.account.sex || "No information yet."}`
+    );
+  }
+
   info() {
     return Elem.div(
       { id: `account_${this.account.id}_info` },
       null,
-      Elem.p({}, null, `Username: ${this.account.username}`),
-      Elem.p({}, null, `Bio: ${this.account.bio}`),
-      Elem.p({}, null, `Date of birth: ${this.account.dateOfBirth}`),
-      Elem.p({}, null, `Sex: ${this.account.sex}`)
+      this.username(),
+      this.bio(),
+      this.dateOfBirth(),
+      this.sex()
     );
   }
 
