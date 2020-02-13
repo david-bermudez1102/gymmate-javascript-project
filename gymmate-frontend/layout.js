@@ -1,6 +1,6 @@
 class Layout {
   static navbar() {
-    const brand = Elem.h1({}, null, "Gymmate ", Icon.new("fas fa-bolt"));
+    const brand = Elem.h1({}, null, "Gymmate ", Elem.icon({class:"fas fa-bolt"}));
 
     return Elem.nav(
       { class: navbarClass },

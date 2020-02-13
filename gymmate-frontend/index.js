@@ -59,28 +59,6 @@ class Column {
   }
 }
 
-class Icon {
-  static new(className, style = null) {
-    const i = d.createElement("i");
-    i.className = className;
-    if (style) i.style = style;
-    return i;
-  }
-}
-
-class Section {
-  static new(child, className = null, handleOnClick = null) {
-    const section = d.createElement("section");
-    section.className = "text-left p-3 p-sm-5 rounded shadow ";
-    if (className) section.className += className;
-    section.addEventListener("click", e => {
-      if (handleOnClick) handleOnClick();
-    });
-    section.append(child);
-    return section;
-  }
-}
-
 class Article {
   static new(title, content, citation) {
     const article = d.createElement("article");
@@ -99,34 +77,12 @@ class Article {
   }
 }
 
-class H1 {
-  static new(title, className = "text-primary mb-4") {
-    const header = d.createElement("h1");
-    header.append(title);
-    header.className = className;
-    return header;
-  }
-}
-
 class Subtitle {
   static new(title, className = "text-primary mb-4 subtitle") {
     const subtitle = d.createElement("h5");
     subtitle.append(title);
     subtitle.className = className;
     return subtitle;
-  }
-}
-
-class Video {
-  static new(url, className = "embed-responsive embed-responsive-16by9") {
-    const video = d.createElement("video");
-    const source = d.createElement("source");
-    source.src = `${BASE_URL}${url}`;
-    source.className = "embed-responsive-item";
-    video.className = className;
-    video.controls = true;
-    video.append(source);
-    return video;
   }
 }
 

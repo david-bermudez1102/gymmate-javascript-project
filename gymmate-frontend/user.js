@@ -222,7 +222,7 @@ class UserRender {
   profile() {
     render(this.user.view.profile(), "main", true);
     this.workouts("main", false);
-    createRoute(`users("${pathName[1]}")`, `/users/${this.user.id}`);
+    createRoute(`users("${pathName[1]}")`, `/users/${this.user.userId}`);
   }
 
   workouts(target, remove = true) {
@@ -272,7 +272,7 @@ class UserForm {
 
 class UserController {
   constructor(user) {
-    this._trainer = user;
+    this._user = user;
   }
 
   static create(user) {
@@ -280,13 +280,13 @@ class UserController {
   }
 
   get user() {
-    return this._trainer;
+    return this._user;
   }
 
   create() {}
 
   show() {
-    return this.user.render.profile();
+    this.user.render.profile();
   }
 
   update() {}
