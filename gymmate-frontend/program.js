@@ -66,6 +66,24 @@ class Program {
     return this._render;
   }
 
+  set exercises(exercises) {
+    this._exercises = exercises;
+  }
+
+  duration() {
+    const allDurations = this.exercises.map(exercise =>
+      parseInt(exercise.duration())
+    );
+    return allDurations.reduce((memo, val) => memo + val, 0);
+  }
+
+  calories() {
+    const allCalories = this.exercises.map(exercise =>
+      parseInt(exercise.calories)
+    );
+    return allCalories.reduce((memo, val) => memo + val, 0);
+  }
+
   static create(trainer, json) {
     const program = new Program(
       json.id,
@@ -118,11 +136,68 @@ class ProgramView {
     );
   }
 
+  description() {
+    return Elem.p(
+      { class: "display-4 text-justify", style: "font-size:20px" },
+      null,
+      this.program.description
+    );
+  }
+
   options() {
     return isOwner(this.program.trainer)
       ? this.program.trainer.accountView.options(
           this.program,
           "#main_container"
+        )
+      : "";
+  }
+
+  duration() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-clock" }),
+      ` ${this.program.duration()} mins`
+    );
+  }
+
+  calories() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-fire" }),
+      ` ${this.program.calories()}`
+    );
+  }
+
+  totalExercises() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-running" }),
+      ` ${this.program.exercises.length}`
+    );
+  }
+
+  info() {
+    return Elem.p(
+      { class: "d-flex w-100 justify-content-between mt-4 order-2" },
+      null,
+      this.totalExercises(),
+      this.duration(),
+      this.calories()
+    );
+  }
+
+  addWorkoutBtn() {
+    return isUser()
+      ? Elem.span(
+          { class: "text-right col-xl-3 order-2 p-0 m-0" },
+          null,
+          isUser() && !currentUser.hasWorkout(this.program)
+            ? this.form.addWorkout()
+            : ""
         )
       : "";
   }
@@ -137,15 +212,8 @@ class ProgramView {
       null,
       this.title(),
       this.options(),
-      isUser()
-        ? Elem.span(
-            { class: "text-right col-xl-3 order-2 p-0 m-0" },
-            null,
-            isUser() && !currentUser.hasWorkout(this.program)
-              ? this.form.addWorkout()
-              : ""
-          )
-        : ""
+      this.info(),
+      this.addWorkoutBtn()
     );
   }
 
@@ -176,7 +244,7 @@ class ProgramView {
       null,
       Elem.div({ class: "row" }, null, this.title(), this.options()),
       Subtitle.new(`By ${this.program.trainer.fullName}`),
-      Elem.div({ class: "display-4" }, null, this.program.description),
+      this.description(),
       Elem.video(this.program.video),
       this.addExerciseBtn(),
       isUser() ? this.form.addWorkout() : ""
@@ -261,7 +329,7 @@ class ProgramForm {
             class: "form-control pl-5",
             name: "program[description]",
             placeholder: "Enter a brief description for your program...",
-            maxlength: 140,
+            maxlength: 500,
             "data-alert": "Enter a description. Max 140 characters.",
             required: true
           },
@@ -395,6 +463,13 @@ class ProgramRender {
     render(program, target, remove);
   }
 
+  all(target) {
+    removeAll(target);
+    this.program.exercises.forEach(exercise =>
+      exercise.render.__exercise(target)
+    );
+  }
+
   show(target) {
     render(this.program.view.show(), target, true);
     render(this.program.view.exercisesCount(), target);
@@ -440,7 +515,7 @@ class ProgramController {
         trainer.programs.find(p => p.id === program.id),
         program
       );
-      program.render.__program("#main_container");
+      program.render.show("#main_container");
       currentUser = trainer;
     }
   }

@@ -204,7 +204,7 @@ class ExerciseView {
 
   description() {
     return Elem.p(
-      { class: "display-4 mt-2", style: "font-size:32px;" },
+      { class: "d-flex display-4 mt-4 text-justify", style: "font-size:20px;" },
       null,
       this.exercise.description
     );
@@ -321,8 +321,8 @@ class ExerciseForm {
             name: "exercise[description]",
             placeholder: "Enter a description for this exercise...",
             class: "form-control pl-5 rounded",
-            maxlength: "140",
-            "data-alert": "Between 20 - 140 characters",
+            maxlength: "500",
+            "data-alert": "Between 100 - 500 characters",
             required: true
           },
           null,
