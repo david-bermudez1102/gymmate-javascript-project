@@ -211,10 +211,10 @@ class Layout {
 
   static error(json, target) {
     console.log(json);
-    const errorsList = List.new();
+    const errorsList = Elem.li({}, null);
     json.errors.forEach(error => errorsList.append(Elem.li({}, null,error)));
     if (d.querySelector(".alert")) d.querySelector(".alert").remove();
-    target.prepend(Div.new("alert alert-danger", undefined, errorsList));
+    target.prepend(Elem.div({class:"alert alert-danger"}, null, errorsList));
     target
       .querySelectorAll("input")
       .forEach(input => (input.className += " is-invalid"));

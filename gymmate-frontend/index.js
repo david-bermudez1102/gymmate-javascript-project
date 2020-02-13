@@ -12,7 +12,6 @@ class TextArea {
   }
 }
 
-
 class FormGroup {
   static new(
     input,
@@ -34,7 +33,9 @@ class FormGroup {
     }
     const inputColumn = Column.new(input, "col col-sm-12");
     if (input.dataset.alert)
-      inputColumn.append(Div.new("invalid-tooltip", null, input.dataset.alert));
+      inputColumn.append(
+        Elem.div({ class: "invalid-tooltip" }, null, input.dataset.alert)
+      );
     div.append(inputColumn);
     return div;
   }

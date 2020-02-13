@@ -302,7 +302,7 @@ class AccountForm {
 
   signup() {
     return Elem.form(
-      { id: "new_user", method: "POST", novalidate: "true" },
+      { id: "new_user", method: "POST", novalidate: "novalidate" },
       json => setSession(json),
       FormGroup.new(
         Elem.input({
@@ -314,7 +314,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your name requires minimum 3 characters."
         }),
-        Icon.new("fas fa-user")
+        Elem.icon({class:"fas fa-user"})
       ),
       FormGroup.new(
         Elem.input({
@@ -326,7 +326,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your lastname requires minimum 3 characters."
         }),
-        Icon.new("fas fa-user")
+        Elem.icon({class:"fas fa-user"})
       ),
       FormGroup.new(
         Elem.input({
@@ -338,7 +338,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your username requires at least 6 characters."
         }),
-        Icon.new("fas fa-at")
+        Elem.icon({class:"fas fa-at"})
       ),
       FormGroup.new(
         Elem.input({
@@ -349,7 +349,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Please provide a valid email."
         }),
-        Icon.new("fas fa-envelope")
+        Elem.icon({class:"fas fa-envelope"})
       ),
       FormGroup.new(
         Elem.input({
@@ -361,7 +361,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your password requires minimum 6 characters."
         }),
-        Icon.new("fas fa-lock")
+        Elem.icon({class:"fas fa-lock"})
       ),
       FormGroup.new(
         Elem.input(
@@ -370,8 +370,7 @@ class AccountForm {
             id: "create_user",
             value: "Sign Up",
             class: "btn btn-block btn-primary border-0 shadow rounded-pill"
-          },
-          () => stopPropagation()
+          }
         )
       )
     );

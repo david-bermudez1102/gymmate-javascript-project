@@ -33,7 +33,7 @@ class Elem {
 
         !elem.dataset.target ? (target = elem) : (target = elem.dataset.target);
 
-        if (!method === "GET") elem.classList.add("was-validated");
+        if (method !== "GET") elem.classList.add("was-validated");
         const formData = new FormData(elem);
         if (elem.checkValidity() === true) {
           method === "GET"
