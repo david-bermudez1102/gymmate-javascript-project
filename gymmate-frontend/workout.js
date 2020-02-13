@@ -141,11 +141,10 @@ class WorkoutView {
     const percentages = this.workout.program.exercises.map(exercise =>
       exercise.view.percentageComplete(this.completeExercise(exercise))
     );
-    return (
+    return Math.round(
       percentages.reduce((memo, val) => memo + val, 0) / percentages.length
     );
-  }
-
+    }
   progress() {
     return isUser()
       ? Elem.span(
@@ -228,8 +227,16 @@ class WorkoutView {
         style: "font-size: 14px;"
       },
       null,
-      Elem.span({}, null, `Created on ${this.program.createdAt}`),
-      Elem.span({}, null, `Updated on ${this.program.updatedAt}`)
+      Elem.span({}, null, `Created on ${this.workout.createdAt}`),
+      Elem.span(
+        {},
+        null,
+        this.workout.completeExercises.length > 0
+          ? `Updated on ${
+              this.workout.completeExercises.slice(-1)[0].updatedAt
+            }`
+          : `Updated on ${this.workout.updatedAt}`
+      )
     );
   }
 
@@ -362,7 +369,6 @@ class WorkoutView {
       this.completeExercise(exercise)
         ? this.completeExercise(exercise).controller.update()
         : this.workout.controller.createComplete(exercise);
-      this.workout.render.rest(exercise);
     }
   }
 
@@ -442,6 +448,15 @@ class WorkoutForm {
     );
     return mutedContainer;
   }
+
+  completeWorkout() {
+     const formData = new FormData();
+     const data = {
+       complete: true
+     };
+     Object.keys(data).forEach(key => formData.append(key, data[key]));
+     return formData;
+  }
 }
 
 //===============================================================================//
@@ -497,6 +512,23 @@ class WorkoutController {
       target
     ).submit();
   }
+
+  completeWorkout(target) {
+    new Fetch(
+      this.workout.view.form.completeWorkout(),
+      "PATCH",
+      `${WORKOUTS_URL}/${this.workout.id}`,
+      json => {
+        const user = Object.assign(new User(), currentUser);
+        const workout = user.workouts.find(
+          workout => workout.id === this.workout.id
+        );
+        workout.complete = json.complete
+        currentUser = user;
+      },
+      target
+    ).submit();
+  }
 }
 
 //===============================================================================//
@@ -546,7 +578,6 @@ class WorkoutRender {
   rest(exercise) {
     const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
     if (
-      this.workout.view.completeExercise(exercise) &&
       this.workout.view.completeExercise(exercise).sets < exercise.sets
     ) {
       exerciseContainer.append(Layout.counter(30));

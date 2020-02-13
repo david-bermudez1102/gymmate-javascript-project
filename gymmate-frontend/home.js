@@ -145,7 +145,7 @@ class HomeView {
         "data-toggle": "pill",
         id: "main_menu_complete_link"
       },
-      () => currentUser.render.workouts("#main_container"),
+      () => currentUser.render.completeWorkouts("#main_container"),
       Elem.icon({ class: "fas fa-flag-checkered" }),
       " Complete"
     );

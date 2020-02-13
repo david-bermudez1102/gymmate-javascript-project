@@ -234,6 +234,17 @@ class UserRender {
     });
     createRoute(`workouts("${pathName[1]}")`, `/workouts`);
   }
+
+  completeWorkouts(target, remove = true) {
+    if (remove) removeAll(d.querySelector(target));
+    const workouts = this.user.workouts.filter(workout => workout.complete);
+    workouts.forEach(workout => {
+      const __workout = workout.view.__workout();
+      __workout.addEventListener("click", () => workout.render.show(target));
+      render(__workout, target);
+    });
+    createRoute(`workouts("${pathName[1]}")`, `/workouts/complete`);
+  }
 }
 
 class UserForm {

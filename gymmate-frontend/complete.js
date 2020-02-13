@@ -1,9 +1,11 @@
 class CompleteExercise {
-  constructor(id, workoutId, exerciseId, sets) {
+  constructor(id, workoutId, exerciseId, sets, createdAt, updatedAt) {
     this._id = id;
     this._workoutId = workoutId;
     this._exerciseId = exerciseId;
     this._sets = sets;
+    this._createdAt = createdAt;
+    this._updatedAt = updatedAt;
     this._view = CompleteView.create(this);
     this._controller = CompleteController.create(this);
     this._render = CompleteRender.create(this);
@@ -18,6 +20,24 @@ class CompleteExercise {
 
   get exerciseId() {
     return this._exerciseId;
+  }
+
+  get createdAt() {
+    return new Date(this._createdAt).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  }
+
+  get updatedAt() {
+    return new Date(this._updatedAt).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
   }
 
   get sets() {
@@ -41,7 +61,9 @@ class CompleteExercise {
       completeExercise.id,
       completeExercise.workout_id,
       completeExercise.exercise_id,
-      completeExercise.sets
+      completeExercise.sets,
+      completeExercise.created_at,
+      completeExercise.updated_at
     );
   }
 }
@@ -127,7 +149,6 @@ class CompleteController {
           exercise => exercise.id === this.complete.exerciseId
         );
         workout.completeExercises.push(CompleteExercise.create(json));
-        
         currentUser = user;
         this.complete.render.stats(workout, exercise);
       }
@@ -185,7 +206,9 @@ class CompleteRender {
     const __exercise = d.querySelector(`#exercise_${exercise.id}`);
     __exercise
       .querySelector(`#exercise_progress_${exercise.id}`)
-      .replaceWith(exercise.view.progress(exercise));
+      .replaceWith(
+        exercise.view.progress(workout.view.completeExercise(exercise))
+      );
   }
 
   caloriesBurnt(workout, exercise) {
@@ -196,8 +219,15 @@ class CompleteRender {
   }
 
   stats(workout, exercise) {
-    this.sets(workout, exercise)
-    this.progress(workout, exercise)
-    this.caloriesBurnt(workout, exercise)
+    this.sets(workout, exercise);
+    this.progress(workout, exercise);
+    this.caloriesBurnt(workout, exercise);
+    if (
+      workout.view.percentageComplete() === 100 &&
+      !workout.complete &&
+      isOwner(workout.user)
+    )
+      workout.controller.completeWorkout("#main_container");
+    workout.render.rest(exercise);
   }
 }
