@@ -17,7 +17,7 @@ class Grid {
           null,
           Article.new(
             "Create Routines",
-            "All the world's a stage, and all the men and women merely players."
+            "Success isn’t always about greatness. It’s about consistency. Consistent hard work gains success. Greatness will come."
           )
         )
       ),
@@ -28,8 +28,8 @@ class Grid {
           },
           null,
           Article.new(
-            "Article",
-            "All the world's a stage, and all the men and women merely players."
+            "Train like a pro",
+            "Of course it’s hard. It’s supposed to be hard. It it were easy, everybody would do it. Hard is what makes it great."
           )
         )
       ),
@@ -40,7 +40,7 @@ class Grid {
           },
           null,
           Article.new(
-            "Article",
+            "Track your workouts",
             "All the world's a stage, and all the men and women merely players."
           )
         )
@@ -95,119 +95,6 @@ class Grid {
       )
     );
     this.row.id = "signup_row";
-    return this.row;
-  }
-
-  homeRow() {
-    loadNavbar();
-    this.row.append(
-      Column.new(Layout.menu(), "col-sm-6 col-md-5 col-lg-3 d-flex"),
-      Column.new(null, "col-sm-6 col-md px-sm-1", "", "main_container")
-    );
-    this.row.id = "home_row";
-    return this.row;
-  }
-
-  showProfileRow(account) {
-    this.row.append(
-      Column.new(account.profilePic(), "col-md-3 d-flex justify-content-left"),
-      Column.new(account.info(), "col-md d-flex justify-content-left")
-    );
-    return this.row;
-  }
-
-  programRow(program, target) {
-    this.row.append(
-      Column.new(
-        program.program(target),
-        "col-md d-flex justify-content-center"
-      )
-    );
-    return this.row;
-  }
-
-  workoutRow(workout, target) {
-    this.row.append(
-      Column.new(
-        workout.workout(target),
-        "col-md d-flex justify-content-center"
-      )
-    );
-    return this.row;
-  }
-
-  workoutExerciseRow(workout, exercise, target) {
-    this.row.append(
-      Column.new(workout.exercise(exercise, target), "col-md pt-1")
-    );
-    return this.row;
-  }
-
-  newProgramRow() {
-    this.row.append(
-      Column.new(
-        Elem.section(
-          {
-            class: "text-left p-3 p-sm-5 rounded shadow "
-          },
-          null,
-          currentUser.renderNewProgramForm()
-        ),
-        "col-md"
-      )
-    );
-    return this.row;
-  }
-
-  showProgramRow(program, target) {
-    new Promise(res => {
-      res(this.row.append(Column.new(program.show(target), "col-md pt-1")));
-    }).then(() => {
-      program.allExercises(target);
-    });
-    return this.row;
-  }
-
-  showWorkoutRow(workout, target) {
-    new Promise(res => {
-      res(this.row.append(Column.new(workout.show(target), "col-md pt-1")));
-    }).then(() => {
-      workout.allExercises(target);
-    });
-    return this.row;
-  }
-
-  showWorkoutExerciseRow(workout, exercise, target) {
-    this.row.append(
-      Column.new(workout.showExercise(exercise, target), "col-md pt-1")
-    );
-    return this.row;
-  }
-
-  showWorkoutExerciseHeaderRow(exercise) {
-    this.row.append(Column.new(exercise.headerMenu(), "col-md pt-1"));
-    this.row.id = `exercise_header_${exercise.id}`;
-    return this.row;
-  }
-
-  showExerciseRow(exercise, target) {
-    this.row.append(Column.new(exercise.show(), "col-md pt-1"));
-    return this.row;
-  }
-
-  newExerciseRow(program) {
-    this.row.append(
-      Column.new(
-        Elem.section(
-          {
-            class: "text-left p-3 p-sm-5 rounded shadow "
-          },
-          null,
-          program.renderNewExerciseForm()
-        ),
-        "col-md"
-      )
-    );
     return this.row;
   }
 }
