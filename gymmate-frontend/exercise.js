@@ -308,7 +308,8 @@ class ExerciseForm {
           name: "exercise[title]",
           placeholder: "Enter a title for this exercise...",
           class: "form-control pl-5 rounded-pill",
-          value: this.exercise.title || ""
+          value: this.exercise.title || "",
+          required: true
         }),
         Elem.icon({ class: "fas fa-heading" })
       ),
@@ -317,7 +318,9 @@ class ExerciseForm {
           {
             name: "exercise[description]",
             placeholder: "Enter a description for this exercise...",
-            class: "form-control pl-5 rounded"
+            class: "form-control pl-5 rounded",
+            maxlength: "140",
+            required: true
           },
           null,
           this.exercise.description || ""
@@ -330,8 +333,11 @@ class ExerciseForm {
           type: "number",
           name: "exercise[sets]",
           placeholder: "How many sets?...",
+          min: 3,
+          max: 15,
           class: "form-control pl-5 rounded-pill",
-          value: this.exercise.sets || ""
+          value: this.exercise.sets || "",
+          required: true
         }),
         Elem.icon({ class: "fas fa-cog" })
       ),
@@ -340,23 +346,30 @@ class ExerciseForm {
           type: "number",
           name: "exercise[repetitions]",
           placeholder: "How many reps?...",
+          min: 5,
+          max: 30,
           class: "form-control pl-5 rounded-pill",
-          value: this.exercise.repetitions || ""
+          value: this.exercise.repetitions || "",
+          required: true
         }),
         Elem.icon({ class: "fas fa-repeat", title: "Repetitions" })
       ),
       Elem.input({
         type: "hidden",
         name: "exercise[program_id]",
-        value: this.exercise.program.id
+        value: this.exercise.program.id,
+        required: true
       }),
       FormGroup.new(
         Elem.input({
           type: "number",
           name: "exercise[calories]",
           placeholder: "Calories this exercise will burn (aprox.)?...",
+          min: 100,
+          max: 500,
           class: "form-control pl-5 rounded-pill",
-          value: this.exercise.calories || ""
+          value: this.exercise.calories || "",
+          required: true
         }),
         Elem.icon({ class: "fas fa-fire", title: "Repetitions" })
       ),
@@ -365,8 +378,11 @@ class ExerciseForm {
           type: "number",
           name: "exercise[rest]",
           placeholder: "Rest time between sets. (Max 60 seconds).",
+          min: 10,
+          max: 60,
           class: "form-control pl-5 rounded-pill",
-          value: this.exercise.rest || ""
+          value: this.exercise.rest || "",
+          required: true
         }),
         Elem.icon({ class: "fas fa-clock", title: "Repetitions" })
       ),
