@@ -172,3 +172,4 @@ const isUser = () => currentUser instanceof User;
 const isTrainer = () => currentUser instanceof Trainer;
 
 const isOwner = account => currentUser.id === account.id;
+

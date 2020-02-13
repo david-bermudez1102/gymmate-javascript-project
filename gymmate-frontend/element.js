@@ -9,62 +9,6 @@ class Elem {
     return elem;
   }
 
-  static handleOnclick(
-    elem,
-    handleOnclick,
-    preventDefault = true,
-    stopPropagation = true
-  ) {
-    return elem.addEventListener("click", e => {
-      if (handleOnclick) handleOnclick();
-      if (preventDefault) e.preventDefault();
-      if (stopPropagation) e.stopPropagation();
-    });
-  }
-
-  static handleOnsubmit(elem, method, handleOnsubmit) {
-    return elem.addEventListener(
-      "submit",
-      e => {
-        let action, target;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        !elem.dataset.target ? (target = elem) : (target = elem.dataset.target);
-
-        if (method !== "GET") elem.classList.add("was-validated");
-        const formData = new FormData(elem);
-        if (elem.checkValidity() === true) {
-          method === "GET"
-            ? (action =
-                elem.action + `/?${new URLSearchParams(formData).toString()}`)
-            : (action = elem.action);
-
-          if (method !== "GET") {
-            new Fetch(
-              formData,
-              method,
-              action,
-              handleOnsubmit,
-              target
-            ).submit();
-          } else {
-            new Fetch(
-              formData,
-              method,
-              action,
-              handleOnsubmit,
-              target
-            ).request();
-          }
-          if (method !== "GET") e.target.reset();
-        }
-      },
-      false
-    );
-  }
-
   static label(attributes, handleOnclick, ...append) {
     const elem = this.create("label", attributes, ...append);
     this.handleOnclick(elem, handleOnclick, false, false);
@@ -209,6 +153,62 @@ class Elem {
 
   static html(string) {
     return new DOMParser().parseFromString(string, "text/html").body.firstChild;
+  }
+
+  static handleOnclick(
+    elem,
+    handleOnclick,
+    preventDefault = true,
+    stopPropagation = true
+  ) {
+    return elem.addEventListener("click", e => {
+      if (handleOnclick) handleOnclick();
+      if (preventDefault) e.preventDefault();
+      if (stopPropagation) e.stopPropagation();
+    });
+  }
+
+  static handleOnsubmit(elem, method, handleOnsubmit) {
+    return elem.addEventListener(
+      "submit",
+      e => {
+        let action, target;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        !elem.dataset.target ? (target = elem) : (target = elem.dataset.target);
+
+        if (method !== "GET") elem.classList.add("was-validated");
+        const formData = new FormData(elem);
+        if (elem.checkValidity() === true) {
+          method === "GET"
+            ? (action =
+                elem.action + `/?${new URLSearchParams(formData).toString()}`)
+            : (action = elem.action);
+
+          if (method !== "GET") {
+            new Fetch(
+              formData,
+              method,
+              action,
+              handleOnsubmit,
+              target
+            ).submit();
+          } else {
+            new Fetch(
+              formData,
+              method,
+              action,
+              handleOnsubmit,
+              target
+            ).request();
+          }
+          if (method !== "GET") e.target.reset();
+        }
+      },
+      false
+    );
   }
 
   static prompt(title, body, confirmBtnValue, dismissBtnValue) {

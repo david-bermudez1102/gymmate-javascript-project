@@ -187,7 +187,7 @@ class AccountView {
 
   options(content, target) {
     const optionsClassName =
-      "col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between";
+      "col-xl-3 col-lg-2 d-flex align-items-center order-1 order-sm-1 order-md-1 order-lg-2 justify-content-between";
     return Elem.div(
       { class: optionsClassName },
       null,
@@ -227,12 +227,12 @@ class AccountView {
       {
         class: "text-light",
         "data-toggle": "tooltip",
-        "data-placement": "top",
-        title: "Edit This Routine"
+        title: "Edit This Routine",
+        onclick: "$(this).tooltip('hide');"
       },
       () => {
-        content.render.editRow(target);
         window.event.stopPropagation();
+        content.render.editRow(target);
       },
       Elem.icon({ class: "fas fa-pen" })
     );

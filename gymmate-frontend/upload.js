@@ -1,6 +1,6 @@
 const fileUploader = (name, video) => {
   let preview = false;
-  if (video) preview = Video.new(video);
+  if (video) preview = Elem.video(video);
   const file = Elem.input({
     type: "file",
     id:"new_video",

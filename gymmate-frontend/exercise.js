@@ -92,7 +92,7 @@ class ExerciseView {
   title() {
     return Elem.span(
       {
-        class: "col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+        class: "col-xl-9 col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
         style: "font-size: 40px;"
       },
       null,
@@ -233,12 +233,6 @@ class ExerciseView {
     );
   }
 
-  caloriesBurnt() {
-    const calories = Span.new(null, "display-4");
-    calories.append(Icon.new("fas fa-fire"), ` 250`);
-    return calories;
-  }
-
   exerciseFormRow(form) {
     return Elem.div(
       { class: "row" },
@@ -295,14 +289,12 @@ class ExerciseForm {
         Elem.icon({ class: "fas fa-heading" })
       ),
       FormGroup.new(
-        Elem.input({
-          type: "text",
+        Elem.textArea({
           name: "exercise[description]",
-          placeholder: "Enter a title for this exercise...",
-          class: "form-control pl-5 rounded-pill",
-          value: this.exercise.description || ""
-        }),
-        Elem.icon({ class: "fas fa-heading" })
+          placeholder: "Enter a description for this exercise...",
+          class: "form-control pl-5 rounded"
+        }, null, this.exercise.description || ""),
+        Elem.icon({ class: "fas fa-quote-left" })
       ),
       fileUploader("exercise[video]", this.exercise.video),
       FormGroup.new(
@@ -313,7 +305,7 @@ class ExerciseForm {
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.sets || ""
         }),
-        Icon.new("fas fa-envelope")
+        Elem.icon({ class: "fas fa-cog" })
       ),
       FormGroup.new(
         Elem.input({
@@ -323,7 +315,7 @@ class ExerciseForm {
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.repetitions || ""
         }),
-        Icon.new("fas fa-envelope")
+        Elem.icon({ class: "fas fa-repeat", title:"Repetitions" })
       ),
       Elem.input({
         type: "hidden",
@@ -409,7 +401,6 @@ class ExerciseController {
 
   show() {
     this.exercise.render.show();
-    createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 
   createExercise(json) {
@@ -501,5 +492,6 @@ class ExerciseRender {
   show(target) {
     this.exercise.program.render.__program(target, true);
     render(this.exercise.view.show(), target, false);
+    createRoute("exercise()", `/exercises/${this.exercise.id}`);
   }
 }
