@@ -1,11 +1,23 @@
 class Exercise {
-  constructor(id, title, description, sets, repetitions, video, program) {
+  constructor(
+    id,
+    title,
+    description,
+    sets,
+    repetitions,
+    video,
+    calories,
+    rest,
+    program
+  ) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._sets = sets;
     this._repetitions = repetitions;
     this._video = video;
+    this._calories = calories;
+    this._rest = rest;
     this._program = program;
     this._view = ExerciseView.create(this);
     this._controller = ExerciseController.create(this);
@@ -36,6 +48,14 @@ class Exercise {
     return this._video;
   }
 
+  get calories() {
+    return this._calories;
+  }
+
+  get rest() {
+    return this._rest;
+  }
+
   get program() {
     return this._program;
   }
@@ -60,6 +80,8 @@ class Exercise {
       json.sets,
       json.repetitions,
       json.video,
+      json.calories,
+      json.rest,
       program
     );
   }
@@ -92,7 +114,8 @@ class ExerciseView {
   title() {
     return Elem.span(
       {
-        class: "col-xl-9 col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+        class:
+          "col-xl-9 col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
         style: "font-size: 40px;"
       },
       null,
@@ -289,11 +312,15 @@ class ExerciseForm {
         Elem.icon({ class: "fas fa-heading" })
       ),
       FormGroup.new(
-        Elem.textArea({
-          name: "exercise[description]",
-          placeholder: "Enter a description for this exercise...",
-          class: "form-control pl-5 rounded"
-        }, null, this.exercise.description || ""),
+        Elem.textArea(
+          {
+            name: "exercise[description]",
+            placeholder: "Enter a description for this exercise...",
+            class: "form-control pl-5 rounded"
+          },
+          null,
+          this.exercise.description || ""
+        ),
         Elem.icon({ class: "fas fa-quote-left" })
       ),
       fileUploader("exercise[video]", this.exercise.video),
@@ -315,13 +342,33 @@ class ExerciseForm {
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.repetitions || ""
         }),
-        Elem.icon({ class: "fas fa-repeat", title:"Repetitions" })
+        Elem.icon({ class: "fas fa-repeat", title: "Repetitions" })
       ),
       Elem.input({
         type: "hidden",
         name: "exercise[program_id]",
         value: this.exercise.program.id
       }),
+      FormGroup.new(
+        Elem.input({
+          type: "number",
+          name: "exercise[calories]",
+          placeholder: "Calories this exercise will burn (aprox.)?...",
+          class: "form-control pl-5 rounded-pill",
+          value: this.exercise.calories || ""
+        }),
+        Elem.icon({ class: "fas fa-fire", title: "Repetitions" })
+      ),
+      FormGroup.new(
+        Elem.input({
+          type: "number",
+          name: "exercise[rest]",
+          placeholder: "Rest time between sets. (Max 60 seconds).",
+          class: "form-control pl-5 rounded-pill",
+          value: this.exercise.rest || ""
+        }),
+        Elem.icon({ class: "fas fa-clock", title: "Repetitions" })
+      ),
       Elem.input(
         {
           name: "submit",
