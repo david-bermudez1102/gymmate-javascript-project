@@ -12,36 +12,41 @@ class Grid {
       Column.new(
         Elem.section(
           {
-            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-1"
+            class:
+              "text-left p-3 p-sm-5 rounded shadow banner header-banner-1 h-100"
           },
           null,
           Article.new(
             "Create Routines",
-            "Success isn’t always about greatness. It’s about consistency. Consistent hard work gains success. Greatness will come."
+            "When people tell me they can't afford to join a gym, I tell them to go outside; planet Earth is a gym and we're already members. Run, climb, sweat, and enjoy all of the natural wonders that are available to you.",
+            "Steve Maraboli"
           )
         )
       ),
       Column.new(
         Elem.section(
           {
-            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-2"
+            class:
+              "text-left p-3 p-sm-5 rounded shadow banner header-banner-2 h-100"
           },
           null,
           Article.new(
             "Train like a pro",
-            "Of course it’s hard. It’s supposed to be hard. It it were easy, everybody would do it. Hard is what makes it great."
+            "Pain is temporary. It may last a minute, or an hour, or a day, or a year, but eventually it will subside and something else will take its place. If you quit, however, it lasts forever.",
+            "Lance Armstrong"
           )
         )
       ),
       Column.new(
         Elem.section(
           {
-            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-3"
+            class: "text-left p-3 p-sm-5 rounded shadow banner header-banner-3 h-100"
           },
           null,
           Article.new(
             "Track your workouts",
-            "All the world's a stage, and all the men and women merely players."
+            "The resistance that you fight physically in the gym and the resistance that you fight in life can only build a strong character.",
+            "Arnold Schwarzenegger"
           )
         )
       )

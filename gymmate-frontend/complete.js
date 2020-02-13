@@ -123,10 +123,13 @@ class CompleteController {
         const workout = user.workouts.find(
           workout => workout.id === this.complete.workoutId
         );
+        const exercise = workout.program.exercises.find(
+          exercise => exercise.id === this.complete.exerciseId
+        );
         workout.completeExercises.push(CompleteExercise.create(json));
-
+        
         currentUser = user;
-        console.log(json);
+        this.complete.render.stats(workout, exercise);
       }
     ).submit();
   }
@@ -150,8 +153,7 @@ class CompleteController {
           ),
           CompleteExercise.create(json)
         );
-        this.complete.render.sets(workout, exercise)
-        this.complete.render.progress(workout, exercise);
+        this.complete.render.stats(workout, exercise);
       }
     ).submit();
   }
@@ -183,6 +185,19 @@ class CompleteRender {
     const __exercise = d.querySelector(`#exercise_${exercise.id}`);
     __exercise
       .querySelector(`#exercise_progress_${exercise.id}`)
-      .replaceWith(workout.view.progress(exercise));
+      .replaceWith(exercise.view.progress(exercise));
+  }
+
+  caloriesBurnt(workout, exercise) {
+    const __exercise = d.querySelector(`#exercise_${exercise.id}`);
+    __exercise
+      .querySelector(`#exercise_burnt_${exercise.id}`)
+      .replaceWith(workout.view.caloriesBurnt(exercise));
+  }
+
+  stats(workout, exercise) {
+    this.sets(workout, exercise)
+    this.progress(workout, exercise)
+    this.caloriesBurnt(workout, exercise)
   }
 }

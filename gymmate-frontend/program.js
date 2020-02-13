@@ -212,8 +212,8 @@ class ProgramView {
       null,
       this.title(),
       this.options(),
-      this.info(),
-      this.addWorkoutBtn()
+      this.addWorkoutBtn(),
+      this.info()
     );
   }
 
@@ -242,7 +242,7 @@ class ProgramView {
         id: `program_${this.program.id}`
       },
       null,
-      Elem.div({ class: "row" }, null, this.title(), this.options()),
+      Elem.div({ class: "row" }, null, this.title(), this.options(), this.info()),
       Subtitle.new(`By ${this.program.trainer.fullName}`),
       this.description(),
       Elem.video(this.program.video),

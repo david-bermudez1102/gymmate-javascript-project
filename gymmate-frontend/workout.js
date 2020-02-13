@@ -131,7 +131,7 @@ class WorkoutView {
     const percentages = this.workout.program.exercises.map(exercise =>
       exercise.view.percentageComplete(this.completeExercise(exercise))
     );
-    return percentages.reduce((memo, val) => memo + val);
+    return percentages.reduce((memo, val) => memo + val, 0) / percentages.length;
   }
 
   progress() {
@@ -172,15 +172,53 @@ class WorkoutView {
       : "";
   }
 
-  __workout(target) {
+  duration() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-clock" }),
+      ` ${this.workout.program.duration()} mins`
+    );
+  }
+
+  calories() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-fire" }),
+      ` ${this.workout.program.calories()}`
+    );
+  }
+
+  totalExercises() {
+    return Elem.h2(
+      {},
+      null,
+      Elem.icon({ class: "fas fa-running" }),
+      ` ${this.workout.program.exercises.length}`
+    );
+  }
+
+  info() {
+    return Elem.p(
+      { class: "d-flex w-100 justify-content-between mt-4 order-2" },
+      null,
+      this.totalExercises(),
+      this.duration(),
+      this.calories()
+    );
+  }
+
+  __workout() {
     return Elem.section(
       {
         class:
-          "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light"
+          "order-1 text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light flex-wrap"
       },
       null,
       this.title(),
-      this.status()
+      this.status(),
+      this.info()
     );
   }
 
@@ -193,9 +231,15 @@ class WorkoutView {
         id: `workout_${this.workout.id}`
       },
       null,
-      Elem.div({ class: "row" }, null, this.title(), this.options()),
+      Elem.div(
+        { class: "row" },
+        null,
+        this.title(),
+        this.options(),
+        this.info()
+      ),
       Subtitle.new(`By ${this.workout.program.trainer.fullName}`),
-      Elem.div({ class: "display-4" }, null, this.workout.program.description),
+      this.workout.program.view.description(),
       Elem.video(this.workout.program.video),
       isUser() && !isOwner(this.workout.user)
         ? this.workout.program.form.startProgramBtn()
@@ -233,17 +277,36 @@ class WorkoutView {
     );
   }
 
+  caloriesBurnt(exercise) {
+    return Elem.h2(
+      { id: `exercise_burnt_${exercise.id}` },
+      null,
+      Elem.icon({ class: "fas fa-fire" }),
+      this.completeExercise(exercise)
+        ? ` ${Math.round(
+            (exercise.calories / exercise.sets) *
+              this.completeExercise(exercise).sets
+          )}`
+        : ` 0`
+    );
+  }
+
   exerciseInfo(exercise) {
     return Elem.p(
-      { class: "d-flex w-100 justify-content-between my-4" },
+      {
+        class: "d-flex w-100 justify-content-between my-4 display-4",
+        style: "font-size:30px;"
+      },
       null,
-      this.sets(exercise)
+      "Current progress:",
+      this.sets(exercise),
+      this.caloriesBurnt(exercise)
     );
   }
 
   __exercise(exercise) {
     const __exercise = exercise.view.__exercise();
-    __exercise.append(exercise.view.progress(this.completeExercise(exercise)));
+    __exercise.prepend(exercise.view.progress(this.completeExercise(exercise)));
     return __exercise;
   }
 
@@ -251,7 +314,7 @@ class WorkoutView {
     const __exercise = this.__exercise(exercise);
     __exercise.append(this.form.startExercise(exercise));
     __exercise.className =
-      "position-relative text-left w-100 d-flex align-items-center justify-content-between py-2";
+      "position-relative text-left w-100 d-flex align-items-center justify-content-between py-2 flex-wrap";
     const sectionClassName =
       "text-left p-3 p-sm-5 mt-1 rounded shadow bg-dark text-white";
     return Elem.section(
@@ -456,8 +519,10 @@ class WorkoutRender {
 
   rest(exercise) {
     const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
-    if (this.workout.view.completeExercise(exercise).sets < exercise.sets) {
-      console.log(this.workout.view.completeExercise(exercise).sets);
+    if (
+      this.workout.view.completeExercise(exercise) &&
+      this.workout.view.completeExercise(exercise).sets < exercise.sets
+    ) {
       exerciseContainer.append(Layout.counter(30));
     } else this.workout.view.stopExercise(exercise);
   }

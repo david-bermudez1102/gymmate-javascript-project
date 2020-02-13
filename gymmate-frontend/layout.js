@@ -73,8 +73,7 @@ class Layout {
       { class: "nav-link" },
       () => {
         if (!isLoggedIn()) {
-          removeAll(main);
-          append(new Grid().loginRow(), null, main);
+          render(Welcome.loginRow(), "main", true);
         }
       },
       `Login`

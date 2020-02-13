@@ -72,7 +72,7 @@ class HomeView {
       },
       null,
       currentUser ? currentUser.accountView.profilePic() : "",
-      this.homeLink(),
+      isTrainer() ? this.newRoutineLink() : this.homeLink(),
       isTrainer() ? this.routinesLink() : this.workoutsLink(),
       isUser() ? this.completeLink() : "",
       this.profileLink()
@@ -125,7 +125,20 @@ class HomeView {
     );
   }
 
-   completeLink() {
+  newRoutineLink() {
+    return Elem.link(
+      {
+        class: "nav-link active",
+        "data-toggle": "pill",
+        id: "add_routine_link"
+      },
+      () => this.home.render.show(),
+      Elem.icon({ class: "fas fa-plus-square" }),
+      " New Routine"
+    );
+  }
+
+  completeLink() {
     return Elem.link(
       {
         class: "nav-link",

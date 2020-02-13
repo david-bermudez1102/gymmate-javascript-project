@@ -65,9 +65,12 @@ class Article {
     const article = d.createElement("article");
     article.innerHTML = `<h1 class="text-secondary">${title}</h1>
         <blockquote class="blockquote p-0">
-          <p class="text-light text-justify">
+          <p class="text-light text-justify", style="font-size:18px">
             “${content}”
           </p>
+          <cite class="text-light">
+          ${citation}
+          </cite>
         </blockquote>`;
     return article;
   }
@@ -147,7 +150,7 @@ const loadNavbar = () => {
 
 d.addEventListener("DOMContentLoaded", () => {
   loadNavbar();
-  body.append(Layout.footer());
+  container.append(Layout.footer());
   $("body").tooltip({ selector: "[data-toggle=tooltip]" });
 });
 

@@ -98,12 +98,12 @@ class AccountView {
   profilePic() {
     return Elem.div(
       {
-        class: "w-100 mb-4 px-0 pb-2 text-dark text-center",
+        class: "w-100 mb-4 px-0 pb-2 display-4 text-dark text-center",
         id: `account_${this.account.id}_avatar`
       },
       null,
-      Elem.h1(
-        { class: "text-primary" },
+      Elem.p(
+        { class: "display-4 text-primary", style:"font-size:40px;" },
         null,
         `${this.account.name} ${this.account.lastname}`
       ),
@@ -148,8 +148,8 @@ class AccountView {
   }
 
   bio() {
-    return Elem.h4(
-      {},
+    return Elem.p(
+      { class: "display-4", style: "font-size:24px" },
       null,
       Elem.span({ class: "text-primary bold" }, null, "Bio:"),
       ` ${this.account.bio || "No information yet."}`
@@ -157,8 +157,8 @@ class AccountView {
   }
 
   dateOfBirth() {
-    return Elem.h4(
-      {},
+    return Elem.p(
+      { class: "display-4", style: "font-size:24px" },
       null,
       Elem.span({ class: "text-primary bold" }, null, "Date of birth:"),
       ` ${this.account.dateOfBirth || "No information yet."}`
@@ -166,8 +166,8 @@ class AccountView {
   }
 
   sex() {
-    return Elem.h4(
-      {},
+    return Elem.p(
+      {class:"display-4", style:"font-size:24px"},
       null,
       Elem.span({ class: "text-primary bold" }, null, "Sex:"),
       ` ${this.account.sex || "No information yet."}`

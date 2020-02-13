@@ -148,9 +148,7 @@ class TrainerView {
       Elem.div(
         { class: "nav nav-tabs", id: "nav-tab", role: "tablist" },
         null,
-        this.routinesTab(),
-        this.picturesTab(),
-        this.videosTab()
+        this.routinesTab()
       )
     );
   }
