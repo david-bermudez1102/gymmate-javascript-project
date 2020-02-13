@@ -414,10 +414,10 @@ class ProgramForm {
         action: WORKOUTS_URL,
         method: "POST"
       },
-      json => new Workout().controller.create(json),
+      json => new Workout().controller.__create(json),
       Elem.input({
         type: "hidden",
-        name: "workout[program_id]",
+        name: "program_id",
         value: this.program.id
       }),
       Elem.input(

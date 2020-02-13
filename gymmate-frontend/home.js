@@ -72,7 +72,7 @@ class HomeView {
       },
       null,
       currentUser ? currentUser.accountView.profilePic() : "",
-      isTrainer() ? this.newRoutineLink() : this.homeLink(),
+      isTrainer() ? this.newRoutineLink() : "",
       isTrainer() ? this.routinesLink() : this.workoutsLink(),
       isUser() ? this.completeLink() : "",
       this.profileLink()
@@ -115,7 +115,7 @@ class HomeView {
   workoutsLink() {
     return Elem.link(
       {
-        class: "nav-link",
+        class: "nav-link active",
         "data-toggle": "pill",
         id: "main_menu_workouts_link"
       },
@@ -186,6 +186,8 @@ class HomeRender {
   show() {
     loadNavbar();
     render(this.home.view.show(), "main", true);
+    if (isUser())
+      setTimeout(() => currentUser.render.workouts("#main_container"), 300);
     createRoute("home()", "/home");
   }
 }

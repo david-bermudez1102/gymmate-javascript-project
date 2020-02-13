@@ -210,7 +210,7 @@ class Layout {
 
   static error(json, target) {
     console.log(json);
-    const errorsList = Elem.li({}, null);
+    const errorsList = Elem.ul({}, null);
     json.errors.forEach(error => errorsList.append(Elem.li({}, null,error)));
     if (d.querySelector(".alert")) d.querySelector(".alert").remove();
     target.prepend(Elem.div({class:"alert alert-danger"}, null, errorsList));

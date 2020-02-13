@@ -73,6 +73,10 @@ class Workout {
   get controller() {
     return this._controller;
   }
+  
+  set complete(complete) {
+    this._complete = complete
+  }
 
   static create(user, json) {
     const workout = new Workout(
@@ -122,7 +126,7 @@ class WorkoutView {
     return Elem.span(
       {
         class:
-          "col-xl-9 col-lg-12 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
+          "col-xl-9 col-lg-10 col-md-6 col-sm-6 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
         style: "font-size: 40px;"
       },
       null,
@@ -150,7 +154,7 @@ class WorkoutView {
       ? Elem.span(
           {
             id: `workout_progress_${this.workout.id}`,
-            class: "text-right p-0 m-0 col order-2"
+            class: "text-right p-0 m-0 col-xl-3 col-lg-2 col-md-6 col-sm-6 d-flex order-2 align-items-start h-100 justify-content-end"
           },
           null,
           ProgressBar.new(this.percentageComplete(), "#FF304F")
@@ -159,12 +163,7 @@ class WorkoutView {
   }
 
   status() {
-    return this.workout.complete
-      ? Elem.icon({
-          class: "fas fa-check-square text-primary",
-          style: "font-size: 24px;"
-        })
-      : this.progress();
+    return this.progress();
   }
 
   options() {
@@ -452,7 +451,8 @@ class WorkoutForm {
   completeWorkout() {
      const formData = new FormData();
      const data = {
-       complete: true
+       complete: true,
+       program_id: this.workout.program.id
      };
      Object.keys(data).forEach(key => formData.append(key, data[key]));
      return formData;

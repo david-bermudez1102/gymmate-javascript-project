@@ -7,6 +7,16 @@ class WorkoutsController < ApplicationController
     end
   end
 
+  def update
+    user = User.find_by(id: current_user.userable_id)
+    workout = user.workouts.find_by(id: params[:id])
+    if workout.update(workout_params)
+      render json: workout
+    else
+      render json: {errors: workout.errors.full_messages }
+    end
+  end
+
   def destroy
     user = User.find_by(id: current_user.userable_id)
     workout = user.workouts.find_by(id: params[:id])
@@ -17,9 +27,8 @@ class WorkoutsController < ApplicationController
     end
   end
 
-
    private
     def workout_params
-      params.require(:workout).permit(:program_id)
+      params.permit(:program_id, :complete)
     end
 end
