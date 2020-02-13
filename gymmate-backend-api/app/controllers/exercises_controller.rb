@@ -1,7 +1,8 @@
 class ExercisesController < ApplicationController
   before_action :set_trainer, except: :show
+  
   def create
-    program = trainer.programs.find_by(id: exercise_params[:program_id])
+    program = @trainer.programs.find_by(id: exercise_params[:program_id])
     exercise = program.exercises.build(exercise_params)
     if exercise.save
       render json: exercise
@@ -9,10 +10,12 @@ class ExercisesController < ApplicationController
   end
 
   def update
-    program = trainer.programs.find_by(id: exercise_params[:program_id])
+    program = @trainer.programs.find_by(id: exercise_params[:program_id])
     exercise = program.exercises.find_by(id: params[:id])
     if exercise.update(exercise_params)
       render json: exercise
+    else
+      render json: {errors: exercise.errors.full_messages}
     end
   end
 
@@ -27,7 +30,7 @@ class ExercisesController < ApplicationController
 
   def destroy
     exercise = Exercise.find_by(id: params[:id])
-    program = trainer.programs.find_by(id: exercise.program_id)
+    program = @trainer.programs.find_by(id: exercise.program_id)
 
     if program && exercise.destroy
       render json: exercise
@@ -42,6 +45,6 @@ class ExercisesController < ApplicationController
     end
 
     def set_trainer
-      trainer = Trainer.find_by(id: current_user.userable_id)
+      @trainer = Trainer.find_by(id: current_user.userable_id)
     end
 end

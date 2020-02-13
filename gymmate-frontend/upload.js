@@ -72,7 +72,7 @@ function handleDrop(e, label, file) {
 
 function handleFiles(files, label, file) {
   removeAll(label);
-  Render.spinner(file, label);
+  Layout.spinner(file, label);
   files = [...files];
   files.forEach(f => previewFile(f, label, file));
 }

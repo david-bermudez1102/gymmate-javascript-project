@@ -87,7 +87,7 @@ class Exercise {
   }
 
   duration() {
-    return Math.round(((this.repetitions * 15) + (this.sets * this.rest)) / 60);
+    return Math.round((this.repetitions * 15 + this.sets * this.rest) / 60);
   }
 }
 
@@ -299,7 +299,8 @@ class ExerciseForm {
         id: id,
         method: method,
         action: action,
-        class: "needs-validation"
+        class: "needs-validation",
+        novalidate: "novalidate"
       },
       handleSubmit,
       FormGroup.new(
@@ -309,6 +310,7 @@ class ExerciseForm {
           placeholder: "Enter a title for this exercise...",
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.title || "",
+          "data-alert": "Enter a valid title.",
           required: true
         }),
         Elem.icon({ class: "fas fa-heading" })
@@ -320,6 +322,7 @@ class ExerciseForm {
             placeholder: "Enter a description for this exercise...",
             class: "form-control pl-5 rounded",
             maxlength: "140",
+            "data-alert": "Between 20 - 140 characters",
             required: true
           },
           null,
@@ -337,6 +340,7 @@ class ExerciseForm {
           max: 15,
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.sets || "",
+          "data-alert": "Between 3 - 15 sets.",
           required: true
         }),
         Elem.icon({ class: "fas fa-cog" })
@@ -350,6 +354,7 @@ class ExerciseForm {
           max: 30,
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.repetitions || "",
+          "data-alert": "Between 5 - 30 reps.",
           required: true
         }),
         Elem.icon({ class: "fas fa-repeat", title: "Repetitions" })
@@ -357,8 +362,7 @@ class ExerciseForm {
       Elem.input({
         type: "hidden",
         name: "exercise[program_id]",
-        value: this.exercise.program.id,
-        required: true
+        value: this.exercise.program.id || ""
       }),
       FormGroup.new(
         Elem.input({
@@ -369,6 +373,7 @@ class ExerciseForm {
           max: 500,
           class: "form-control pl-5 rounded-pill",
           value: this.exercise.calories || "",
+          "data-alert": "Between 100 - 500 calories.",
           required: true
         }),
         Elem.icon({ class: "fas fa-fire", title: "Repetitions" })
@@ -381,6 +386,7 @@ class ExerciseForm {
           min: 10,
           max: 60,
           class: "form-control pl-5 rounded-pill",
+          "data-alert": "Between 10 - 60 seconds.",
           value: this.exercise.rest || "",
           required: true
         }),
@@ -481,12 +487,9 @@ class ExerciseController {
     if (isTrainer && isOwner(this.exercise.program.trainer)) {
       const trainer = Object.assign(new Trainer(), currentUser);
       const program = trainer.programs.find(
-        program => this.exercise.program === program
+        program => this.exercise.program.id === program.id
       );
-      const exercise = Object.assign(
-        new Exercise(),
-        Exercise.create(this.exercise.program, json)
-      );
+      const exercise = Exercise.create(this.exercise.program, json);
       Object.assign(
         program.exercises.find(e => e.id === exercise.id),
         exercise
@@ -504,7 +507,7 @@ class ExerciseController {
       json => {
         const trainer = Object.assign(new Trainer(), currentUser);
         const program = trainer.programs.find(
-          program => this.exercise.program === program
+          program => this.exercise.program.id === program.id
         );
         program.exercises = program.exercises.filter(e => e.id !== json.id);
         currentUser = trainer;

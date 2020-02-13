@@ -238,7 +238,8 @@ class ProgramForm {
         id: id,
         method: method,
         action: action,
-        class: "needs-validation"
+        class: "needs-validation",
+        novalidate: true
       },
       handleSubmit,
       FormGroup.new(
@@ -247,7 +248,9 @@ class ProgramForm {
           name: "program[title]",
           placeholder: "Enter a title for your program...",
           class: "form-control pl-5 rounded-pill",
-          value: this.program.title || ""
+          value: this.program.title || "",
+          "data-alert": "Enter a title.",
+          required: true
         }),
         Elem.icon({ class: "fas fa-heading" })
       ),
@@ -257,7 +260,10 @@ class ProgramForm {
           {
             class: "form-control pl-5",
             name: "program[description]",
-            placeholder: "Enter a brief description for your program..."
+            placeholder: "Enter a brief description for your program...",
+            maxlength: 140,
+            "data-alert": "Enter a description. Max 140 characters.",
+            required: true
           },
           null,
           this.program.description || ""
@@ -355,6 +361,8 @@ class ProgramRender {
 
   newExerciseRow(target, remove = true) {
     new Exercise(
+      null,
+      null,
       null,
       null,
       null,

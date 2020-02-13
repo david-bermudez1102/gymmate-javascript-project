@@ -2,10 +2,10 @@ class Exercise < ApplicationRecord
 
   validates :title, presence: :true
   validates :description, length: { maximum: 140 }
-  validates :calories, length: { minimum: 100, maximum: 500 }
-  validates :sets, length: { minimum: 3, maximum: 15 }
-  validates :repetitions, length: { minimum: 5, maximum: 30 }
-  validates :rest, length: { minimum: 10, maximum: 60 }
+  validates :calories, numericality: { greater_than_or_equal_to:100, less_than_or_equal_to: 500,  only_integer: true }
+  validates :sets, numericality: { greater_than_or_equal_to:3, less_than_or_equal_to: 15,  only_integer: true }
+  validates :repetitions, numericality: { greater_than_or_equal_to:5, less_than_or_equal_to: 30,  only_integer: true }
+  validates :rest, numericality: { greater_than_or_equal_to:10, less_than_or_equal_to: 60,  only_integer: true }
 
   belongs_to :program
 
