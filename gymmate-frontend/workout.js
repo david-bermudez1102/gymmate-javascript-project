@@ -580,7 +580,7 @@ class WorkoutRender {
     if (
       this.workout.view.completeExercise(exercise).sets < exercise.sets
     ) {
-      exerciseContainer.append(Layout.counter(30));
+      exerciseContainer.append(Layout.counter(exercise.rest));
     } else this.workout.view.stopExercise(exercise);
   }
 
