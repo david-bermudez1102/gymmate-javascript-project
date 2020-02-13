@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2020_02_13_025745) do
     t.float "height"
     t.float "ibm"
     t.text "bio"
-    t.boolean "sex"
+    t.integer "sex"
     t.bigint "userable_id"
     t.string "userable_type"
     t.datetime "created_at", null: false

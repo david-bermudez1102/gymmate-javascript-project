@@ -34,7 +34,8 @@ class Account {
   }
 
   get sex() {
-    return this._sex;
+    const sex = ["Prefer not to say", "Male", "Female"]
+    return sex[this._sex];
   }
 
   get username() {
@@ -103,7 +104,7 @@ class AccountView {
       },
       null,
       Elem.p(
-        { class: "display-4 text-primary", style:"font-size:40px;" },
+        { class: "display-4 text-primary", style: "font-size:40px;" },
         null,
         `${this.account.name} ${this.account.lastname}`
       ),
@@ -138,7 +139,7 @@ class AccountView {
 
   username() {
     return Elem.p(
-      { class: "display-4 text-primary", style:"font-size:32px" },
+      { class: "display-4 text-primary", style: "font-size:32px" },
       null,
       Elem.icon({
         class: "fas fa-user"
@@ -167,7 +168,7 @@ class AccountView {
 
   sex() {
     return Elem.p(
-      {class:"display-4", style:"font-size:24px"},
+      { class: "display-4", style: "font-size:24px" },
       null,
       Elem.span({ class: "text-primary bold" }, null, "Sex:"),
       ` ${this.account.sex || "No information yet."}`
@@ -314,7 +315,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your name requires minimum 3 characters."
         }),
-        Elem.icon({class:"fas fa-user"})
+        Elem.icon({ class: "fas fa-user" })
       ),
       FormGroup.new(
         Elem.input({
@@ -326,8 +327,64 @@ class AccountForm {
           required: "required",
           "data-alert": "Your lastname requires minimum 3 characters."
         }),
-        Elem.icon({class:"fas fa-user"})
+        Elem.icon({ class: "fas fa-user" })
       ),
+      FormGroup.new(
+        Elem.input({
+          type: "date",
+          name: "account[date_of_birth]",
+          placeholder: "your date of birth",
+          class: "form-control pl-5 rounded-pill",
+          required: "required",
+          "data-alert": "Enter a date of birth."
+        }),
+        Elem.icon({ class: "fas fa-calendar-week" })
+      ), Elem.div({}, null, Elem.span({}, null, "I am: "), Elem.div(
+        { class: "form-check form-check-inline" },
+        null,
+        Elem.input({
+          type: "radio",
+          name: "account[sex]",
+          id: "sex_1",
+          value: 1,
+          class: "form-check-input",
+          required: "required",
+          "data-alert": "An option must be chosen."
+        }),
+        Elem.label({ class: "form-check-label", for: "sex_1" }, null, "Male")
+      ),
+      Elem.div(
+        { class: "form-check form-check-inline" },
+        null,
+        Elem.input({
+          type: "radio",
+          name: "account[sex]",
+          id: "sex_2",
+          value: 2,
+          class: "form-check-input",
+          required: "required",
+          "data-alert": "An option must be chosen."
+        }),
+        Elem.label({ class: "form-check-label", for: "sex_2" }, null, "Female")
+      ),
+      Elem.div(
+        { class: "form-check form-check-inline" },
+        null,
+        Elem.input({
+          type: "radio",
+          name: "account[sex]",
+          id: "sex_0",
+          value: 0,
+          class: "form-check-input",
+          required: "required",
+          "data-alert": "An option must be chosen."
+        }),
+        Elem.label(
+          { class: "form-check-label", for: "sex_0" },
+          null,
+          "Prefer not to say"
+        )
+      )),
       FormGroup.new(
         Elem.input({
           type: "text",
@@ -338,7 +395,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Your username requires at least 6 characters."
         }),
-        Elem.icon({class:"fas fa-at"})
+        Elem.icon({ class: "fas fa-at" })
       ),
       FormGroup.new(
         Elem.input({
@@ -349,7 +406,7 @@ class AccountForm {
           required: "required",
           "data-alert": "Please provide a valid email."
         }),
-        Elem.icon({class:"fas fa-envelope"})
+        Elem.icon({ class: "fas fa-envelope" })
       ),
       FormGroup.new(
         Elem.input({
@@ -361,17 +418,15 @@ class AccountForm {
           required: "required",
           "data-alert": "Your password requires minimum 6 characters."
         }),
-        Elem.icon({class:"fas fa-lock"})
+        Elem.icon({ class: "fas fa-lock" })
       ),
       FormGroup.new(
-        Elem.input(
-          {
-            type: "submit",
-            id: "create_user",
-            value: "Sign Up",
-            class: "btn btn-block btn-primary border-0 shadow rounded-pill"
-          }
-        )
+        Elem.input({
+          type: "submit",
+          id: "create_user",
+          value: "Sign Up",
+          class: "btn btn-block btn-primary border-0 shadow rounded-pill"
+        })
       )
     );
   }

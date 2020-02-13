@@ -24,6 +24,6 @@ class TrainersController < ApplicationController
 
   private
     def account_params
-      params.require(:account).permit(:name,:lastname,:username,:email,:password)
+      params.require(:account).permit(:name,:lastname,:username,:email,:date_of_birth, :sex,:password)
     end
 end

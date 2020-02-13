@@ -11,7 +11,7 @@ class CreateAccounts < ActiveRecord::Migration[5.2]
       t.float :height
       t.float :ibm
       t.text :bio
-      t.boolean :sex
+      t.integer :sex
       t.bigint  :userable_id
       t.string  :userable_type
       t.timestamps
