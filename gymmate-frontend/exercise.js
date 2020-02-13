@@ -87,7 +87,7 @@ class Exercise {
   }
 
   duration() {
-    return Math.round((this.repetitions * 7 + this.sets * 30) / 60);
+    return Math.round((this.repetitions * 7 + this.sets * this.rest) / 60);
   }
 }
 
