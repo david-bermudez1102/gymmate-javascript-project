@@ -87,7 +87,7 @@ class Exercise {
   }
 
   duration() {
-    return Math.round((this.repetitions * 7 + this.sets * this.rest) / 60);
+    return Math.round(((this.repetitions * 15) + (this.sets * this.rest)) / 60);
   }
 }
 
@@ -115,7 +115,7 @@ class ExerciseView {
     return Elem.span(
       {
         class:
-          "col-xl-9 col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1",
+          "col-xl-9 col-lg-10 display-4 order-2 order-sm-2 order-md-2 order-lg-1 p-0",
         style: "font-size: 40px;"
       },
       null,
@@ -156,12 +156,13 @@ class ExerciseView {
     return Elem.section(
       {
         class:
-          "text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light",
+          "order-1 text-left p-3 p-sm-5 rounded shadow mt-1 w-100 d-flex align-items-center justify-content-between bg-dark text-light flex-wrap",
         style: "cursor:pointer;"
       },
       null,
       this.title(),
-      this.options()
+      this.options(),
+      this.info()
     );
   }
 
@@ -197,7 +198,7 @@ class ExerciseView {
       {},
       null,
       Elem.icon({ class: "fas fa-fire" }),
-      ` ${this.exercise.repetitions}`
+      ` ${this.exercise.calories}`
     );
   }
 
@@ -211,7 +212,7 @@ class ExerciseView {
 
   info() {
     return Elem.p(
-      { class: "d-flex w-100 justify-content-between my-4" },
+      { class: "d-flex w-100 justify-content-between my-4 order-2" },
       null,
       this.sets(),
       this.reps(),

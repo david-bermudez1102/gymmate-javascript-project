@@ -1,6 +1,7 @@
 class Program < ApplicationRecord
   validates :title, presence: :true
-
+  validates :description, length: { maximum: 140 }
+  
   belongs_to :trainer
   has_many :workouts, dependent: :delete_all
   has_many :exercises, dependent: :delete_all
