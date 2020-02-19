@@ -1,15 +1,15 @@
 class WorkoutsController < ApplicationController
+  before_action :set_user
+  
   def create
-    user = User.find_by(id: current_user.userable_id)
-    workout = user.workouts.build(workout_params)
+    workout = @user.workouts.build(workout_params)
     if workout.save
       render json: workout
     end
   end
 
   def update
-    user = User.find_by(id: current_user.userable_id)
-    workout = user.workouts.find_by(id: params[:id])
+    workout = @user.workouts.find_by(id: params[:id])
     if workout.update(workout_params)
       render json: workout
     else
@@ -18,8 +18,7 @@ class WorkoutsController < ApplicationController
   end
 
   def destroy
-    user = User.find_by(id: current_user.userable_id)
-    workout = user.workouts.find_by(id: params[:id])
+    workout = @user.workouts.find_by(id: params[:id])
     if workout.destroy
       render json: workout
     else
@@ -30,5 +29,9 @@ class WorkoutsController < ApplicationController
    private
     def workout_params
       params.permit(:program_id, :complete)
+    end
+
+    def set_user
+      @user = User.find_by(id: current_user.userable_id)
     end
 end

@@ -73,9 +73,9 @@ class Workout {
   get controller() {
     return this._controller;
   }
-  
+
   set complete(complete) {
-    this._complete = complete
+    this._complete = complete;
   }
 
   static create(user, json) {
@@ -148,13 +148,14 @@ class WorkoutView {
     return Math.round(
       percentages.reduce((memo, val) => memo + val, 0) / percentages.length
     );
-    }
+  }
   progress() {
     return isUser()
       ? Elem.span(
           {
             id: `workout_progress_${this.workout.id}`,
-            class: "text-right p-0 m-0 col-xl-3 col-lg-2 col-md-6 col-sm-6 d-flex order-2 align-items-start h-100 justify-content-end"
+            class:
+              "text-right p-0 m-0 col-xl-3 col-lg-2 col-md-6 col-sm-6 d-flex order-2 align-items-start h-100 justify-content-end"
           },
           null,
           ProgressBar.new(this.percentageComplete(), "#FF304F")
@@ -344,7 +345,10 @@ class WorkoutView {
 
   showExercise(exercise) {
     const __exercise = this.__exercise(exercise);
-    __exercise.append(this.form.startExercise(exercise));
+    this.workout.complete
+      ? __exercise.append(this.form.restartWorkout())
+      : __exercise.append(this.form.startExercise(exercise));
+
     __exercise.className =
       "position-relative text-left w-100 d-flex align-items-center justify-content-between py-2 flex-wrap";
     const sectionClassName =
@@ -364,7 +368,7 @@ class WorkoutView {
   }
 
   startExercise(exercise, video) {
-    if (video.currentTime === video.duration) {
+    if (video.currentTime === video.duration && !this.workout.complete) {
       this.completeExercise(exercise)
         ? this.completeExercise(exercise).controller.update()
         : this.workout.controller.createComplete(exercise);
@@ -403,15 +407,23 @@ class WorkoutForm {
     return this._view.workout;
   }
 
+  restartWorkout() {
+    return currentUser.workouts.some(workout => !workout.complete)
+      ? ""
+      : this.workout.program.view.form.addWorkout();
+  }
+
   startExercise(exercise) {
     return Elem.button(
       {
         class: "btn btn-primary btn-sm rounded-circle shadow",
-        id: `start_exercise_${exercise.id}`
+        id: `start_exercise_${exercise.id}`,
+        title: this.workout.complete
+          ? `Start workout again`
+          : `Start this exercise`
       },
       () => {
         this.workout.render.startExercise(exercise);
-
         this.workout.render.mutedMenu(exercise);
       },
       Elem.icon({
@@ -449,13 +461,13 @@ class WorkoutForm {
   }
 
   completeWorkout() {
-     const formData = new FormData();
-     const data = {
-       complete: true,
-       program_id: this.workout.program.id
-     };
-     Object.keys(data).forEach(key => formData.append(key, data[key]));
-     return formData;
+    const formData = new FormData();
+    const data = {
+      complete: true,
+      program_id: this.workout.program.id
+    };
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    return formData;
   }
 }
 
@@ -479,8 +491,7 @@ class WorkoutController {
     const workout = Workout.create(user, json);
     user.workouts.push(workout);
     currentUser = user;
-    currentUser.render.workouts("#main_container");
-    return user;
+    setTimeout(() => currentUser.render.workouts("#main_container"), 500);
   }
 
   createComplete(exercise) {
@@ -523,7 +534,7 @@ class WorkoutController {
         const workout = user.workouts.find(
           workout => workout.id === this.workout.id
         );
-        workout.complete = json.complete
+        workout.complete = json.complete;
         currentUser = user;
       },
       target
@@ -577,9 +588,7 @@ class WorkoutRender {
 
   rest(exercise) {
     const exerciseContainer = d.querySelector(`#exercise_${exercise.id}`);
-    if (
-      this.workout.view.completeExercise(exercise).sets < exercise.sets
-    ) {
+    if (this.workout.view.completeExercise(exercise).sets < exercise.sets) {
       exerciseContainer.append(Layout.counter(exercise.rest));
     } else this.workout.view.stopExercise(exercise);
   }

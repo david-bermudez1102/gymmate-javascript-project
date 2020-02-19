@@ -64,7 +64,7 @@ class SearchView {
 
   trainersFound(total) {
     return Elem.span(
-      { class: "d-flex my-3 text-primary display-4", style:"font-size:30px;" },
+      { class: "d-flex my-3 text-primary display-4", style: "font-size:30px;" },
       null,
       `Trainers - ${total} ${total === 1 ? " match" : "match"}`
     );
@@ -162,6 +162,9 @@ class SearchRender {
     this.users(json);
     this.programsFound(json);
     this.programs(json);
+    Object.values(json).every(val => val.length === 0)
+      ? render(Layout.noContent("content"), "#main_container")
+      : "";
     createRoute(
       `search()`,
       `/search/?${new URLSearchParams(formData).toString()}`

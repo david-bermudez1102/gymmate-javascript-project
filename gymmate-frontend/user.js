@@ -227,11 +227,15 @@ class UserRender {
 
   workouts(target, remove = true) {
     if (remove) removeAll(d.querySelector(target));
-    this.user.workouts.forEach(workout => {
+    const workouts = this.user.workouts.filter(
+      workout => !workout.complete
+    );
+    workouts.forEach(workout => {
       const __workout = workout.view.__workout();
       __workout.addEventListener("click", () => workout.render.show(target));
       render(__workout, target);
-    });
+    })
+    workouts.length === 0 ? render(Layout.noContent("workouts"), target) : ""
     createRoute(`workouts("${pathName[1]}")`, `/workouts`);
   }
 
@@ -243,6 +247,7 @@ class UserRender {
       __workout.addEventListener("click", () => workout.render.show(target));
        render(__workout, target);
     });
+    workouts.length === 0 ? render(Layout.noContent("complete workouts"), target) : "";
     createRoute(`workouts("${pathName[1]}")`, `/workouts/complete`);
   }
 }

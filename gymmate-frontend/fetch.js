@@ -58,7 +58,10 @@ class Fetch {
     return fetch(this.url, { headers: h })
       .then(this.parseJson)
       .then(this.callback)
-      .then(Layout.hideSpinner(main))
+      .then(result => {
+        Layout.hideSpinner(main);
+        return result
+      })
       .catch(console.log);
   }
 

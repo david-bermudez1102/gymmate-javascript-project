@@ -109,7 +109,7 @@ class Welcome {
     return new Promise(res => {
       Layout.spinner(main);
       setTimeout(() => {
-        res(append(new Grid().headerRow(), "header_row", main));
+        res(render(new Grid().headerRow(), "main", true));
       }, 10);
     })
       .then(() => render(this.loginRow(), "main"))

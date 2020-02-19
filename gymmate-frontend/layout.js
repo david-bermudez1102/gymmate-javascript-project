@@ -34,7 +34,7 @@ class Layout {
       Elem.li({}, null, this.homeLink()),
       isLoggedIn() ? "" : Elem.li({}, null, this.loginLink()),
       isLoggedIn() ? "" : Elem.li({}, null, this.signUpLink()),
-      this.accountLink()
+      isLoggedIn() ? this.accountLink() : ""
     );
   }
 
@@ -83,10 +83,8 @@ class Layout {
   static signUpLink() {
     return Elem.link(
       { class: "nav-link" },
-      () => {
-        removeAll(main);
-        append(new Grid().loginRow(), null, main);
-      },
+      () => render(Welcome.signupRow(), "main", true)
+      ,
       `Sign Up`
     );
   }
@@ -238,6 +236,17 @@ class Layout {
           )
         )
       )
+    );
+  }
+
+  static noContent(content){
+    return Elem.div(
+      {
+        class:
+          "bg-light text-dark h-100 d-flex align-items-center justify-content-center"
+      },
+      null,
+      Elem.p({class:"display-4"}, null, `No ${content} found`)
     );
   }
 }
